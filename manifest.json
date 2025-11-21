@@ -1,0 +1,31 @@
+{
+  "name": "Comet Builders Field Reporting Hub",
+  "short_name": "Comet Hub",
+  "description": "Field reporting tools for Comet Builders LLC",
+  "start_url": "/Field-Reporting-Hub/",
+  "display": "standalone",
+  "background_color": "#f8fafc",
+  "theme_color": "#2563eb",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><rect width='192' height='192' fill='%232563eb' rx='40'/><path d='M96 45l16.6 33.8L152 85l-25.5 24.9 6 36L96 130.5 59.5 145.9l6-36L40 85l39.4-6.2L96 45z' fill='%23ffffff'/></svg>",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' fill='%232563eb' rx='100'/><path d='M256 120l44.2 89.6L400 227l-68 66.4 16 95.6L256 348.5 165 389l16-95.6L113 227l99.8-17.4L256 120z' fill='%23ffffff'/></svg>",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 540 720'><rect width='540' height='720' fill='%23f8fafc'/><text x='270' y='360' text-anchor='middle' font-size='48' fill='%232563eb' font-family='sans-serif'>Comet Builders</text></svg>",
+      "sizes": "540x720",
+      "type": "image/svg+xml"
+    }
+  ]
+}
