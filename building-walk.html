@@ -3,415 +3,941 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-<title>Comet — Final Building Walk</title>
+<title>Comet Builders — Final Building Walk</title>
 
 <!-- iOS Specific Meta Tags -->
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Building Walk">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
   :root{
-    --white:#fff; --bg:#f8fafc; --ink:#0b1220;
-    --blue:#2563eb; --blue2:#3b82f6; --muted:#6b7280;
-    --card:#ffffff; --border:#e5e7eb; --shadow:rgba(0,0,0,.07);
-    --section:#0f172a; --sectionText:#fff; --hint:#e2e8f0;
+    --primary: #2563eb;
+    --primary-hover: #1d4ed8;
+    --primary-light: #dbeafe;
+    --accent: #fbbf24;
+    --dark: #0f172a;
+    --dark-light: #1e293b;
+    --bg: #f8fafc;
+    --card: #ffffff;
+    --border: #e2e8f0;
+    --border-dark: #cbd5e1;
+    --text: #0f172a;
+    --text-muted: #64748b;
+    --success: #10b981;
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
+    --shadow: 0 4px 12px rgba(0,0,0,0.08);
+    --shadow-lg: 0 10px 40px rgba(0,0,0,0.12);
   }
-  *{box-sizing:border-box}
+  
+  *{
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+  
   html{
-    -webkit-overflow-scrolling:touch;
-    -webkit-text-size-adjust:100%;
+    -webkit-overflow-scrolling: touch;
+    -webkit-text-size-adjust: 100%;
+    scroll-behavior: smooth;
   }
-  html,body{
-    margin:0;
-    padding:0;
-    background:var(--bg);
-    color:var(--ink);
-    font-family:'Inter',system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Arial,sans-serif;
-  }
+  
   body{
-    padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
   }
-  .wrap{
-    max-width:1100px;
-    margin:0 auto;
-    padding:24px;
-    padding-bottom:calc(24px + env(safe-area-inset-bottom));
-  }
+  
+  /* Header */
   header{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    padding:8px 0 18px;
-    border-bottom:1px solid var(--border);
-    position:sticky;
-    top:0;
-    background:var(--bg);
-    z-index:10;
+    background: linear-gradient(135deg, var(--dark) 0%, var(--dark-light) 100%);
+    color: white;
+    padding: 1.5rem 1rem;
+    box-shadow: var(--shadow-lg);
+    position: sticky;
+    top: 0;
+    z-index: 100;
   }
-  .brand{display:flex;gap:12px;align-items:center}
-  .brand svg{width:30px;height:30px}
-  .brand h1{margin:0;font-size:1.35rem}
-  .sub{color:var(--muted);font-weight:600}
-  .bar{display:flex;gap:10px;flex-wrap:wrap}
+  
+  .header-content{
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  .brand{
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+  
+  .logo-container{
+    width: 60px;
+    height: 60px;
+    flex-shrink: 0;
+  }
+  
+  .logo-container svg{
+    width: 100%;
+    height: 100%;
+    filter: drop-shadow(0 2px 8px rgba(0,0,0,0.3));
+  }
+  
+  .brand-text h1{
+    font-size: 1.5rem;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    margin: 0;
+  }
+  
+  .brand-text .subtitle{
+    font-size: 0.875rem;
+    opacity: 0.9;
+    font-weight: 500;
+    color: var(--accent);
+  }
+  
+  /* Action Bar */
+  .action-bar{
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    gap: 0.5rem;
+    margin-top: 1rem;
+  }
+  
   .btn{
-    appearance:none;
-    -webkit-appearance:none;
-    border:1px solid transparent;
-    background:var(--blue);
-    color:#fff;
-    padding:10px 14px;
-    border-radius:10px;
-    font-weight:700;
-    cursor:pointer;
-    font-size:16px;
-    -webkit-tap-highlight-color:transparent;
-    touch-action:manipulation;
-    user-select:none;
-    -webkit-user-select:none;
+    appearance: none;
+    -webkit-appearance: none;
+    border: none;
+    background: rgba(255,255,255,0.15);
+    backdrop-filter: blur(10px);
+    color: white;
+    padding: 0.75rem 1rem;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+    border: 1px solid rgba(255,255,255,0.2);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
   }
-  .btn:hover{background:var(--blue2)}
-  .btn:active{transform:scale(0.96)}
-  .ghost{background:transparent;border-color:var(--blue);color:var(--blue)}
-  .ghost:hover{background:rgba(37,99,235,.08)}
-  .card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:18px;box-shadow:0 8px 22px var(--shadow);margin-top:16px}
-
-  label{font-weight:600;font-size:.95rem;color:#111827}
+  
+  .btn:hover{
+    background: rgba(255,255,255,0.25);
+    transform: translateY(-1px);
+  }
+  
+  .btn:active{
+    transform: translateY(0);
+  }
+  
+  .btn.primary{
+    background: var(--accent);
+    color: var(--dark);
+    border-color: var(--accent);
+  }
+  
+  .btn.primary:hover{
+    background: #f59e0b;
+  }
+  
+  /* Container */
+  .container{
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1.5rem 1rem 3rem;
+  }
+  
+  /* Cards */
+  .card{
+    background: var(--card);
+    border-radius: 16px;
+    padding: 1.5rem;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+    margin-bottom: 1.5rem;
+  }
+  
+  .card-title{
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: var(--dark);
+    margin-bottom: 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  
+  .card-title::before{
+    content: '';
+    width: 4px;
+    height: 1.5rem;
+    background: var(--primary);
+    border-radius: 2px;
+  }
+  
+  /* Form Elements */
+  .form-grid{
+    display: grid;
+    gap: 1.25rem;
+    grid-template-columns: 1fr;
+  }
+  
+  @media(min-width: 768px){
+    .form-grid{
+      grid-template-columns: repeat(2, 1fr);
+    }
+    .form-grid.three-col{
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+  
+  .form-group{
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  label{
+    font-weight: 600;
+    font-size: 0.875rem;
+    color: var(--text);
+    letter-spacing: 0.3px;
+  }
+  
   input, textarea, select{
-    width:100%;
-    padding:12px 12px;
-    font-size:16px;
-    border:1px solid var(--border);
-    border-radius:10px;
-    background:#fff;
-    -webkit-appearance:none;
-    appearance:none;
+    width: 100%;
+    padding: 0.875rem 1rem;
+    font-size: 1rem;
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    background: var(--card);
+    font-family: inherit;
+    transition: all 0.2s ease;
+    -webkit-appearance: none;
+    appearance: none;
   }
-  textarea{min-height:68px;resize:vertical}
-  .grid2{display:grid;gap:14px}
-  @media(min-width:860px){.grid2{grid-template-columns:1.1fr 1fr 1fr}}
-
-  .section{margin-top:18px;border:1px solid var(--border);border-radius:14px;overflow:hidden}
-  .section .head{background:var(--section);color:var(--sectionText);padding:10px 14px;font-weight:800;display:flex;justify-content:space-between;align-items:center}
-  .swipe-hint{display:none;color:#334155;background:var(--hint);padding:4px 10px;border-radius:999px;font-size:.75rem}
-
-  .rows-wrap{overflow:auto;-webkit-overflow-scrolling:touch}
-  .rows{display:grid;grid-template-columns:1.2fr 2fr .9fr .9fr .6fr;gap:0;border-top:1px solid var(--border);min-width:960px}
-  .r{display:contents}
-  .rows > div{border-top:1px solid var(--border)}
-  .rows b{display:flex;align-items:center;padding:10px 12px;background:#f8fafc;border-right:1px solid var(--border);font-weight:700}
-  .rows .cell{padding:0}
-  .rows .cell textarea, .rows .cell input{border:none;border-radius:0;width:100%;padding:10px 10px;font-size:16px}
-  .rows .th{background:#f1f5f9;font-weight:700}
-  .rows .th div{padding:10px 12px;border-right:1px solid var(--border)}
-  .rows .th div:last-child{border-right:none}
-
-  body.exporting .no-export{display:none !important}
-
+  
+  input:focus, textarea:focus, select:focus{
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px var(--primary-light);
+  }
+  
+  textarea{
+    min-height: 80px;
+    resize: vertical;
+  }
+  
+  /* Section */
+  .section{
+    background: var(--card);
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+    margin-bottom: 1.5rem;
+  }
+  
+  .section-header{
+    background: linear-gradient(135deg, var(--dark) 0%, var(--dark-light) 100%);
+    color: white;
+    padding: 1rem 1.25rem;
+    font-weight: 700;
+    font-size: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .swipe-hint{
+    display: none;
+    background: rgba(251, 191, 36, 0.2);
+    color: var(--accent);
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+  
+  /* Table Styles - Mobile First */
+  .table-container{
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  .data-table{
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 900px;
+  }
+  
+  .data-table thead{
+    background: #f8fafc;
+    position: sticky;
+    top: 0;
+  }
+  
+  .data-table th{
+    text-align: left;
+    padding: 0.875rem 1rem;
+    font-weight: 700;
+    font-size: 0.8125rem;
+    color: var(--text);
+    border-bottom: 2px solid var(--border-dark);
+    white-space: nowrap;
+  }
+  
+  .data-table td{
+    padding: 0;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+  
+  .data-table td.label{
+    font-weight: 600;
+    padding: 1rem;
+    background: #fafbfc;
+    color: var(--text);
+    font-size: 0.9375rem;
+  }
+  
+  .data-table input,
+  .data-table textarea{
+    border: none;
+    border-radius: 0;
+    padding: 1rem;
+    background: transparent;
+    font-size: 0.9375rem;
+  }
+  
+  .data-table input:focus,
+  .data-table textarea:focus{
+    background: var(--primary-light);
+    box-shadow: none;
+    border: none;
+  }
+  
+  .data-table tbody tr:hover{
+    background: #fafbfc;
+  }
+  
+  /* Stats */
+  .stats-bar{
+    display: flex;
+    gap: 1rem;
+    padding: 1rem 1.25rem;
+    background: #f8fafc;
+    border-top: 1px solid var(--border);
+    font-size: 0.875rem;
+    color: var(--text-muted);
+    flex-wrap: wrap;
+  }
+  
+  .stat{
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  
+  .stat-value{
+    font-weight: 700;
+    color: var(--text);
+  }
+  
+  /* Footer */
   footer{
-    margin-top:20px;
-    color:var(--muted);
-    text-align:center;
-    padding-bottom:env(safe-area-inset-bottom);
+    text-align: center;
+    padding: 2rem 1rem;
+    color: var(--text-muted);
+    font-size: 0.875rem;
   }
-
-  /* Mobile optimizations */
-  @media(max-width:900px){
-    .wrap{
-      padding:16px;
-      padding-bottom:calc(16px + env(safe-area-inset-bottom));
+  
+  /* Mobile Optimizations */
+  @media(max-width: 768px){
+    .logo-container{
+      width: 50px;
+      height: 50px;
     }
     
-    header{
-      flex-direction:column;
-      align-items:flex-start;
-      gap:12px;
-      padding:12px 0 16px;
-      position:sticky;
-      top:0;
-      background:var(--bg);
-      z-index:10;
-      margin:0 -16px;
-      padding-left:16px;
-      padding-right:16px;
+    .brand-text h1{
+      font-size: 1.25rem;
     }
     
-    .brand{gap:10px}
-    .brand svg{width:24px;height:24px}
-    .brand h1{font-size:1.2rem}
-    .sub{font-size:.9rem}
-    
-    .bar{
-      display:grid;
-      grid-template-columns:1fr 1fr;
-      gap:8px;
-      width:100%;
+    .brand-text .subtitle{
+      font-size: 0.8125rem;
     }
     
-    .btn{
-      padding:12px 14px;
-      min-height:48px;
-      font-size:14px;
-      width:100%;
+    .action-bar{
+      grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .swipe-hint{
+      display: inline-flex;
     }
     
     .card{
-      padding:16px;
-      border-radius:14px;
-    }
-    
-    .section{
-      margin-left:-16px;
-      margin-right:-16px;
-      border-radius:0;
-      border-left:none;
-      border-right:none;
-    }
-    
-    .rows-wrap{
-      padding:0 16px;
-    }
-    
-    .swipe-hint{display:inline-block}
-  }
-
-  @media(max-width:640px){
-    .brand h1{font-size:1.1rem}
-    .sub{font-size:.85rem}
-    
-    .grid2{
-      grid-template-columns:1fr;
-    }
-    
-    .rows{min-width:850px}
-  }
-
-  /* iPhone X and newer with notch */
-  @supports(padding:max(0px)){
-    body{
-      padding-left:max(0px, env(safe-area-inset-left));
-      padding-right:max(0px, env(safe-area-inset-right));
+      padding: 1.25rem;
+      border-radius: 12px;
     }
   }
-
-  /* Print */
+  
+  @media(max-width: 480px){
+    header{
+      padding: 1rem 0.75rem;
+    }
+    
+    .container{
+      padding: 1rem 0.75rem 2rem;
+    }
+    
+    .btn{
+      font-size: 0.8125rem;
+      padding: 0.625rem 0.75rem;
+    }
+    
+    .action-bar{
+      gap: 0.375rem;
+    }
+  }
+  
+  /* Print Styles */
   @media print{
-    header .bar, .no-print{display:none !important}
-    .card{box-shadow:none;border:1px solid #ddd;page-break-inside:avoid}
-    body{background:#fff;padding:0 !important}
-    a[href]:after{content:""}
-    .rows-wrap{overflow:visible}
-    .swipe-hint{display:none !important}
+    body{
+      background: white;
+      padding: 0;
+    }
+    
+    .no-print{
+      display: none !important;
+    }
+    
+    header{
+      position: static;
+      box-shadow: none;
+      page-break-after: avoid;
+    }
+    
+    .card, .section{
+      box-shadow: none;
+      page-break-inside: avoid;
+      border: 1px solid #ddd;
+    }
+    
+    .data-table{
+      min-width: 100%;
+    }
+    
+    .swipe-hint{
+      display: none !important;
+    }
+  }
+  
+  /* Export mode */
+  body.exporting .no-export{
+    display: none !important;
+  }
+  
+  /* Auto-save indicator */
+  .save-indicator{
+    position: fixed;
+    bottom: 1rem;
+    right: 1rem;
+    background: var(--success);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: 1000;
+    pointer-events: none;
+  }
+  
+  .save-indicator.show{
+    opacity: 1;
   }
 </style>
 </head>
 <body>
-<div class="wrap" id="content">
-  <header>
-    <div class="brand">
-      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2l2.6 5.3L20 8l-4 3.9.9 5.6L12 15.8 7.1 17.5 8 11.9 4 8l5.4-.7L12 2z" fill="#2563eb"/></svg>
-      <div>
-        <h1>Comet Builders LLC</h1>
-        <div class="sub">Final Building Walk</div>
-      </div>
-    </div>
-    <div class="bar no-export">
-      <a href="index.html" class="btn ghost">← Home</a>
-      <button class="btn" onclick="window.print()">Print</button>
-      <button class="btn ghost" onclick="downloadPDF()">PDF</button>
-      <button class="btn ghost" onclick="saveState()">Save</button>
-      <button class="btn ghost" onclick="loadState()">Load</button>
-      <button class="btn ghost" onclick="clearState()">Clear</button>
-    </div>
-  </header>
 
-  <section class="card">
-    <div class="grid2">
-      <div>
-        <label>Project</label>
-        <input id="proj" placeholder="Comet North Raleigh">
+<div class="save-indicator" id="saveIndicator">✓ Auto-saved</div>
+
+<header>
+  <div class="header-content">
+    <div class="brand">
+      <div class="logo-container">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+          <defs>
+            <linearGradient id="professionalBg" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" style="stop-color:#1e3a8a;stop-opacity:1" />
+              <stop offset="100%" style="stop-color:#0f172a;stop-opacity:1" />
+            </linearGradient>
+            <linearGradient id="brickGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" style="stop-color:#7c3aed;stop-opacity:0.3" />
+              <stop offset="100%" style="stop-color:#6366f1;stop-opacity:0.5" />
+            </linearGradient>
+            <linearGradient id="sidingGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" style="stop-color:#60a5fa;stop-opacity:0.6" />
+              <stop offset="100%" style="stop-color:#3b82f6;stop-opacity:0.7" />
+            </linearGradient>
+            <linearGradient id="roofGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" style="stop-color:#94a3b8;stop-opacity:0.8" />
+              <stop offset="100%" style="stop-color:#64748b;stop-opacity:0.9" />
+            </linearGradient>
+            <linearGradient id="cometGold" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" style="stop-color:#fde047;stop-opacity:1" />
+              <stop offset="50%" style="stop-color:#fbbf24;stop-opacity:1" />
+              <stop offset="100%" style="stop-color:#f59e0b;stop-opacity:1" />
+            </linearGradient>
+          </defs>
+          <rect width="512" height="512" rx="110" fill="url(#professionalBg)"/>
+          <path d="M 80 90 L 380 155" stroke="url(#cometGold)" stroke-width="5" fill="none" opacity="0.7" stroke-linecap="round"/>
+          <path d="M 90 95 L 375 157" stroke="#fde047" stroke-width="2.5" fill="none" opacity="0.9" stroke-linecap="round"/>
+          <circle cx="390" cy="160" r="20" fill="url(#cometGold)"/>
+          <circle cx="390" cy="160" r="12" fill="#fde047"/>
+          <path d="M 390 160 l 9 5 l 5 9 l -5 -9 l -9 5 l 5 -9 l 9 -5 l -5 9 z" fill="#ffffff" opacity="0.9"/>
+          <circle cx="256" cy="280" r="140" fill="#0f172a" stroke="url(#cometGold)" stroke-width="6"/>
+          <circle cx="256" cy="280" r="130" fill="#1e293b"/>
+          <rect x="130" y="310" width="55" height="50" fill="url(#brickGrad)"/>
+          <rect x="135" y="318" width="10" height="12" fill="#dbeafe" opacity="0.9"/>
+          <rect x="148" y="318" width="10" height="12" fill="#dbeafe" opacity="0.9"/>
+          <rect x="161" y="318" width="10" height="12" fill="#dbeafe" opacity="0.9"/>
+          <rect x="135" y="345" width="10" height="12" fill="#dbeafe" opacity="0.9"/>
+          <rect x="161" y="345" width="10" height="12" fill="#dbeafe" opacity="0.9"/>
+          <rect x="148" y="345" width="10" height="15" fill="#1e3a8a" opacity="0.8"/>
+          <rect x="130" y="295" width="55" height="15" fill="url(#sidingGrad)"/>
+          <rect x="135" y="298" width="10" height="10" fill="#dbeafe" opacity="0.9"/>
+          <rect x="148" y="298" width="10" height="10" fill="#dbeafe" opacity="0.9"/>
+          <rect x="161" y="298" width="10" height="10" fill="#dbeafe" opacity="0.9"/>
+          <path d="M 127 295 L 157.5 270 L 188 295 Z" fill="url(#roofGrad)"/>
+          <rect x="195" y="300" width="65" height="60" fill="url(#brickGrad)"/>
+          <rect x="200" y="308" width="11" height="14" fill="#dbeafe"/>
+          <rect x="215" y="308" width="11" height="14" fill="#dbeafe"/>
+          <rect x="230" y="308" width="11" height="14" fill="#dbeafe"/>
+          <rect x="245" y="308" width="11" height="14" fill="#dbeafe"/>
+          <rect x="200" y="340" width="11" height="18" fill="#1e3a8a" opacity="0.8"/>
+          <rect x="230" y="340" width="11" height="18" fill="#1e3a8a" opacity="0.8"/>
+          <rect x="195" y="285" width="65" height="15" fill="url(#sidingGrad)"/>
+          <rect x="200" y="288" width="11" height="10" fill="#dbeafe"/>
+          <rect x="215" y="288" width="11" height="10" fill="#dbeafe"/>
+          <rect x="230" y="288" width="11" height="10" fill="#dbeafe"/>
+          <rect x="245" y="288" width="11" height="10" fill="#dbeafe"/>
+          <rect x="195" y="270" width="65" height="15" fill="url(#brickGrad)"/>
+          <rect x="215" y="273" width="11" height="9" fill="#dbeafe"/>
+          <rect x="230" y="273" width="11" height="9" fill="#dbeafe"/>
+          <path d="M 193 270 L 227.5 240 L 262 270 Z" fill="url(#roofGrad)"/>
+          <rect x="245" y="343" width="12" height="15" fill="#475569" opacity="0.7"/>
+          <line x1="245" y1="347" x2="257" y2="347" stroke="#94a3b8" stroke-width="0.5"/>
+          <line x1="245" y1="350" x2="257" y2="350" stroke="#94a3b8" stroke-width="0.5"/>
+          <line x1="245" y1="353" x2="257" y2="353" stroke="#94a3b8" stroke-width="0.5"/>
+          <rect x="270" y="305" width="58" height="55" fill="url(#sidingGrad)"/>
+          <rect x="275" y="313" width="10" height="13" fill="#dbeafe" opacity="0.9"/>
+          <rect x="289" y="313" width="10" height="13" fill="#dbeafe" opacity="0.9"/>
+          <rect x="303" y="313" width="10" height="13" fill="#dbeafe" opacity="0.9"/>
+          <rect x="317" y="313" width="10" height="13" fill="#dbeafe" opacity="0.9"/>
+          <rect x="275" y="343" width="10" height="16" fill="#1e3a8a" opacity="0.8"/>
+          <rect x="303" y="343" width="10" height="16" fill="#1e3a8a" opacity="0.8"/>
+          <rect x="270" y="290" width="58" height="15" fill="url(#brickGrad)"/>
+          <rect x="275" y="293" width="10" height="10" fill="#dbeafe" opacity="0.9"/>
+          <rect x="289" y="293" width="10" height="10" fill="#dbeafe" opacity="0.9"/>
+          <rect x="303" y="293" width="10" height="10" fill="#dbeafe" opacity="0.9"/>
+          <rect x="317" y="293" width="10" height="10" fill="#dbeafe" opacity="0.9"/>
+          <path d="M 267 290 L 299 265 L 331 290 Z" fill="url(#roofGrad)"/>
+          <rect x="335" y="312" width="45" height="48" fill="url(#brickGrad)"/>
+          <rect x="340" y="320" width="9" height="12" fill="#dbeafe" opacity="0.9"/>
+          <rect x="352" y="320" width="9" height="12" fill="#dbeafe" opacity="0.9"/>
+          <rect x="364" y="320" width="9" height="12" fill="#dbeafe" opacity="0.9"/>
+          <rect x="340" y="345" width="9" height="14" fill="#1e3a8a" opacity="0.8"/>
+          <rect x="364" y="345" width="9" height="14" fill="#1e3a8a" opacity="0.8"/>
+          <rect x="335" y="300" width="45" height="12" fill="url(#sidingGrad)"/>
+          <rect x="340" y="303" width="9" height="8" fill="#dbeafe" opacity="0.9"/>
+          <rect x="352" y="303" width="9" height="8" fill="#dbeafe" opacity="0.9"/>
+          <rect x="364" y="303" width="9" height="8" fill="#dbeafe" opacity="0.9"/>
+          <path d="M 332 300 L 357.5 278 L 383 300 Z" fill="url(#roofGrad)"/>
+          <ellipse cx="256" cy="370" rx="125" ry="15" fill="#2D5016" opacity="0.4"/>
+          <ellipse cx="125" cy="365" rx="8" ry="10" fill="#2D5016" opacity="0.6"/>
+          <ellipse cx="385" cy="368" rx="8" ry="10" fill="#2D5016" opacity="0.6"/>
+          <text x="256" y="450" font-family="Arial, sans-serif" font-size="46" font-weight="900" text-anchor="middle" fill="#ffffff" letter-spacing="10">COMET</text>
+          <text x="256" y="485" font-family="Arial, sans-serif" font-size="28" font-weight="600" text-anchor="middle" fill="#60a5fa" letter-spacing="8">BUILDERS</text>
+        </svg>
       </div>
-      <div>
-        <label>Building</label>
-        <input id="bldg" placeholder="B01 / Address">
-      </div>
-      <div>
-        <label>Unit # / Type</label>
-        <input id="unit" placeholder="101 • 2BR">
+      <div class="brand-text">
+        <h1>Comet Builders LLC</h1>
+        <div class="subtitle">Final Building Walk</div>
       </div>
     </div>
-    <div class="grid2" style="margin-top:12px">
-      <div>
-        <label>First Walk Date</label>
+    <div class="action-bar no-print">
+      <button class="btn primary" onclick="window.print()">🖨️ Print</button>
+      <button class="btn" onclick="downloadPDF()">📄 PDF</button>
+      <button class="btn" onclick="saveState()">💾 Save</button>
+      <button class="btn" onclick="loadState()">📂 Load</button>
+      <button class="btn" onclick="clearState()">🗑️ Clear</button>
+    </div>
+  </div>
+</header>
+
+<div class="container" id="content">
+  
+  <!-- Project Information -->
+  <div class="card">
+    <h2 class="card-title">Project Information</h2>
+    <div class="form-grid three-col">
+      <div class="form-group">
+        <label for="proj">Project Name</label>
+        <input id="proj" type="text" placeholder="Comet North Raleigh">
+      </div>
+      <div class="form-group">
+        <label for="bldg">Building / Address</label>
+        <input id="bldg" type="text" placeholder="B01 / 123 Main St">
+      </div>
+      <div class="form-group">
+        <label for="unit">Unit # / Type</label>
+        <input id="unit" type="text" placeholder="101 • 2BR">
+      </div>
+    </div>
+    <div class="form-grid three-col" style="margin-top: 1.25rem;">
+      <div class="form-group">
+        <label for="first">First Walk Date</label>
         <input id="first" type="date">
       </div>
-      <div>
-        <label>Acceptance Walk Date</label>
+      <div class="form-group">
+        <label for="accept">Acceptance Walk Date</label>
         <input id="accept" type="date">
       </div>
-      <div>
-        <label>Construction Rep</label>
-        <input id="rep" placeholder="Name">
+      <div class="form-group">
+        <label for="rep">Construction Representative</label>
+        <input id="rep" type="text" placeholder="Name">
       </div>
     </div>
-  </section>
+  </div>
 
+  <!-- Sections Container -->
   <div id="sections"></div>
 
-  <footer>© <span id="yy"></span> Comet Builders LLC</footer>
 </div>
 
-<!-- PDF libs -->
+<footer>
+  <p>© <span id="year"></span> Comet Builders LLC • Quality Construction & Development</p>
+</footer>
+
+<!-- PDF Libraries -->
 <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
 
 <script>
-  const KEY = 'punchlist_final_v3';
-  document.getElementById('yy').textContent = new Date().getFullYear();
+  const STORAGE_KEY = 'comet_final_walk_v4';
+  document.getElementById('year').textContent = new Date().getFullYear();
   document.getElementById('first').valueAsDate = new Date();
 
   const SECTIONS = [
-    { title:'Mechanical Function',
-      rows:['HVAC','Plumbing','Electrical','Telecommunications / Smart Panel','Wall Jacks']},
-    { title:'Appliances', rows:['Refrigerator','Range','Microwave','Dishwasher','Disposal']},
-    { title:'Front Door', rows:['General / Hardware']},
-    { title:'Kitchen', rows:['Sink & Faucet','Cabinetry','Flooring','Walls','Other']},
-    { title:'Living Room', rows:['Flooring','Walls','Other']},
-    { title:'Patio', rows:['General']},
-    { title:'Master Bedroom', rows:['Flooring','Closet / Doors','Other']},
-    { title:'Master Bathroom', rows:['Sink & Faucet','Commode','Tub / Shower','Mirror','Flooring','Walls','Other']},
-    { title:'Guest Bedroom', rows:['Flooring','Closet / Doors','Other']},
-    { title:'Guest Bathroom', rows:['Sink & Faucet','Commode','Tub / Shower','Mirror','Flooring','Walls','Other']},
-    { title:'Laundry Room', rows:['Water Heater','Flooring','Other']},
-    { title:'General', rows:[
-      'Interior Doors — Functioning Properly','Door Hardware — Functioning Properly',
-      'Shelving — Complete','Mini Blinds — Complete','Cleaning — Satisfactory','Paint Touch-ups — Satisfactory'
-    ]}
+    { 
+      title: 'Mechanical Function',
+      icon: '⚙️',
+      rows: ['HVAC', 'Plumbing', 'Electrical', 'Telecommunications / Smart Panel', 'Wall Jacks']
+    },
+    { 
+      title: 'Appliances',
+      icon: '🏠',
+      rows: ['Refrigerator', 'Range', 'Microwave', 'Dishwasher', 'Disposal']
+    },
+    { 
+      title: 'Front Door',
+      icon: '🚪',
+      rows: ['General / Hardware']
+    },
+    { 
+      title: 'Kitchen',
+      icon: '🍳',
+      rows: ['Sink & Faucet', 'Cabinetry', 'Flooring', 'Walls', 'Other']
+    },
+    { 
+      title: 'Living Room',
+      icon: '🛋️',
+      rows: ['Flooring', 'Walls', 'Other']
+    },
+    { 
+      title: 'Patio',
+      icon: '🌿',
+      rows: ['General']
+    },
+    { 
+      title: 'Master Bedroom',
+      icon: '🛏️',
+      rows: ['Flooring', 'Closet / Doors', 'Other']
+    },
+    { 
+      title: 'Master Bathroom',
+      icon: '🛁',
+      rows: ['Sink & Faucet', 'Commode', 'Tub / Shower', 'Mirror', 'Flooring', 'Walls', 'Other']
+    },
+    { 
+      title: 'Guest Bedroom',
+      icon: '🛏️',
+      rows: ['Flooring', 'Closet / Doors', 'Other']
+    },
+    { 
+      title: 'Guest Bathroom',
+      icon: '🚿',
+      rows: ['Sink & Faucet', 'Commode', 'Tub / Shower', 'Mirror', 'Flooring', 'Walls', 'Other']
+    },
+    { 
+      title: 'Laundry Room',
+      icon: '🧺',
+      rows: ['Water Heater', 'Flooring', 'Other']
+    },
+    { 
+      title: 'General',
+      icon: '✓',
+      rows: [
+        'Interior Doors — Functioning Properly',
+        'Door Hardware — Functioning Properly',
+        'Shelving — Complete',
+        'Mini Blinds — Complete',
+        'Cleaning — Satisfactory',
+        'Paint Touch-ups — Satisfactory'
+      ]
+    }
   ];
 
-  const container = document.getElementById('sections');
-  SECTIONS.forEach((sec, si)=>{
-    const shell = document.createElement('section');
-    shell.className = 'section card';
-    shell.innerHTML = `
-      <div class="head">
-        <span>${sec.title}</span>
-        <span class="swipe-hint">Swipe →</span>
-      </div>
-      <div class="rows-wrap">
-        <div class="rows">
-          <div class="th r">
-            <div>Item</div>
-            <div>Notes / Findings (wide)</div>
-            <div>Resp. Party</div>
-            <div>Completion Date</div>
-            <div>Init.</div>
-          </div>
-        </div>
+  // Build sections
+  const sectionsContainer = document.getElementById('sections');
+  SECTIONS.forEach((section, sIndex) => {
+    const sectionEl = document.createElement('div');
+    sectionEl.className = 'section';
+    
+    const headerEl = document.createElement('div');
+    headerEl.className = 'section-header';
+    headerEl.innerHTML = `
+      <span>${section.icon} ${section.title}</span>
+      <span class="swipe-hint">Swipe to scroll →</span>
+    `;
+    
+    const tableContainer = document.createElement('div');
+    tableContainer.className = 'table-container';
+    
+    const table = document.createElement('table');
+    table.className = 'data-table';
+    
+    // Table header
+    const thead = document.createElement('thead');
+    thead.innerHTML = `
+      <tr>
+        <th style="width: 200px;">Item</th>
+        <th style="min-width: 300px;">Notes / Findings</th>
+        <th style="width: 150px;">Responsible Party</th>
+        <th style="width: 140px;">Completion Date</th>
+        <th style="width: 80px;">Initials</th>
+      </tr>
+    `;
+    table.appendChild(thead);
+    
+    // Table body
+    const tbody = document.createElement('tbody');
+    section.rows.forEach((rowLabel, rIndex) => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td class="label">${rowLabel}</td>
+        <td><textarea data-key="${sIndex}-${rIndex}-notes" placeholder="Describe issue, location, and scope..."></textarea></td>
+        <td><input data-key="${sIndex}-${rIndex}-resp" type="text" placeholder="Trade / Vendor"></td>
+        <td><input data-key="${sIndex}-${rIndex}-date" type="date"></td>
+        <td><input data-key="${sIndex}-${rIndex}-init" type="text" placeholder="__" maxlength="5"></td>
+      `;
+      tbody.appendChild(tr);
+    });
+    table.appendChild(tbody);
+    
+    tableContainer.appendChild(table);
+    sectionEl.appendChild(headerEl);
+    sectionEl.appendChild(tableContainer);
+    
+    // Add stats bar
+    const statsBar = document.createElement('div');
+    statsBar.className = 'stats-bar';
+    statsBar.innerHTML = `
+      <div class="stat">
+        <span class="stat-value">${section.rows.length}</span>
+        <span>items</span>
       </div>
     `;
-    const rowsContainer = shell.querySelector('.rows');
-    sec.rows.forEach((label, ri)=>{
-      const r = document.createElement('div'); r.className = 'r';
-      r.innerHTML = `
-        <b>${label}</b>
-        <div class="cell"><textarea data-k="${si}-${ri}-notes" placeholder="Describe issue, location, scope"></textarea></div>
-        <div class="cell"><input data-k="${si}-${ri}-resp" placeholder="Trade / Vendor"></div>
-        <div class="cell"><input data-k="${si}-${ri}-date" type="date"></div>
-        <div class="cell"><input data-k="${si}-${ri}-init" placeholder="__"></div>
-      `;
-      rowsContainer.appendChild(r);
-    });
-    container.appendChild(shell);
+    sectionEl.appendChild(statsBar);
+    
+    sectionsContainer.appendChild(sectionEl);
   });
 
-  function collect(){
-    const meta = {
-      proj: v('proj'), bldg: v('bldg'), unit: v('unit'),
-      first: v('first'), accept: v('accept'), rep: v('rep')
+  // Data management functions
+  function collectData() {
+    const metadata = {
+      proj: getValue('proj'),
+      bldg: getValue('bldg'),
+      unit: getValue('unit'),
+      first: getValue('first'),
+      accept: getValue('accept'),
+      rep: getValue('rep')
     };
-    const data = {};
-    document.querySelectorAll('[data-k]').forEach(el=>data[el.dataset.k]=el.value);
-    return {meta, data};
-  }
-  function applyState(st){
-    if(!st) return;
-    setv('proj', st.meta?.proj||''); setv('bldg', st.meta?.bldg||''); setv('unit', st.meta?.unit||'');
-    setv('first', st.meta?.first||''); setv('accept', st.meta?.accept||''); setv('rep', st.meta?.rep||'');
-    Object.entries(st.data||{}).forEach(([k,val])=>{
-      const el = document.querySelector(`[data-k="${k}"]`); if(el) el.value = val;
+    
+    const formData = {};
+    document.querySelectorAll('[data-key]').forEach(el => {
+      formData[el.dataset.key] = el.value;
     });
+    
+    return { metadata, formData, timestamp: new Date().toISOString() };
   }
-  const v=id=>document.getElementById(id).value;
-  const setv=(id,val)=>document.getElementById(id).value=val;
 
-  function saveState(){ localStorage.setItem(KEY, JSON.stringify(collect())); alert('Saved!'); }
-  function loadState(){
-    const raw = localStorage.getItem(KEY);
-    if(!raw){ alert('Nothing saved yet.'); return; }
-    applyState(JSON.parse(raw));
+  function applyData(data) {
+    if (!data) return;
+    
+    // Apply metadata
+    if (data.metadata) {
+      setValue('proj', data.metadata.proj || '');
+      setValue('bldg', data.metadata.bldg || '');
+      setValue('unit', data.metadata.unit || '');
+      setValue('first', data.metadata.first || '');
+      setValue('accept', data.metadata.accept || '');
+      setValue('rep', data.metadata.rep || '');
+    }
+    
+    // Apply form data
+    if (data.formData) {
+      Object.entries(data.formData).forEach(([key, value]) => {
+        const el = document.querySelector(`[data-key="${key}"]`);
+        if (el) el.value = value;
+      });
+    }
   }
-  function clearState(){
-    if(!confirm('Clear this form?')) return;
-    localStorage.removeItem(KEY);
+
+  function getValue(id) {
+    return document.getElementById(id).value;
+  }
+
+  function setValue(id, value) {
+    document.getElementById(id).value = value;
+  }
+
+  // User actions
+  function saveState() {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(collectData()));
+    showSaveIndicator();
+    alert('✓ Form saved successfully!');
+  }
+
+  function loadState() {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (!saved) {
+      alert('No saved data found.');
+      return;
+    }
+    applyData(JSON.parse(saved));
+    showSaveIndicator();
+  }
+
+  function clearState() {
+    if (!confirm('Are you sure you want to clear all form data? This cannot be undone.')) {
+      return;
+    }
+    localStorage.removeItem(STORAGE_KEY);
     location.reload();
   }
 
-  // auto-save
-  setInterval(()=>localStorage.setItem(KEY, JSON.stringify(collect())), 1000);
-  applyState(JSON.parse(localStorage.getItem(KEY) || 'null'));
+  function showSaveIndicator() {
+    const indicator = document.getElementById('saveIndicator');
+    indicator.classList.add('show');
+    setTimeout(() => indicator.classList.remove('show'), 2000);
+  }
+
+  // Auto-save every 3 seconds
+  let autoSaveTimer;
+  function scheduleAutoSave() {
+    clearTimeout(autoSaveTimer);
+    autoSaveTimer = setTimeout(() => {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(collectData()));
+      showSaveIndicator();
+    }, 3000);
+  }
+
+  // Listen for changes
+  document.addEventListener('input', scheduleAutoSave);
+
+  // Load saved data on page load
+  window.addEventListener('load', () => {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) {
+      applyData(JSON.parse(saved));
+    }
+  });
 
   // Prevent double-tap zoom on iOS
   let lastTouchEnd = 0;
-  document.addEventListener('touchend', function(event) {
+  document.addEventListener('touchend', (e) => {
     const now = Date.now();
     if (now - lastTouchEnd <= 300) {
-      event.preventDefault();
+      e.preventDefault();
     }
     lastTouchEnd = now;
   }, false);
 
-  /* PDF EXPORT */
-  async function downloadPDF(){
+  // PDF Export
+  async function downloadPDF() {
     document.body.classList.add('exporting');
-    await new Promise(r=>setTimeout(r, 50));
+    await new Promise(resolve => setTimeout(resolve, 100));
 
     const { jsPDF } = window.jspdf;
-    const doc = new jsPDF({orientation:'p', unit:'pt', format:'letter'});
-    const el = document.getElementById('content');
+    const doc = new jsPDF({ orientation: 'portrait', unit: 'pt', format: 'letter' });
+    const content = document.getElementById('content');
 
-    const canvas = await html2canvas(el, {scale:2, useCORS:true, windowWidth: el.scrollWidth});
-    const img = canvas.toDataURL('image/png');
+    try {
+      const canvas = await html2canvas(content, {
+        scale: 2,
+        useCORS: true,
+        windowWidth: content.scrollWidth,
+        logging: false
+      });
 
-    const pdfW = doc.internal.pageSize.getWidth();
-    const pdfH = doc.internal.pageSize.getHeight();
-    const imgW = pdfW;
-    const imgH = canvas.height * (imgW / canvas.width);
+      const imgData = canvas.toDataURL('image/png');
+      const pdfWidth = doc.internal.pageSize.getWidth();
+      const pdfHeight = doc.internal.pageSize.getHeight();
+      const imgWidth = pdfWidth;
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
 
-    let heightLeft = imgH;
-    let position = 0;
+      let heightLeft = imgHeight;
+      let position = 0;
 
-    doc.addImage(img, 'PNG', 0, position, imgW, imgH);
-    heightLeft -= pdfH;
+      doc.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+      heightLeft -= pdfHeight;
 
-    while (heightLeft > 0) {
-      position = -(imgH - heightLeft);
-      doc.addPage();
-      doc.addImage(img, 'PNG', 0, position, imgW, imgH);
-      heightLeft -= pdfH;
+      while (heightLeft > 0) {
+        position = heightLeft - imgHeight;
+        doc.addPage();
+        doc.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+        heightLeft -= pdfHeight;
+      }
+
+      const date = getValue('accept') || getValue('first') || new Date().toISOString().slice(0, 10);
+      const proj = (getValue('proj') || 'Project').replace(/[^\w-]+/g, '_');
+      const bldg = (getValue('bldg') || 'Building').replace(/[^\w-]+/g, '_');
+      const unit = (getValue('unit') || 'Unit').replace(/[^\w-]+/g, '_');
+      
+      doc.save(`Comet-Final-Walk_${proj}_${bldg}_${unit}_${date}.pdf`);
+    } catch (error) {
+      console.error('PDF generation failed:', error);
+      alert('Failed to generate PDF. Please try using Print instead.');
+    } finally {
+      document.body.classList.remove('exporting');
     }
-
-    const date = (v('accept') || v('first') || new Date().toISOString().slice(0,10));
-    const proj = (v('proj') || 'Project').replace(/[^\w-]+/g,'_');
-    const bldg = (v('bldg') || 'Bldg').replace(/[^\w-]+/g,'_');
-    const unit = (v('unit') || 'Unit').replace(/[^\w-]+/g,'_');
-    doc.save(`Final-Building-Walk—${proj}—${bldg}—${unit}—${date}.pdf`);
-
-    document.body.classList.remove('exporting');
   }
 </script>
+
 </body>
 </html>
