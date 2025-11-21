@@ -2,215 +2,753 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Comet Hub">
+  <meta name="theme-color" content="#2563eb">
   <title>Comet — Site Reports Hub</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
   <style>
     :root{
       --white:#ffffff;
       --blue:#2563eb;
       --blue-light:#3b82f6;
+      --blue-dark:#1e40af;
       --gray:#6b7280;
+      --gray-dark:#374151;
       --border:#e5e7eb;
       --shadow:rgba(0,0,0,.08);
+      --shadow-lg:rgba(0,0,0,.12);
       --bg:#f8fafc;
+      --card-hover:#fafbfc;
     }
-    *{box-sizing:border-box}
-    html,body{margin:0;padding:0;background:var(--bg);color:#0b1220;font-family:'Inter',system-ui,Segoe UI,Roboto,Arial,sans-serif;}
-    .container{max-width:1100px;margin:0 auto;padding:32px}
-    header{display:flex;align-items:center;justify-content:space-between;padding:20px 0;border-bottom:1px solid var(--border);}
-    .brandmark{display:flex;align-items:center;gap:12px;}
-    .brandmark svg{width:30px;height:30px}
-    .brand{font-weight:800;letter-spacing:.3px;font-size:1.9rem;color:var(--blue);}
-    .sub{color:var(--gray);font-weight:600;font-size:1.1rem;}
-    .pill{display:inline-block;padding:6px 10px;border-radius:999px;font-size:.8rem;border:1px solid var(--blue);background:rgba(37,99,235,0.05);color:var(--blue);font-weight:600;}
-    .grid{display:grid;gap:24px;margin-top:36px;}
-    @media(min-width:800px){.grid{grid-template-columns:repeat(2,minmax(0,1fr));}}
+    
+    *{
+      box-sizing:border-box;
+      margin:0;
+      padding:0;
+    }
+    
+    html,body{
+      background:var(--bg);
+      color:#0b1220;
+      font-family:'Inter',-apple-system,BlinkMacSystemFont,system-ui,'Segoe UI',Roboto,Arial,sans-serif;
+      line-height:1.6;
+      -webkit-tap-highlight-color:transparent;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+    }
+    
+    body{
+      padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+    }
+    
+    .container{
+      max-width:1200px;
+      margin:0 auto;
+      padding:40px 32px;
+    }
+    
+    /* Header Styles */
+    header{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding:24px 0 32px;
+      border-bottom:2px solid var(--border);
+      margin-bottom:40px;
+    }
+    
+    .brandmark{
+      display:flex;
+      align-items:center;
+      gap:14px;
+    }
+    
+    .brandmark svg{
+      width:42px;
+      height:42px;
+      filter:drop-shadow(0 2px 4px rgba(37,99,235,0.2));
+    }
+    
+    .brand-text{
+      display:flex;
+      flex-direction:column;
+      gap:2px;
+    }
+    
+    .brand{
+      font-weight:800;
+      letter-spacing:-0.02em;
+      font-size:1.85rem;
+      background:linear-gradient(135deg,var(--blue),var(--blue-light));
+      -webkit-background-clip:text;
+      -webkit-text-fill-color:transparent;
+      background-clip:text;
+      line-height:1.1;
+    }
+    
+    .sub{
+      color:var(--gray);
+      font-weight:600;
+      font-size:0.95rem;
+      letter-spacing:0.01em;
+    }
+    
+    .header-badge{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      padding:8px 14px;
+      border-radius:999px;
+      font-size:0.8rem;
+      border:1px solid var(--blue);
+      background:linear-gradient(135deg,rgba(37,99,235,0.08),rgba(59,130,246,0.05));
+      color:var(--blue);
+      font-weight:700;
+      box-shadow:0 2px 8px rgba(37,99,235,0.1);
+      letter-spacing:0.02em;
+      text-transform:uppercase;
+    }
+    
+    .header-badge::before{
+      content:'';
+      width:6px;
+      height:6px;
+      border-radius:50%;
+      background:var(--blue);
+      animation:pulse 2s infinite;
+    }
+    
+    @keyframes pulse{
+      0%,100%{opacity:1;transform:scale(1)}
+      50%{opacity:0.6;transform:scale(0.9)}
+    }
+    
+    /* Stats Bar */
+    .stats-bar{
+      display:flex;
+      gap:20px;
+      padding:20px 0;
+      margin-bottom:20px;
+      border-bottom:1px solid var(--border);
+      flex-wrap:wrap;
+    }
+    
+    .stat-item{
+      display:flex;
+      flex-direction:column;
+      gap:4px;
+    }
+    
+    .stat-value{
+      font-size:1.5rem;
+      font-weight:800;
+      color:var(--blue);
+    }
+    
+    .stat-label{
+      font-size:0.8rem;
+      color:var(--gray);
+      font-weight:600;
+      text-transform:uppercase;
+      letter-spacing:0.05em;
+    }
+    
+    /* Grid Layout */
+    .grid{
+      display:grid;
+      gap:24px;
+      margin-top:0;
+    }
+    
+    @media(min-width:800px){
+      .grid{
+        grid-template-columns:repeat(2,minmax(0,1fr));
+      }
+    }
+    
+    /* Card Styles - Enhanced */
     .card{
       border:1px solid var(--border);
       background:var(--white);
-      border-radius:18px;
-      padding:24px;
+      border-radius:20px;
+      padding:28px;
       display:flex;
       flex-direction:column;
       gap:16px;
-      min-height:220px;
-      box-shadow:0 8px 24px var(--shadow);
-      transition:transform .2s ease, box-shadow .2s ease;
+      min-height:240px;
+      box-shadow:0 4px 12px var(--shadow),0 2px 4px rgba(0,0,0,0.04);
+      transition:all 0.3s cubic-bezier(0.4,0,0.2,1);
+      position:relative;
+      overflow:hidden;
     }
-    .card:hover{transform:translateY(-3px);box-shadow:0 12px 28px rgba(0,0,0,.12);}
-    .card h2{margin:0;font-size:1.35rem;color:#111827;}
-    .muted{color:var(--gray);margin:0;}
-    .actions{margin-top:auto;display:flex;gap:10px;flex-wrap:wrap;}
+    
+    .card::before{
+      content:'';
+      position:absolute;
+      top:0;
+      left:0;
+      right:0;
+      height:3px;
+      background:linear-gradient(90deg,var(--blue),var(--blue-light));
+      opacity:0;
+      transition:opacity 0.3s ease;
+    }
+    
+    .card:hover{
+      transform:translateY(-4px);
+      box-shadow:0 12px 32px var(--shadow-lg),0 4px 8px rgba(0,0,0,0.06);
+      border-color:var(--blue-light);
+    }
+    
+    .card:hover::before{
+      opacity:1;
+    }
+    
+    .card-badge{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      padding:6px 12px;
+      border-radius:999px;
+      font-size:0.75rem;
+      border:1px solid var(--blue);
+      background:rgba(37,99,235,0.06);
+      color:var(--blue);
+      font-weight:700;
+      align-self:flex-start;
+      letter-spacing:0.03em;
+      text-transform:uppercase;
+    }
+    
+    .card-badge::before{
+      content:'';
+      width:5px;
+      height:5px;
+      border-radius:50%;
+      background:currentColor;
+    }
+    
+    .card h2{
+      margin:0;
+      font-size:1.4rem;
+      color:#111827;
+      font-weight:800;
+      line-height:1.3;
+      letter-spacing:-0.01em;
+    }
+    
+    .card-description{
+      color:var(--gray-dark);
+      margin:0;
+      font-size:0.95rem;
+      line-height:1.6;
+      flex-grow:1;
+    }
+    
+    /* Action Buttons */
+    .actions{
+      margin-top:auto;
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      padding-top:8px;
+    }
+    
     .btn{
       appearance:none;
       border:1px solid transparent;
-      background:var(--blue);
+      background:linear-gradient(135deg,var(--blue),var(--blue-light));
       color:var(--white);
-      padding:10px 16px;
-      border-radius:10px;
+      padding:12px 20px;
+      border-radius:12px;
       text-decoration:none;
       font-weight:700;
-      display:inline-block;
-      transition:background .2s ease, transform .2s ease;
+      font-size:0.95rem;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:6px;
+      transition:all 0.2s ease;
       cursor:pointer;
+      box-shadow:0 2px 8px rgba(37,99,235,0.2);
+      min-height:44px;
+      user-select:none;
+      -webkit-user-select:none;
     }
-    .btn:hover{background:var(--blue-light);transform:translateY(-1px);}
-    .btn.ghost{background:transparent;border-color:var(--blue);color:var(--blue);}
-    .btn.ghost:hover{background:rgba(37,99,235,0.08);}
-    footer{margin-top:40px;color:var(--gray);text-align:center;padding:16px 0;border-top:1px solid var(--border);}
+    
+    .btn:hover{
+      background:linear-gradient(135deg,var(--blue-light),var(--blue));
+      transform:translateY(-2px);
+      box-shadow:0 4px 12px rgba(37,99,235,0.3);
+    }
+    
+    .btn:active{
+      transform:translateY(0) scale(0.98);
+      box-shadow:0 2px 4px rgba(37,99,235,0.2);
+    }
+    
+    .btn.ghost{
+      background:transparent;
+      border:1px solid var(--blue);
+      color:var(--blue);
+      box-shadow:none;
+    }
+    
+    .btn.ghost:hover{
+      background:rgba(37,99,235,0.08);
+      border-color:var(--blue-light);
+      box-shadow:0 2px 8px rgba(37,99,235,0.15);
+    }
+    
+    .btn.secondary{
+      background:var(--white);
+      border:1px solid var(--border);
+      color:var(--gray-dark);
+      box-shadow:0 1px 3px rgba(0,0,0,0.08);
+    }
+    
+    .btn.secondary:hover{
+      background:var(--card-hover);
+      border-color:var(--gray);
+      box-shadow:0 2px 6px rgba(0,0,0,0.12);
+    }
+    
+    /* Icon styling in buttons */
+    .btn-icon{
+      font-size:1.1em;
+    }
+    
+    /* Footer */
+    footer{
+      margin-top:60px;
+      color:var(--gray);
+      text-align:center;
+      padding:24px 0;
+      border-top:1px solid var(--border);
+      font-size:0.9rem;
+    }
+    
+    footer a{
+      color:var(--blue);
+      text-decoration:none;
+      font-weight:600;
+      transition:color 0.2s ease;
+    }
+    
+    footer a:hover{
+      color:var(--blue-light);
+    }
+    
+    /* Offline Indicator */
+    .offline-banner{
+      display:none;
+      position:fixed;
+      bottom:0;
+      left:0;
+      right:0;
+      background:linear-gradient(135deg,#f59e0b,#d97706);
+      color:#fff;
+      padding:12px;
+      text-align:center;
+      font-weight:700;
+      z-index:1000;
+      font-size:0.9rem;
+      box-shadow:0 -2px 10px rgba(0,0,0,0.1);
+    }
+    
+    .offline-banner.active{
+      display:block;
+      animation:slideUpBanner 0.3s ease;
+    }
+    
+    @keyframes slideUpBanner{
+      from{transform:translateY(100%)}
+      to{transform:translateY(0)}
+    }
 
-    /* Mobile-specific styles for app-like experience */
+    /* Mobile Optimizations */
     @media(max-width:799px){
-      .container{padding:16px;}
+      .container{
+        padding:20px 16px;
+      }
       
       header{
         flex-direction:column;
         align-items:flex-start;
-        gap:12px;
-        padding:16px 0;
+        gap:16px;
+        padding:20px 0 24px;
+        margin-bottom:28px;
       }
       
-      .brandmark{gap:10px;}
-      .brandmark svg{width:24px;height:24px;}
-      .brand{font-size:1.5rem;}
-      .sub{font-size:.95rem;}
+      .brandmark{
+        gap:12px;
+      }
       
-      .pill{font-size:.75rem;padding:4px 8px;}
+      .brandmark svg{
+        width:36px;
+        height:36px;
+      }
       
-      .grid{gap:16px;margin-top:24px;}
+      .brand{
+        font-size:1.5rem;
+      }
+      
+      .sub{
+        font-size:0.85rem;
+      }
+      
+      .header-badge{
+        font-size:0.7rem;
+        padding:6px 12px;
+      }
+      
+      .stats-bar{
+        gap:16px;
+        padding:16px 0;
+        margin-bottom:16px;
+      }
+      
+      .stat-value{
+        font-size:1.3rem;
+      }
+      
+      .stat-label{
+        font-size:0.75rem;
+      }
+      
+      .grid{
+        gap:20px;
+      }
       
       .card{
-        padding:20px;
-        border-radius:16px;
+        padding:24px;
+        border-radius:18px;
         min-height:auto;
-        box-shadow:0 4px 12px var(--shadow);
-        gap:12px;
+        box-shadow:0 2px 8px var(--shadow),0 1px 3px rgba(0,0,0,0.04);
+        gap:14px;
       }
       
       .card:active{
         transform:scale(0.98);
-        box-shadow:0 2px 8px var(--shadow);
       }
       
-      .card h2{font-size:1.2rem;}
+      .card-badge{
+        font-size:0.7rem;
+        padding:5px 10px;
+      }
       
-      .muted{font-size:.9rem;}
+      .card h2{
+        font-size:1.25rem;
+      }
       
-      .actions{gap:8px;}
+      .card-description{
+        font-size:0.9rem;
+      }
+      
+      .actions{
+        gap:10px;
+        flex-direction:column;
+      }
       
       .btn{
-        flex:1;
+        width:100%;
         text-align:center;
-        padding:12px 16px;
-        font-size:.95rem;
+        padding:14px 20px;
+        font-size:0.95rem;
         border-radius:12px;
-        min-height:44px;
-        display:flex;
-        align-items:center;
-        justify-content:center;
+        min-height:48px;
       }
       
-      footer{margin-top:32px;font-size:.85rem;}
+      footer{
+        margin-top:48px;
+        font-size:0.85rem;
+        padding:20px 0;
+      }
     }
 
     /* Extra small phones */
     @media(max-width:400px){
-      .brand{font-size:1.3rem;}
-      .sub{font-size:.85rem;}
-      .card h2{font-size:1.1rem;}
-      .muted{font-size:.85rem;}
+      .container{
+        padding:16px 12px;
+      }
+      
+      .brand{
+        font-size:1.35rem;
+      }
+      
+      .sub{
+        font-size:0.8rem;
+      }
+      
+      .card{
+        padding:20px;
+      }
+      
+      .card h2{
+        font-size:1.15rem;
+      }
+      
+      .card-description{
+        font-size:0.85rem;
+      }
+      
+      .btn{
+        font-size:0.9rem;
+        padding:12px 16px;
+      }
+    }
+    
+    /* Tablet landscape */
+    @media(min-width:800px) and (max-width:1024px){
+      .container{
+        padding:32px 24px;
+      }
+    }
+    
+    /* Large screens */
+    @media(min-width:1400px){
+      .container{
+        max-width:1400px;
+      }
+      
+      .grid{
+        grid-template-columns:repeat(3,minmax(0,1fr));
+      }
+    }
+    
+    /* Print styles */
+    @media print{
+      body{
+        background:white;
+      }
+      
+      .header-badge,.offline-banner{
+        display:none;
+      }
+      
+      .card{
+        break-inside:avoid;
+        box-shadow:none;
+        border:1px solid #ddd;
+      }
+    }
+    
+    /* Dark mode support (optional) */
+    @media (prefers-color-scheme: dark){
+      /* Uncomment if you want dark mode support
+      :root{
+        --bg:#0f172a;
+        --white:#1e293b;
+        --border:#334155;
+        --gray:#94a3b8;
+        --gray-dark:#cbd5e1;
+      }
+      */
+    }
+    
+    /* Smooth scrolling */
+    html{
+      scroll-behavior:smooth;
+    }
+    
+    /* Focus styles for accessibility */
+    .btn:focus-visible{
+      outline:3px solid var(--blue);
+      outline-offset:2px;
+    }
+    
+    /* Reduced motion support */
+    @media (prefers-reduced-motion: reduce){
+      *,*::before,*::after{
+        animation-duration:0.01ms !important;
+        animation-iteration-count:1 !important;
+        transition-duration:0.01ms !important;
+      }
     }
   </style>
 </head>
 <body>
+  <!-- Offline Indicator -->
+  <div class="offline-banner" id="offlineBanner">
+    📡 You're offline. Some features may be limited.
+  </div>
+
   <div class="container">
     <header>
       <div class="brandmark">
-        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-          <path d="M12 2l2.6 5.3L20 8l-4 3.9.9 5.6L12 15.8 7.1 17.5 8 11.9 4 8l5.4-.7L12 2z" fill="#2563eb" opacity=".9"/>
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="Comet Builders Logo">
+          <path d="M12 2l2.6 5.3L20 8l-4 3.9.9 5.6L12 15.8 7.1 17.5 8 11.9 4 8l5.4-.7L12 2z" fill="url(#gradient)" opacity="1"/>
+          <defs>
+            <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" style="stop-color:#2563eb;stop-opacity:1" />
+              <stop offset="100%" style="stop-color:#3b82f6;stop-opacity:1" />
+            </linearGradient>
+          </defs>
         </svg>
-        <div>
+        <div class="brand-text">
           <div class="brand">Comet Builders LLC</div>
           <div class="sub">Field Reporting Hub</div>
         </div>
       </div>
-      <span class="pill">Quick access to reporting tools</span>
+      <span class="header-badge">Active Tools</span>
     </header>
+
+    <!-- Quick Stats -->
+    <div class="stats-bar">
+      <div class="stat-item">
+        <div class="stat-value">6</div>
+        <div class="stat-label">Tools Available</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-value">24/7</div>
+        <div class="stat-label">Access</div>
+      </div>
+    </div>
 
     <section class="grid">
       <!-- Daily Reports -->
       <article class="card">
-        <span class="pill">Daily Reports</span>
+        <span class="card-badge">Daily Reports</span>
         <h2>Daily Report Portal</h2>
-        <p class="muted">Create and manage your daily field reports. Keep that paper trail tighter than your cable management.</p>
+        <p class="card-description">Create and manage comprehensive daily field reports. Track labor, deliveries, inspections, and site conditions with auto-save functionality.</p>
         <div class="actions">
-          <a href="daily.html" class="btn">Open Daily Reports</a>
+          <a href="daily.html" class="btn">
+            <span class="btn-icon">📋</span>
+            Open Daily Reports
+          </a>
         </div>
       </article>
 
       <!-- DEMLR -->
       <article class="card">
-        <span class="pill">DEMLR Monitoring</span>
-        <h2>DEMLR Weather Tracking & Inspection</h2>
-        <p class="muted">Fill out the DEMLR monitoring form in-browser and export to PDF. Clean white layout, built for inspectors.</p>
+        <span class="card-badge">DEMLR Monitoring</span>
+        <h2>DEMLR Weather Tracking</h2>
+        <p class="card-description">Complete DEMLR monitoring forms in-browser and export to PDF. Professional white layout designed for inspectors and compliance.</p>
         <div class="actions">
-          <a href="demlr.html" class="btn">Open DEMLR Page</a>
-          <a href="DEMLR-Monitoring-Form-Rev-07012020.pdf" class="btn ghost" download>Download Official PDF</a>
+          <a href="demlr.html" class="btn">
+            <span class="btn-icon">🌤️</span>
+            Open DEMLR Form
+          </a>
+          <a href="DEMLR-Monitoring-Form-Rev-07012020.pdf" class="btn ghost" download>
+            <span class="btn-icon">📄</span>
+            Download PDF Template
+          </a>
         </div>
       </article>
 
       <!-- Receipts -->
       <article class="card">
-        <span class="pill">Receipts</span>
+        <span class="card-badge">Receipts</span>
         <h2>Receipt Upload Portal</h2>
-        <p class="muted">Quickly snap and upload purchase receipts directly to accounting. Auto-emails accts@cometdev.com with photo attachment.</p>
+        <p class="card-description">Quickly capture and upload purchase receipts directly to accounting. Automatic email delivery to accts@cometdev.com with photo attachments.</p>
         <div class="actions">
-          <a href="receipts.html" class="btn">Open Receipts Page</a>
+          <a href="receipts.html" class="btn">
+            <span class="btn-icon">📸</span>
+            Open Receipts Portal
+          </a>
         </div>
       </article>
 
       <!-- 811 -->
       <article class="card">
-        <span class="pill">811 Locate Updates</span>
+        <span class="card-badge">811 Locates</span>
         <h2>Update or Check Locates</h2>
-        <p class="muted">Access the official 811 site to submit new locate requests or check existing tickets before digging.</p>
+        <p class="card-description">Access the official North Carolina 811 portal to submit new locate requests or check existing tickets before any excavation work.</p>
         <div class="actions">
-          <a href="https://nc811.org/" target="_blank" class="btn">Open 811 Portal</a>
+          <a href="https://nc811.org/" target="_blank" rel="noopener noreferrer" class="btn">
+            <span class="btn-icon">🚧</span>
+            Open 811 Portal
+          </a>
         </div>
       </article>
 
       <!-- Punchlist Template -->
       <article class="card">
-        <span class="pill">Punchlist</span>
+        <span class="card-badge">Punchlist</span>
         <h2>Initial Punchlist Template</h2>
-        <p class="muted">Create, assign, and track punchlist items per building and trade. Export completed lists to PDF for closeout packages.</p>
+        <p class="card-description">Create, assign, and track punchlist items by building and trade. Export completed lists to PDF for closeout packages and owner turnover.</p>
         <div class="actions">
-          <a href="punchlist.html" class="btn">Open Punchlist</a>
+          <a href="punchlist.html" class="btn">
+            <span class="btn-icon">✓</span>
+            Open Punchlist
+          </a>
         </div>
       </article>
 
       <!-- Final Building Walk -->
       <article class="card">
-        <span class="pill">Punchlist</span>
+        <span class="card-badge">Final Walk</span>
         <h2>Final Building Walk</h2>
-        <p class="muted">Room-by-room closeout inspection form with wide notes, responsible party, and initials columns.</p>
+        <p class="card-description">Comprehensive room-by-room closeout inspection form with detailed notes, responsible party tracking, and signature capture for final acceptance.</p>
         <div class="actions">
-          <a href="building-walk.html" class="btn">Open Final Walk</a>
+          <a href="building-walk.html" class="btn">
+            <span class="btn-icon">🏗️</span>
+            Open Final Walk
+          </a>
         </div>
       </article>
     </section>
 
     <footer>
-      © <span id="year"></span> Comet Builders LLC 
+      <p>© <span id="year"></span> Comet Builders LLC. All rights reserved.</p>
+      <p style="margin-top:8px;font-size:0.85em">Need help? Contact your site supervisor or <a href="mailto:support@cometbuilders.com">support@cometbuilders.com</a></p>
     </footer>
   </div>
 
   <script>
+    // Set current year
     document.getElementById('year').textContent = new Date().getFullYear();
+    
+    // Offline/Online detection
+    function updateOnlineStatus(){
+      const banner = document.getElementById('offlineBanner');
+      if(banner){
+        if(navigator.onLine){
+          banner.classList.remove('active');
+        } else {
+          banner.classList.add('active');
+        }
+      }
+    }
+    
+    window.addEventListener('online', updateOnlineStatus);
+    window.addEventListener('offline', updateOnlineStatus);
+    
+    // Check initial status
+    updateOnlineStatus();
+    
+    // Prevent double-tap zoom on iOS
+    let lastTouchEnd = 0;
+    document.addEventListener('touchend', function(event) {
+      const now = Date.now();
+      if (now - lastTouchEnd <= 300) {
+        event.preventDefault();
+      }
+      lastTouchEnd = now;
+    }, false);
+    
+    // Add smooth scroll behavior for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if(target){
+          target.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+          });
+        }
+      });
+    });
+    
+    // Log app version for debugging
+    console.log('Comet Site Reports Hub v2.0 - Upgraded Edition');
+    console.log('Build Date: November 21, 2025');
   </script>
 </body>
 </html>
-
