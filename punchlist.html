@@ -9,6 +9,8 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Punchlist">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#2563eb">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -18,7 +20,7 @@
     --white:#fff; --bg:#f8fafc; --ink:#0b1220;
     --blue:#2563eb; --blue2:#3b82f6; --muted:#6b7280;
     --card:#ffffff; --border:#e5e7eb; --shadow:rgba(0,0,0,.07);
-    --yellow:#fff7ae;
+    --yellow:#fff7ae; --green:#10b981; --orange:#f59e0b; --red:#ef4444;
   }
   *{box-sizing:border-box}
   html{
@@ -64,7 +66,7 @@
     border:1px solid transparent;
     background:var(--blue);
     color:#fff;
-    padding:10px 14px;
+    padding:12px 16px;
     border-radius:10px;
     font-weight:700;
     text-decoration:none;
@@ -73,15 +75,22 @@
     touch-action:manipulation;
     user-select:none;
     -webkit-user-select:none;
+    min-height:48px;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    transition:all 0.15s ease;
   }
   .btn:hover{background:var(--blue2)}
   .btn:active{transform:scale(0.96)}
   .ghost{background:transparent;border-color:var(--blue);color:var(--blue)}
   .danger{background:#ef4444;border-color:#ef4444}
   .ghost:hover{background:rgba(37,99,235,.08)}
+  .btn-small{padding:8px 12px;font-size:13px;min-height:36px}
+  
   .grid{display:grid;gap:16px}
   .card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:18px;box-shadow:0 8px 22px var(--shadow)}
-  label{font-weight:600;font-size:.95rem;color:#111827}
+  label{font-weight:600;font-size:.95rem;color:#111827;display:block;margin-bottom:6px}
   input, textarea, select{
     width:100%;
     padding:12px 12px;
@@ -91,14 +100,57 @@
     background:#fff;
     -webkit-appearance:none;
     appearance:none;
+    transition:border-color 0.2s;
   }
-  textarea{min-height:90px;resize:vertical}
+  input:focus, textarea:focus, select:focus{
+    outline:none;
+    border-color:var(--blue);
+  }
+  textarea{
+    min-height:90px;
+    resize:vertical;
+    font-family:inherit;
+  }
 
   .two{display:grid;gap:14px}
   @media(min-width:800px){.two{grid-template-columns:1fr 1fr}}
   .three{display:grid;gap:14px}
   @media(min-width:900px){.three{grid-template-columns:1.1fr 1fr 1fr}}
 
+  /* Status Badge */
+  .status-badge{
+    display:inline-block;
+    padding:4px 10px;
+    border-radius:6px;
+    font-size:12px;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:0.5px;
+  }
+  .status-pending{background:#fef3c7;color:#92400e}
+  .status-inprogress{background:#dbeafe;color:#1e40af}
+  .status-complete{background:#d1fae5;color:#065f46}
+
+  /* Progress Bar */
+  .progress-wrap{
+    background:var(--border);
+    height:8px;
+    border-radius:10px;
+    overflow:hidden;
+    margin:12px 0;
+  }
+  .progress-bar{
+    height:100%;
+    background:var(--green);
+    transition:width 0.3s ease;
+  }
+  .progress-text{
+    font-size:13px;
+    color:var(--muted);
+    margin-top:6px;
+  }
+
+  /* Table Styles */
   .table-wrap{
     overflow:auto;
     border-radius:14px;
@@ -107,11 +159,21 @@
     -webkit-overflow-scrolling:touch;
   }
   table{width:100%;border-collapse:separate;border-spacing:0;min-width:720px}
-  thead th{position:sticky;top:0;background:#f1f5f9;border-bottom:1px solid var(--border);padding:10px 8px;text-align:left;font-size:.9rem}
+  thead th{
+    position:sticky;
+    top:0;
+    background:#f1f5f9;
+    border-bottom:1px solid var(--border);
+    padding:12px 8px;
+    text-align:left;
+    font-size:.9rem;
+    z-index:5;
+  }
   tbody td{border-top:1px solid var(--border);padding:0}
   tbody tr:first-child td{border-top:none}
+  
   .rownum{
-    width:70px;
+    min-width:80px;
     text-align:center;
     color:#475569;
     font-weight:700;
@@ -119,12 +181,123 @@
     border-right:1px solid var(--border);
     cursor:pointer;
     -webkit-tap-highlight-color:transparent;
+    padding:12px 8px;
+    user-select:none;
   }
-  .rownum small{display:block;font-weight:600;color:#64748b;font-size:10px}
-  .cell input,.cell textarea{border:none;border-radius:0;width:100%;padding:12px 10px;font-size:16px}
-  .cell textarea{min-height:48px}
-  .hl{background:var(--yellow)}
-  .tbar{display:flex;gap:10px;justify-content:flex-end;margin:10px 0}
+  .rownum small{display:block;font-weight:600;color:#64748b;font-size:10px;margin-top:4px}
+  
+  .cell input,.cell textarea,.cell select{
+    border:none;
+    border-radius:0;
+    width:100%;
+    padding:12px 10px;
+    font-size:16px;
+    font-family:inherit;
+  }
+  .cell textarea{
+    min-height:48px;
+    overflow:hidden;
+  }
+  
+  .hl{background:var(--yellow) !important}
+  .hl .rownum{background:#fef08a !important}
+  
+  .tbar{display:flex;gap:10px;justify-content:flex-end;margin:10px 0;flex-wrap:wrap}
+
+  /* Action Buttons in Row */
+  .row-actions{
+    display:flex;
+    gap:6px;
+    padding:8px;
+    align-items:center;
+  }
+  .icon-btn{
+    appearance:none;
+    border:none;
+    background:transparent;
+    cursor:pointer;
+    padding:8px;
+    border-radius:8px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    transition:background 0.15s;
+    -webkit-tap-highlight-color:transparent;
+    min-width:40px;
+    min-height:40px;
+  }
+  .icon-btn:hover{background:rgba(0,0,0,0.05)}
+  .icon-btn:active{transform:scale(0.95)}
+  .icon-btn svg{width:20px;height:20px}
+
+  /* Image Preview */
+  .img-preview{
+    display:flex;
+    gap:8px;
+    padding:8px;
+    flex-wrap:wrap;
+  }
+  .img-thumb{
+    width:60px;
+    height:60px;
+    object-fit:cover;
+    border-radius:6px;
+    border:1px solid var(--border);
+    cursor:pointer;
+  }
+  .img-thumb:hover{opacity:0.8}
+
+  /* Modal */
+  .modal{
+    display:none;
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,0.85);
+    z-index:1000;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+  }
+  .modal.active{display:flex}
+  .modal img{
+    max-width:100%;
+    max-height:90vh;
+    object-fit:contain;
+    border-radius:8px;
+  }
+  .modal-close{
+    position:absolute;
+    top:20px;
+    right:20px;
+    background:#fff;
+    border:none;
+    width:44px;
+    height:44px;
+    border-radius:50%;
+    cursor:pointer;
+    font-size:24px;
+    line-height:1;
+    -webkit-tap-highlight-color:transparent;
+  }
+
+  /* Offline Indicator */
+  .offline-banner{
+    display:none;
+    position:fixed;
+    bottom:0;
+    left:0;
+    right:0;
+    background:var(--orange);
+    color:#fff;
+    padding:12px;
+    text-align:center;
+    font-weight:700;
+    z-index:100;
+  }
+  .offline-banner.active{display:block}
 
   footer{
     margin-top:20px;
@@ -138,7 +311,7 @@
 
   /* Print Styles */
   @media print{
-    header .bar, .tbar, .no-print{display:none !important}
+    .bar, .tbar, .no-print, .row-actions{display:none !important}
     body{background:#fff;padding:0 !important}
     .wrap{padding:0}
     .card{box-shadow:none;border:1px solid #ddd;page-break-inside:avoid}
@@ -194,11 +367,13 @@
     }
     
     .tbar{
-      flex-direction:column;
+      flex-direction:row;
+      flex-wrap:wrap;
     }
     
     .tbar .btn{
-      width:100%;
+      flex:1;
+      min-width:calc(50% - 5px);
     }
     
     .table-wrap{
@@ -210,11 +385,13 @@
     }
     
     .rownum{
-      width:60px;
-      padding:8px 4px;
+      min-width:75px;
+      padding:12px 6px;
     }
     
     .rownum small{font-size:9px}
+    
+    table{min-width:680px}
   }
 
   @media(max-width:640px){
@@ -224,8 +401,6 @@
     .three{
       grid-template-columns:1fr;
     }
-    
-    table{min-width:650px}
   }
 
   /* iPhone X and newer with notch */
@@ -238,6 +413,18 @@
 </style>
 </head>
 <body>
+
+<!-- Offline Indicator -->
+<div class="offline-banner" id="offlineBanner">
+  📡 You're offline. Changes will sync when reconnected.
+</div>
+
+<!-- Image Modal -->
+<div class="modal" id="imageModal" onclick="closeModal()">
+  <button class="modal-close" onclick="closeModal()">×</button>
+  <img id="modalImg" src="" alt="Preview">
+</div>
+
 <div class="wrap" id="content">
   <header>
     <div class="brand">
@@ -251,8 +438,8 @@
       <a href="index.html" class="btn ghost">← Home</a>
       <button class="btn" onclick="doPrint()">Print</button>
       <button class="btn ghost" onclick="downloadPDF()">PDF</button>
-      <button class="btn ghost" onclick="saveState()">Save</button>
-      <button class="btn ghost" onclick="loadState()">Load</button>
+      <button class="btn ghost" onclick="exportJSON()">Export</button>
+      <button class="btn ghost" onclick="document.getElementById('importFile').click()">Import</button>
       <button class="btn danger" onclick="clearAll()">Clear</button>
     </div>
   </header>
@@ -282,32 +469,44 @@
       <div class="two" style="margin-top:14px">
         <div>
           <label>Site Contact</label>
-          <input id="contact" placeholder="Name + phone">
+          <input id="contact" placeholder="Name + phone" inputmode="text">
         </div>
         <div>
           <label>Building / Phase</label>
-          <input id="building" placeholder="e.g., B01 or Phase 1">
+          <input id="building" placeholder="e.g., B01 or Phase 1" inputmode="text">
         </div>
       </div>
       <div style="margin-top:14px">
         <label>General Notes</label>
-        <input id="gn" placeholder="Optional header notes">
+        <input id="gn" placeholder="Optional header notes" inputmode="text">
+      </div>
+      
+      <!-- Progress Tracker -->
+      <div style="margin-top:20px">
+        <label>Completion Progress</label>
+        <div class="progress-wrap">
+          <div class="progress-bar" id="progressBar" style="width:0%"></div>
+        </div>
+        <div class="progress-text" id="progressText">0 of 0 items complete (0%)</div>
       </div>
     </div>
 
     <div class="card">
       <div class="tbar no-print no-export">
-        <button class="btn" onclick="addRow()">Add Row</button>
-        <button class="btn ghost" onclick="addTen()">Add 10 Rows</button>
+        <button class="btn" onclick="addRow()">+ Add Row</button>
+        <button class="btn ghost btn-small" onclick="addTen()">+ 10 Rows</button>
+        <button class="btn ghost btn-small" onclick="deleteCompleted()">Delete Complete</button>
       </div>
       <div class="table-wrap">
         <table id="plist">
           <thead>
             <tr>
               <th style="width:80px"># / Highlight</th>
-              <th style="width:160px">Unit / Address</th>
+              <th style="width:120px">Status</th>
+              <th style="width:140px">Unit / Address</th>
               <th>Item Description</th>
-              <th style="width:28%">Notes</th>
+              <th style="width:25%">Notes</th>
+              <th style="width:100px" class="no-print">Actions</th>
             </tr>
           </thead>
           <tbody id="body"></tbody>
@@ -319,24 +518,79 @@
   <footer>© <span id="yy"></span> Comet Builders LLC</footer>
 </div>
 
+<!-- Hidden File Input -->
+<input type="file" id="importFile" accept=".json" style="display:none" onchange="importJSON(this)">
+
 <!-- PDF libs -->
 <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
 
 <script>
-  const KEY = 'punchlist_initial_v2';
+  const KEY = 'punchlist_initial_v3';
   document.getElementById('yy').textContent = new Date().getFullYear();
   document.getElementById('date').valueAsDate = new Date();
 
+  // Auto-growing textarea
+  function autoGrow(elem) {
+    elem.style.height = '48px';
+    elem.style.height = (elem.scrollHeight) + 'px';
+  }
+
+  // Row template with all new features
   function rowTemplate(i, data={}){
     const tr = document.createElement('tr');
+    const rowId = `row_${Date.now()}_${i}`;
+    tr.dataset.rowId = rowId;
+    
     tr.innerHTML = `
-      <td class="rownum" onclick="toggleHL(this)">${i}<small>tap to highlight</small></td>
-      <td class="cell"><input value="${(data.unit||'')}"></td>
-      <td class="cell"><textarea>${(data.item||'')}</textarea></td>
-      <td class="cell"><textarea>${(data.notes||'')}</textarea></td>
+      <td class="rownum" onclick="toggleHL(this)">${i}<small>tap highlight</small></td>
+      <td class="cell">
+        <select onchange="updateProgress()">
+          <option value="pending" ${(data.status||'pending')==='pending'?'selected':''}>⏳ Pending</option>
+          <option value="inprogress" ${data.status==='inprogress'?'selected':''}>🔧 In Progress</option>
+          <option value="complete" ${data.status==='complete'?'selected':''}>✅ Complete</option>
+        </select>
+      </td>
+      <td class="cell"><input value="${(data.unit||'')}" inputmode="text"></td>
+      <td class="cell"><textarea oninput="autoGrow(this)">${(data.item||'')}</textarea></td>
+      <td class="cell">
+        <textarea oninput="autoGrow(this)">${(data.notes||'')}</textarea>
+        ${data.images && data.images.length ? `
+          <div class="img-preview">
+            ${data.images.map(img => `<img src="${img}" class="img-thumb" onclick="openModal('${img}')">`).join('')}
+          </div>
+        ` : ''}
+      </td>
+      <td class="row-actions no-print">
+        <button class="icon-btn" onclick="addImage(this)" title="Add Photo">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+            <circle cx="8.5" cy="8.5" r="1.5"/>
+            <polyline points="21 15 16 10 5 21"/>
+          </svg>
+        </button>
+        <button class="icon-btn" onclick="duplicateRow(this)" title="Duplicate">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+          </svg>
+        </button>
+        <button class="icon-btn" onclick="deleteRow(this)" title="Delete">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="3 6 5 6 21 6"/>
+            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+          </svg>
+        </button>
+      </td>
     `;
+    
     if(data.hl) tr.classList.add('hl');
+    
+    // Auto-grow textareas after render
+    setTimeout(() => {
+      tr.querySelectorAll('textarea').forEach(ta => autoGrow(ta));
+    }, 0);
+    
     return tr;
   }
 
@@ -344,21 +598,78 @@
     const body = document.getElementById('body');
     const idx = body.children.length + 1;
     body.appendChild(rowTemplate(idx, prefill));
+    renumberRows();
+    updateProgress();
   }
-  function addTen(){ for(let i=0;i<10;i++) addRow(); }
+  
+  function addTen(){ 
+    for(let i=0;i<10;i++) addRow(); 
+  }
 
-  function toggleHL(cell){ cell.parentElement.classList.toggle('hl'); }
+  function toggleHL(cell){ 
+    cell.parentElement.classList.toggle('hl'); 
+    saveState(true);
+  }
+
+  function deleteRow(btn){
+    if(!confirm('Delete this row?')) return;
+    btn.closest('tr').remove();
+    renumberRows();
+    updateProgress();
+    saveState(true);
+  }
+
+  function duplicateRow(btn){
+    const row = btn.closest('tr');
+    const data = extractRowData(row);
+    addRow(data);
+    saveState(true);
+  }
+
+  function deleteCompleted(){
+    const rows = document.querySelectorAll('#body tr');
+    let count = 0;
+    rows.forEach(tr => {
+      const status = tr.querySelector('select').value;
+      if(status === 'complete'){
+        tr.remove();
+        count++;
+      }
+    });
+    if(count > 0){
+      alert(`Deleted ${count} completed item(s)`);
+      renumberRows();
+      updateProgress();
+      saveState(true);
+    } else {
+      alert('No completed items to delete');
+    }
+  }
+
+  function renumberRows(){
+    const rows = document.querySelectorAll('#body tr');
+    rows.forEach((tr, i) => {
+      const numCell = tr.querySelector('.rownum');
+      const num = numCell.childNodes[0];
+      num.textContent = i + 1;
+    });
+  }
+
+  function extractRowData(tr){
+    const [_, statusCell, unit, item, notes] = tr.querySelectorAll('td');
+    const images = [...notes.querySelectorAll('.img-thumb')].map(img => img.src);
+    return {
+      hl: tr.classList.contains('hl'),
+      status: statusCell.querySelector('select')?.value || 'pending',
+      unit: unit.querySelector('input')?.value || '',
+      item: item.querySelector('textarea')?.value || '',
+      notes: notes.querySelector('textarea')?.value || '',
+      images: images.length ? images : undefined
+    };
+  }
 
   function collect(){
-    const rows = [...document.querySelectorAll('#body tr')].map(tr=>{
-      const [_, unit, item, notes] = tr.querySelectorAll('td');
-      return {
-        hl: tr.classList.contains('hl'),
-        unit: unit.querySelector('input').value,
-        item: item.querySelector('textarea').value,
-        notes: notes.querySelector('textarea').value
-      };
-    });
+    const rows = [...document.querySelectorAll('#body tr')].map(tr => extractRowData(tr));
     return {
       meta:{
         company:'Comet Builders LLC',
@@ -384,23 +695,119 @@
     body.innerHTML = '';
     (rows||[]).forEach((r,i)=>body.appendChild(rowTemplate(i+1, r)));
     if((rows||[]).length===0) addTen();
+    updateProgress();
   }
 
-  function saveState(){ localStorage.setItem(KEY, JSON.stringify(collect())); alert('Saved!'); }
-  function loadState(){
-    const raw = localStorage.getItem(KEY);
-    if(!raw){ alert('Nothing saved yet.'); return; }
-    applyState(JSON.parse(raw));
+  function saveState(silent=false){ 
+    localStorage.setItem(KEY, JSON.stringify(collect())); 
+    if(!silent) alert('Saved!'); 
   }
+  
   function clearAll(){
     if(!confirm('Clear the whole sheet?')) return;
     localStorage.removeItem(KEY);
     applyState({rows:[]});
   }
+  
   function doPrint(){ window.print(); }
 
-  // Auto-save every second
-  setInterval(()=>localStorage.setItem(KEY, JSON.stringify(collect())), 1000);
+  // Progress tracking
+  function updateProgress(){
+    const rows = document.querySelectorAll('#body tr');
+    const total = rows.length;
+    let complete = 0;
+    
+    rows.forEach(tr => {
+      const status = tr.querySelector('select')?.value;
+      if(status === 'complete') complete++;
+    });
+    
+    const percent = total > 0 ? Math.round((complete / total) * 100) : 0;
+    document.getElementById('progressBar').style.width = percent + '%';
+    document.getElementById('progressText').textContent = 
+      `${complete} of ${total} items complete (${percent}%)`;
+  }
+
+  // Image handling
+  function addImage(btn){
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
+    input.capture = 'environment';
+    input.onchange = async (e) => {
+      const file = e.target.files[0];
+      if(!file) return;
+      
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const img = event.target.result;
+        const row = btn.closest('tr');
+        const notesCell = row.querySelector('td:nth-child(5)');
+        
+        let preview = notesCell.querySelector('.img-preview');
+        if(!preview){
+          preview = document.createElement('div');
+          preview.className = 'img-preview';
+          notesCell.appendChild(preview);
+        }
+        
+        const thumb = document.createElement('img');
+        thumb.className = 'img-thumb';
+        thumb.src = img;
+        thumb.onclick = () => openModal(img);
+        preview.appendChild(thumb);
+        
+        saveState(true);
+      };
+      reader.readAsDataURL(file);
+    };
+    input.click();
+  }
+
+  function openModal(src){
+    document.getElementById('modalImg').src = src;
+    document.getElementById('imageModal').classList.add('active');
+  }
+
+  function closeModal(){
+    document.getElementById('imageModal').classList.remove('active');
+  }
+
+  // Export/Import
+  function exportJSON(){
+    const data = collect();
+    const json = JSON.stringify(data, null, 2);
+    const blob = new Blob([json], {type: 'application/json'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    const date = data.meta.date || new Date().toISOString().slice(0,10);
+    const proj = (data.meta.project || 'Project').replace(/[^\w-]+/g,'_');
+    a.href = url;
+    a.download = `Punchlist-${proj}-${date}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  function importJSON(input){
+    const file = input.files[0];
+    if(!file) return;
+    
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      try {
+        const data = JSON.parse(e.target.result);
+        applyState(data);
+        alert('Import successful!');
+      } catch(err) {
+        alert('Error importing file: ' + err.message);
+      }
+    };
+    reader.readAsText(file);
+    input.value = '';
+  }
+
+  // Auto-save every 2 seconds
+  setInterval(()=>localStorage.setItem(KEY, JSON.stringify(collect())), 2000);
 
   // Initialize
   applyState(JSON.parse(localStorage.getItem(KEY) || '{"rows": []}'));
@@ -415,6 +822,14 @@
     lastTouchEnd = now;
   }, false);
 
+  // Offline detection
+  window.addEventListener('online', () => {
+    document.getElementById('offlineBanner').classList.remove('active');
+  });
+  window.addEventListener('offline', () => {
+    document.getElementById('offlineBanner').classList.add('active');
+  });
+
   /* ---------- PDF EXPORT ---------- */
   async function downloadPDF(){
     document.body.classList.add('exporting');
@@ -423,7 +838,6 @@
     const doc = new jsPDF({orientation:'p', unit:'pt', format:'letter'});
     const el = document.getElementById('content');
 
-    // Expand table horizontally for mobile capture
     const canvas = await html2canvas(el, {scale:2, useCORS:true, windowWidth: el.scrollWidth});
     const imgData = canvas.toDataURL('image/png');
 
@@ -448,8 +862,16 @@
     const date = (document.getElementById('date').value || new Date().toISOString().slice(0,10));
     const proj = (document.getElementById('project').value || 'Project').replace(/[^\w-]+/g,'_');
     const bldg = (document.getElementById('building').value || 'Bldg').replace(/[^\w-]+/g,'_');
-    doc.save(`Initial-Punchlist—${proj}—${bldg}—${date}.pdf`);
+    doc.save(`Punchlist-${proj}-${bldg}-${date}.pdf`);
     document.body.classList.remove('exporting');
+  }
+
+  // Register service worker for PWA (optional - requires separate SW file)
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      // Uncomment when you create the service worker file
+      // navigator.serviceWorker.register('/sw.js');
+    });
   }
 </script>
 </body>
