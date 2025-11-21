@@ -1,1 +1,965 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="811 Tracker">
+  <meta name="theme-color" content="#f59e0b">
+  <title>811 Ticket Tracker - Comet Builders</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --orange:#f59e0b;
+      --orange-light:#fbbf24;
+      --orange-dark:#d97706;
+      --red:#ef4444;
+      --green:#10b981;
+      --blue:#2563eb;
+      --white:#ffffff;
+      --gray:#6b7280;
+      --gray-dark:#374151;
+      --border:#e5e7eb;
+      --bg:#f8fafc;
+      --shadow:rgba(0,0,0,.08);
+      --shadow-lg:rgba(0,0,0,.12);
+    }
+    
+    *{box-sizing:border-box;margin:0;padding:0}
+    
+    html,body{
+      background:var(--bg);
+      color:#0b1220;
+      font-family:'Inter',-apple-system,BlinkMacSystemFont,system-ui,sans-serif;
+      line-height:1.6;
+      -webkit-tap-highlight-color:transparent;
+    }
+    
+    body{
+      padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+    }
+    
+    .wrap{
+      max-width:1200px;
+      margin:0 auto;
+      padding:24px;
+    }
+    
+    /* Header */
+    header{
+      position:sticky;
+      top:0;
+      z-index:100;
+      background:#fff;
+      border-bottom:2px solid var(--border);
+      box-shadow:0 2px 8px var(--shadow);
+      margin:0 -24px 32px;
+      padding:20px 24px;
+    }
+    
+    .header-content{
+      max-width:1200px;
+      margin:0 auto;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      flex-wrap:wrap;
+      gap:16px;
+    }
+    
+    .brand-section{
+      display:flex;
+      align-items:center;
+      gap:12px;
+    }
+    
+    .logo{
+      width:48px;
+      height:48px;
+      border-radius:12px;
+      background:linear-gradient(135deg,var(--orange),var(--orange-light));
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:24px;
+      box-shadow:0 4px 12px rgba(245,158,11,0.3);
+    }
+    
+    .brand-text h1{
+      font-size:1.5rem;
+      font-weight:800;
+      color:var(--gray-dark);
+      line-height:1.2;
+    }
+    
+    .brand-text .subtitle{
+      font-size:0.85rem;
+      color:var(--gray);
+      font-weight:600;
+    }
+    
+    .header-actions{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    
+    /* Buttons */
+    .btn{
+      appearance:none;
+      border:1px solid transparent;
+      background:linear-gradient(135deg,var(--orange),var(--orange-light));
+      color:#fff;
+      padding:10px 18px;
+      border-radius:10px;
+      font-weight:700;
+      font-size:0.9rem;
+      cursor:pointer;
+      transition:all 0.2s ease;
+      text-decoration:none;
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      min-height:44px;
+      justify-content:center;
+      box-shadow:0 2px 8px rgba(245,158,11,0.2);
+      user-select:none;
+    }
+    
+    .btn:hover{
+      background:linear-gradient(135deg,var(--orange-light),var(--orange));
+      transform:translateY(-2px);
+      box-shadow:0 4px 12px rgba(245,158,11,0.3);
+    }
+    
+    .btn:active{
+      transform:translateY(0) scale(0.98);
+    }
+    
+    .btn.ghost{
+      background:transparent;
+      border:1px solid var(--border);
+      color:var(--gray-dark);
+      box-shadow:none;
+    }
+    
+    .btn.ghost:hover{
+      background:#f9fafb;
+      border-color:var(--gray);
+    }
+    
+    .btn.small{
+      padding:8px 14px;
+      font-size:0.85rem;
+      min-height:38px;
+    }
+    
+    /* Alert Boxes */
+    .alert-box{
+      padding:16px 20px;
+      border-radius:12px;
+      margin-bottom:24px;
+      display:flex;
+      align-items:flex-start;
+      gap:12px;
+      font-size:0.95rem;
+      line-height:1.6;
+    }
+    
+    .alert-box .icon{
+      font-size:1.3rem;
+      flex-shrink:0;
+    }
+    
+    .alert-warning{
+      background:#fef3c7;
+      border:1px solid #fbbf24;
+      color:#92400e;
+    }
+    
+    .alert-info{
+      background:#dbeafe;
+      border:1px solid #60a5fa;
+      color:#1e3a8a;
+    }
+    
+    .alert-danger{
+      background:#fee2e2;
+      border:1px solid #f87171;
+      color:#991b1b;
+    }
+    
+    /* Stats */
+    .stats{
+      display:grid;
+      gap:16px;
+      margin-bottom:32px;
+      grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+    }
+    
+    .stat-card{
+      background:#fff;
+      border:1px solid var(--border);
+      border-radius:14px;
+      padding:20px;
+      box-shadow:0 2px 8px var(--shadow);
+    }
+    
+    .stat-card .label{
+      font-size:0.8rem;
+      color:var(--gray);
+      font-weight:600;
+      text-transform:uppercase;
+      letter-spacing:0.05em;
+      margin-bottom:8px;
+    }
+    
+    .stat-card .value{
+      font-size:2rem;
+      font-weight:800;
+      line-height:1;
+    }
+    
+    .stat-card.active .value{color:var(--green)}
+    .stat-card.expiring .value{color:var(--orange)}
+    .stat-card.expired .value{color:var(--red)}
+    
+    /* Card */
+    .card{
+      background:#fff;
+      border:1px solid var(--border);
+      border-radius:16px;
+      padding:24px;
+      box-shadow:0 4px 12px var(--shadow);
+      margin-bottom:24px;
+    }
+    
+    .card h2{
+      font-size:1.3rem;
+      margin-bottom:20px;
+      color:var(--gray-dark);
+      font-weight:800;
+      display:flex;
+      align-items:center;
+      gap:8px;
+    }
+    
+    .card h2::before{
+      content:'';
+      width:4px;
+      height:24px;
+      background:linear-gradient(180deg,var(--orange),var(--orange-light));
+      border-radius:2px;
+    }
+    
+    /* Form */
+    .form-grid{
+      display:grid;
+      gap:16px;
+      grid-template-columns:repeat(12,1fr);
+    }
+    
+    .form-group{
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+    }
+    
+    label{
+      font-size:0.85rem;
+      font-weight:700;
+      color:var(--gray-dark);
+      letter-spacing:0.01em;
+    }
+    
+    label .required{
+      color:var(--red);
+    }
+    
+    input,textarea,select{
+      width:100%;
+      padding:12px 14px;
+      border:1px solid var(--border);
+      border-radius:10px;
+      font-size:0.95rem;
+      font-family:inherit;
+      transition:all 0.2s ease;
+      background:#fff;
+    }
+    
+    input:focus,textarea:focus,select:focus{
+      outline:none;
+      border-color:var(--orange);
+      box-shadow:0 0 0 3px rgba(245,158,11,0.1);
+    }
+    
+    textarea{
+      min-height:80px;
+      resize:vertical;
+    }
+    
+    /* Ticket List */
+    .ticket-list{
+      display:flex;
+      flex-direction:column;
+      gap:16px;
+    }
+    
+    .ticket-item{
+      background:#fff;
+      border:1px solid var(--border);
+      border-radius:14px;
+      padding:20px;
+      box-shadow:0 2px 8px var(--shadow);
+      transition:all 0.2s ease;
+    }
+    
+    .ticket-item:hover{
+      box-shadow:0 4px 12px var(--shadow-lg);
+      transform:translateY(-2px);
+    }
+    
+    .ticket-item.expired{
+      border-left:4px solid var(--red);
+      background:#fef2f2;
+    }
+    
+    .ticket-item.expiring-soon{
+      border-left:4px solid var(--orange);
+      background:#fffbeb;
+    }
+    
+    .ticket-item.active{
+      border-left:4px solid var(--green);
+    }
+    
+    .ticket-header{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:12px;
+      margin-bottom:12px;
+      flex-wrap:wrap;
+    }
+    
+    .ticket-number{
+      font-size:1.2rem;
+      font-weight:800;
+      color:var(--gray-dark);
+      font-family:monospace;
+    }
+    
+    .ticket-status{
+      padding:6px 12px;
+      border-radius:999px;
+      font-size:0.75rem;
+      font-weight:700;
+      text-transform:uppercase;
+      letter-spacing:0.05em;
+    }
+    
+    .status-active{
+      background:#d1fae5;
+      color:#065f46;
+    }
+    
+    .status-expiring{
+      background:#fed7aa;
+      color:#92400e;
+    }
+    
+    .status-expired{
+      background:#fecaca;
+      color:#991b1b;
+    }
+    
+    .ticket-details{
+      display:grid;
+      gap:12px;
+      margin-bottom:16px;
+      font-size:0.9rem;
+    }
+    
+    .ticket-detail{
+      display:flex;
+      gap:8px;
+    }
+    
+    .ticket-detail .label{
+      font-weight:700;
+      color:var(--gray);
+      min-width:120px;
+    }
+    
+    .ticket-detail .value{
+      color:var(--gray-dark);
+    }
+    
+    .ticket-actions{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      padding-top:12px;
+      border-top:1px solid var(--border);
+    }
+    
+    .empty-state{
+      text-align:center;
+      padding:60px 20px;
+      color:var(--gray);
+    }
+    
+    .empty-state .icon{
+      font-size:4rem;
+      margin-bottom:16px;
+      opacity:0.5;
+    }
+    
+    .empty-state h3{
+      font-size:1.2rem;
+      margin-bottom:8px;
+      color:var(--gray-dark);
+    }
+    
+    /* Toast */
+    .toast{
+      position:fixed;
+      bottom:24px;
+      right:24px;
+      background:#0f172a;
+      color:#fff;
+      padding:16px 20px;
+      border-radius:12px;
+      box-shadow:0 8px 24px var(--shadow-lg);
+      z-index:1000;
+      animation:slideUp 0.3s ease;
+      display:flex;
+      align-items:center;
+      gap:10px;
+      max-width:400px;
+      font-weight:500;
+    }
+    
+    .toast.success{background:#059669}
+    .toast.error{background:#dc2626}
+    .toast.warning{background:#f59e0b}
+    
+    @keyframes slideUp{
+      from{transform:translateY(100px);opacity:0}
+      to{transform:translateY(0);opacity:1}
+    }
+    
+    /* Offline Banner */
+    .offline-banner{
+      display:none;
+      position:fixed;
+      bottom:0;
+      left:0;
+      right:0;
+      background:var(--orange);
+      color:#fff;
+      padding:12px;
+      text-align:center;
+      font-weight:700;
+      z-index:1500;
+    }
+    
+    .offline-banner.active{display:block}
+    
+    footer{
+      margin-top:40px;
+      padding-top:24px;
+      border-top:1px solid var(--border);
+      text-align:center;
+      color:var(--gray);
+      font-size:0.9rem;
+    }
+    
+    /* Mobile */
+    @media(max-width:768px){
+      .wrap{padding:16px}
+      
+      header{
+        margin:0 -16px 24px;
+        padding:16px;
+      }
+      
+      .header-content{
+        flex-direction:column;
+        align-items:flex-start;
+      }
+      
+      .logo{
+        width:40px;
+        height:40px;
+        font-size:20px;
+      }
+      
+      .brand-text h1{font-size:1.3rem}
+      .brand-text .subtitle{font-size:0.8rem}
+      
+      .header-actions{
+        width:100%;
+      }
+      
+      .header-actions .btn{
+        flex:1;
+      }
+      
+      .stats{
+        grid-template-columns:1fr 1fr;
+        gap:12px;
+      }
+      
+      .stat-card{padding:16px}
+      .stat-card .value{font-size:1.6rem}
+      
+      .card{padding:20px}
+      .card h2{font-size:1.2rem}
+      
+      .form-grid{
+        grid-template-columns:1fr;
+      }
+      
+      .ticket-header{
+        flex-direction:column;
+        align-items:flex-start;
+      }
+      
+      .ticket-number{font-size:1.1rem}
+      
+      .ticket-detail .label{
+        min-width:100px;
+        font-size:0.85rem;
+      }
+      
+      .ticket-actions{
+        flex-direction:column;
+      }
+      
+      .ticket-actions .btn{
+        width:100%;
+      }
+      
+      .toast{
+        bottom:16px;
+        right:16px;
+        left:16px;
+        max-width:none;
+      }
+    }
+  </style>
+</head>
+<body>
+  
+  <!-- Offline Banner -->
+  <div class="offline-banner" id="offlineBanner">
+    📡 You're offline. Changes are saved locally.
+  </div>
+  
+  <header>
+    <div class="header-content">
+      <div class="brand-section">
+        <div class="logo">🚧</div>
+        <div class="brand-text">
+          <h1>811 Ticket Tracker</h1>
+          <div class="subtitle">Comet Builders LLC</div>
+        </div>
+      </div>
+      <div class="header-actions">
+        <a href="index.html" class="btn ghost small">← Back to Hub</a>
+        <a href="https://nc811.org/" target="_blank" class="btn small">Open NC811 Portal</a>
+      </div>
+    </div>
+  </header>
 
+  <div class="wrap">
+    
+    <!-- Stats -->
+    <div class="stats">
+      <div class="stat-card active">
+        <div class="label">Active Tickets</div>
+        <div class="value" id="activeCount">0</div>
+      </div>
+      <div class="stat-card expiring">
+        <div class="label">Expiring Soon</div>
+        <div class="value" id="expiringCount">0</div>
+      </div>
+      <div class="stat-card expired">
+        <div class="label">Expired</div>
+        <div class="value" id="expiredCount">0</div>
+      </div>
+    </div>
+    
+    <!-- Alert for expiring tickets -->
+    <div id="alertContainer"></div>
+    
+    <!-- Add New Ticket Form -->
+    <div class="card">
+      <h2>Add New 811 Ticket</h2>
+      
+      <form id="ticketForm">
+        <div class="form-grid">
+          <div class="form-group" style="grid-column:span 6">
+            <label for="ticketNumber">Ticket Number <span class="required">*</span></label>
+            <input type="text" id="ticketNumber" placeholder="e.g., 2025110001234" required>
+          </div>
+          
+          <div class="form-group" style="grid-column:span 6">
+            <label for="issueDate">Issue Date <span class="required">*</span></label>
+            <input type="date" id="issueDate" required>
+          </div>
+          
+          <div class="form-group" style="grid-column:span 12">
+            <label for="projectName">Project Name <span class="required">*</span></label>
+            <input type="text" id="projectName" placeholder="e.g., Comet Pittsboro Apartments" required>
+          </div>
+          
+          <div class="form-group" style="grid-column:span 12">
+            <label for="location">Location / Address <span class="required">*</span></label>
+            <input type="text" id="location" placeholder="e.g., 123 Main St, Pittsboro, NC" required>
+          </div>
+          
+          <div class="form-group" style="grid-column:span 6">
+            <label for="workType">Type of Work</label>
+            <select id="workType">
+              <option value="">Select type...</option>
+              <option>Excavation</option>
+              <option>Trenching</option>
+              <option>Boring</option>
+              <option>Grading</option>
+              <option>Foundation</option>
+              <option>Utility Install</option>
+              <option>Site Work</option>
+              <option>Other</option>
+            </select>
+          </div>
+          
+          <div class="form-group" style="grid-column:span 6">
+            <label for="requestedBy">Requested By</label>
+            <input type="text" id="requestedBy" placeholder="Your name">
+          </div>
+          
+          <div class="form-group" style="grid-column:span 12">
+            <label for="notes">Notes</label>
+            <textarea id="notes" placeholder="Additional details, utilities marked, special instructions, etc."></textarea>
+          </div>
+        </div>
+        
+        <div style="margin-top:20px;display:flex;gap:10px;flex-wrap:wrap">
+          <button type="submit" class="btn">➕ Add Ticket</button>
+          <button type="button" class="btn ghost" onclick="document.getElementById('ticketForm').reset()">Clear Form</button>
+        </div>
+      </form>
+    </div>
+    
+    <!-- Ticket List -->
+    <div class="card">
+      <h2>My 811 Tickets</h2>
+      
+      <div id="ticketList" class="ticket-list">
+        <!-- Tickets will be inserted here -->
+      </div>
+    </div>
+    
+    <footer>
+      © <span id="year"></span> Comet Builders LLC • All tickets expire after 15 calendar days from issue date
+    </footer>
+  </div>
+
+  <script>
+    (function(){
+      'use strict';
+      
+      const STORAGE_KEY = '811_tickets_v1';
+      const EXPIRY_DAYS = 15; // NC 811 tickets expire after 15 days
+      const WARNING_DAYS = 3; // Warn when 3 days or less remaining
+      
+      function $(s){ return document.querySelector(s); }
+      function $$(s){ return document.querySelectorAll(s); }
+      
+      // Utility Functions
+      function saveTickets(tickets){
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(tickets));
+      }
+      
+      function getTickets(){
+        try{
+          return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+        } catch(e){
+          return [];
+        }
+      }
+      
+      function showToast(message, type){
+        const existing = $('.toast');
+        if(existing) existing.remove();
+        
+        const toast = document.createElement('div');
+        toast.className = 'toast ' + (type || '');
+        const icon = type === 'success' ? '✓ ' : type === 'error' ? '⚠ ' : '';
+        toast.textContent = icon + message;
+        document.body.appendChild(toast);
+        
+        setTimeout(() => toast.remove(), 3000);
+      }
+      
+      function calculateDaysRemaining(issueDate){
+        const issued = new Date(issueDate);
+        const expiry = new Date(issued);
+        expiry.setDate(expiry.getDate() + EXPIRY_DAYS);
+        
+        const today = new Date();
+        today.setHours(0,0,0,0);
+        expiry.setHours(0,0,0,0);
+        
+        const diffTime = expiry - today;
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        
+        return {
+          daysRemaining: diffDays,
+          expiryDate: expiry,
+          isExpired: diffDays < 0,
+          isExpiringSoon: diffDays >= 0 && diffDays <= WARNING_DAYS
+        };
+      }
+      
+      function formatDate(dateStr){
+        const date = new Date(dateStr);
+        return date.toLocaleDateString('en-US', { 
+          month: 'short', 
+          day: 'numeric', 
+          year: 'numeric' 
+        });
+      }
+      
+      function getTicketStatus(ticket){
+        const status = calculateDaysRemaining(ticket.issueDate);
+        
+        if(status.isExpired){
+          return {
+            class: 'expired',
+            statusClass: 'status-expired',
+            statusText: 'EXPIRED',
+            message: `Expired ${Math.abs(status.daysRemaining)} day${Math.abs(status.daysRemaining) !== 1 ? 's' : ''} ago`
+          };
+        } else if(status.isExpiringSoon){
+          return {
+            class: 'expiring-soon',
+            statusClass: 'status-expiring',
+            statusText: 'EXPIRING SOON',
+            message: `${status.daysRemaining} day${status.daysRemaining !== 1 ? 's' : ''} remaining`
+          };
+        } else {
+          return {
+            class: 'active',
+            statusClass: 'status-active',
+            statusText: 'ACTIVE',
+            message: `${status.daysRemaining} days remaining`
+          };
+        }
+      }
+      
+      function updateStats(){
+        const tickets = getTickets();
+        let active = 0, expiring = 0, expired = 0;
+        
+        tickets.forEach(ticket => {
+          const status = calculateDaysRemaining(ticket.issueDate);
+          if(status.isExpired) expired++;
+          else if(status.isExpiringSoon) expiring++;
+          else active++;
+        });
+        
+        $('#activeCount').textContent = active;
+        $('#expiringCount').textContent = expiring;
+        $('#expiredCount').textContent = expired;
+        
+        // Show alert if there are expiring or expired tickets
+        const alertContainer = $('#alertContainer');
+        alertContainer.innerHTML = '';
+        
+        if(expired > 0){
+          const alert = document.createElement('div');
+          alert.className = 'alert-box alert-danger';
+          alert.innerHTML = `
+            <div class="icon">⚠️</div>
+            <div>
+              <strong>Action Required:</strong> You have ${expired} expired ticket${expired !== 1 ? 's' : ''}. 
+              Contact NC811 immediately to renew before starting work.
+            </div>
+          `;
+          alertContainer.appendChild(alert);
+        }
+        
+        if(expiring > 0){
+          const alert = document.createElement('div');
+          alert.className = 'alert-box alert-warning';
+          alert.innerHTML = `
+            <div class="icon">⏰</div>
+            <div>
+              <strong>Heads Up:</strong> You have ${expiring} ticket${expiring !== 1 ? 's' : ''} expiring within ${WARNING_DAYS} days. 
+              Plan to renew soon if work continues.
+            </div>
+          `;
+          alertContainer.appendChild(alert);
+        }
+      }
+      
+      function renderTickets(){
+        const tickets = getTickets();
+        const listEl = $('#ticketList');
+        
+        if(!tickets.length){
+          listEl.innerHTML = `
+            <div class="empty-state">
+              <div class="icon">📋</div>
+              <h3>No 811 Tickets Yet</h3>
+              <p>Add your first ticket above to start tracking</p>
+            </div>
+          `;
+          return;
+        }
+        
+        // Sort by issue date (newest first)
+        tickets.sort((a,b) => new Date(b.issueDate) - new Date(a.issueDate));
+        
+        listEl.innerHTML = tickets.map((ticket, index) => {
+          const status = getTicketStatus(ticket);
+          const expiry = calculateDaysRemaining(ticket.issueDate);
+          
+          return `
+            <div class="ticket-item ${status.class}">
+              <div class="ticket-header">
+                <div class="ticket-number">#${ticket.ticketNumber}</div>
+                <span class="ticket-status ${status.statusClass}">${status.statusText}</span>
+              </div>
+              
+              <div class="ticket-details">
+                <div class="ticket-detail">
+                  <div class="label">Project:</div>
+                  <div class="value">${ticket.projectName}</div>
+                </div>
+                <div class="ticket-detail">
+                  <div class="label">Location:</div>
+                  <div class="value">${ticket.location}</div>
+                </div>
+                <div class="ticket-detail">
+                  <div class="label">Issue Date:</div>
+                  <div class="value">${formatDate(ticket.issueDate)}</div>
+                </div>
+                <div class="ticket-detail">
+                  <div class="label">Expiry Date:</div>
+                  <div class="value">${formatDate(expiry.expiryDate)} (${status.message})</div>
+                </div>
+                ${ticket.workType ? `
+                <div class="ticket-detail">
+                  <div class="label">Work Type:</div>
+                  <div class="value">${ticket.workType}</div>
+                </div>
+                ` : ''}
+                ${ticket.requestedBy ? `
+                <div class="ticket-detail">
+                  <div class="label">Requested By:</div>
+                  <div class="value">${ticket.requestedBy}</div>
+                </div>
+                ` : ''}
+                ${ticket.notes ? `
+                <div class="ticket-detail">
+                  <div class="label">Notes:</div>
+                  <div class="value">${ticket.notes}</div>
+                </div>
+                ` : ''}
+              </div>
+              
+              <div class="ticket-actions">
+                <button class="btn ghost small" onclick="editTicket(${index})">✏️ Edit</button>
+                <button class="btn ghost small" onclick="deleteTicket(${index})">🗑️ Delete</button>
+                ${status.isExpired || status.isExpiringSoon ? 
+                  '<a href="https://nc811.org/" target="_blank" class="btn small" style="background:#059669">🔄 Renew Ticket</a>' 
+                  : ''}
+              </div>
+            </div>
+          `;
+        }).join('');
+        
+        updateStats();
+      }
+      
+      window.editTicket = function(index){
+        const tickets = getTickets();
+        const ticket = tickets[index];
+        
+        $('#ticketNumber').value = ticket.ticketNumber;
+        $('#issueDate').value = ticket.issueDate;
+        $('#projectName').value = ticket.projectName;
+        $('#location').value = ticket.location;
+        $('#workType').value = ticket.workType || '';
+        $('#requestedBy').value = ticket.requestedBy || '';
+        $('#notes').value = ticket.notes || '';
+        
+        // Delete the old one
+        tickets.splice(index, 1);
+        saveTickets(tickets);
+        renderTickets();
+        
+        window.scrollTo({top: 0, behavior: 'smooth'});
+        showToast('Ticket loaded for editing', '');
+      };
+      
+      window.deleteTicket = function(index){
+        if(!confirm('Delete this 811 ticket?')) return;
+        
+        const tickets = getTickets();
+        tickets.splice(index, 1);
+        saveTickets(tickets);
+        renderTickets();
+        showToast('Ticket deleted', '');
+      };
+      
+      // Form submission
+      $('#ticketForm').addEventListener('submit', function(e){
+        e.preventDefault();
+        
+        const ticket = {
+          ticketNumber: $('#ticketNumber').value.trim(),
+          issueDate: $('#issueDate').value,
+          projectName: $('#projectName').value.trim(),
+          location: $('#location').value.trim(),
+          workType: $('#workType').value,
+          requestedBy: $('#requestedBy').value.trim(),
+          notes: $('#notes').value.trim(),
+          addedAt: new Date().toISOString()
+        };
+        
+        const tickets = getTickets();
+        tickets.push(ticket);
+        saveTickets(tickets);
+        
+        this.reset();
+        renderTickets();
+        showToast('811 ticket added successfully', 'success');
+      });
+      
+      // Initialize
+      document.addEventListener('DOMContentLoaded', function(){
+        $('#year').textContent = new Date().getFullYear();
+        $('#issueDate').valueAsDate = new Date();
+        renderTickets();
+        
+        // Offline detection
+        window.addEventListener('online', () => {
+          $('#offlineBanner').classList.remove('active');
+        });
+        window.addEventListener('offline', () => {
+          $('#offlineBanner').classList.add('active');
+        });
+      });
+      
+    })();
+  </script>
+</body>
+</html>
