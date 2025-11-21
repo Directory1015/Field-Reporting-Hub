@@ -4,6 +4,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#1e40af">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Daily Reports">
   <title>Daily Reports - Comet Builders</title>
   <meta name="description" content="Professional construction daily report system with auto-save and photo compression." />
   <style>
@@ -29,6 +32,7 @@
       background:var(--bg);
       color:var(--ink);
       line-height:1.5;
+      -webkit-tap-highlight-color:transparent;
     }
     a{color:var(--brand);text-decoration:none}
     .wrap{max-width:1200px;margin:0 auto;padding:24px}
@@ -64,19 +68,25 @@
     /* Auto-save indicator */
     .save-status{
       display:flex;align-items:center;gap:6px;
-      padding:6px 12px;border-radius:8px;
+      padding:8px 14px;border-radius:8px;
       font-size:12px;font-weight:500;
       background:#f1f5f9;color:var(--muted);
       transition:all 0.3s ease;
+      min-height:36px;
     }
     .save-status.saving{background:#fef3c7;color:#92400e}
     .save-status.saved{background:#d1fae5;color:#065f46}
     .save-status .dot{
       width:6px;height:6px;border-radius:50%;
       background:currentColor;
+      animation:pulse 2s infinite;
+    }
+    @keyframes pulse{
+      0%,100%{opacity:1}
+      50%{opacity:0.5}
     }
 
-    /* Buttons - Modern & Clean */
+    /* Buttons - Modern & Clean with better touch targets */
     button,.btn{
       border:1px solid var(--border-dark);
       background:#fff;
@@ -91,11 +101,18 @@
       align-items:center;
       gap:6px;
       text-decoration:none;
+      min-height:44px;
+      justify-content:center;
+      user-select:none;
+      -webkit-user-select:none;
     }
     button:hover,.btn:hover{
       background:#f8fafc;
       box-shadow:var(--shadow);
       transform:translateY(-1px);
+    }
+    button:active,.btn:active{
+      transform:translateY(0) scale(0.98);
     }
     .btn.primary{
       background:linear-gradient(135deg,#2563eb,#1e40af);
@@ -117,7 +134,7 @@
     }
     .btn.ghost{background:transparent;border-color:var(--border)}
     .btn.ghost:hover{background:#f8fafc}
-    .btn.small{padding:6px 12px;font-size:13px}
+    .btn.small{padding:8px 14px;font-size:13px;min-height:40px}
 
     /* Grid & Cards */
     .grid{display:grid;gap:20px;grid-template-columns:repeat(12,1fr)}
@@ -146,7 +163,7 @@
       border-radius:2px;
     }
 
-    /* Form Elements */
+    /* Form Elements with better mobile support */
     .row{display:grid;grid-template-columns:repeat(12,1fr);gap:14px;margin-bottom:12px}
     label{
       display:block;
@@ -158,30 +175,38 @@
     }
     input,select,textarea{
       width:100%;
-      padding:11px 14px;
+      padding:12px 14px;
       border-radius:10px;
       border:1px solid var(--border-dark);
       background:#fff;
       color:var(--ink);
-      font-size:14px;
+      font-size:16px;
       transition:all 0.2s ease;
       font-family:inherit;
+      -webkit-appearance:none;
+      appearance:none;
     }
     input:focus,select:focus,textarea:focus{
       outline:none;
       border-color:var(--brand);
       box-shadow:0 0 0 3px rgba(30,64,175,0.1);
     }
-    textarea{min-height:100px;resize:vertical;line-height:1.5}
+    textarea{
+      min-height:100px;
+      resize:vertical;
+      line-height:1.5;
+      overflow:hidden;
+    }
     input[type="date"],input[type="time"]{cursor:pointer}
 
-    /* Tables - Enhanced */
+    /* Tables - Enhanced with better mobile scrolling */
     .table-wrap{
       overflow-x:auto;
       margin-top:12px;
       border-radius:10px;
       border:1px solid var(--border);
       -webkit-overflow-scrolling:touch;
+      position:relative;
     }
     table{
       width:100%;
@@ -189,7 +214,7 @@
       background:#fff;
       min-width:800px;
     }
-    th,td{padding:10px;text-align:left;vertical-align:top;white-space:nowrap}
+    th,td{padding:12px 10px;text-align:left;vertical-align:top;white-space:nowrap}
     th{
       background:var(--head);
       color:var(--ink);
@@ -198,38 +223,50 @@
       text-transform:uppercase;
       letter-spacing:0.03em;
       border-bottom:2px solid var(--border-dark);
+      position:sticky;
+      top:0;
+      z-index:2;
     }
     td{border-bottom:1px solid var(--border)}
     tr:last-child td{border-bottom:none}
     tr:hover{background:#f8fafc}
     td input,td textarea,td select{
       border:1px solid var(--border);
-      padding:8px 10px;
-      font-size:14px;
+      padding:10px 12px;
+      font-size:16px;
       background:#fff;
+      min-height:42px;
     }
     td textarea.grow{
-      min-height:38px;
+      min-height:42px;
       min-width:200px;
       resize:vertical;
       white-space:normal;
-      line-height:1.4;
+      line-height:1.5;
+      overflow:hidden;
     }
-    td input[type="time"]{min-width:100px}
-    td input[type="number"]{min-width:70px}
+    td input[type="time"]{min-width:110px}
+    td input[type="number"]{min-width:80px}
+    
+    /* Action buttons in table */
+    td button[data-remove]{
+      min-height:38px;
+      padding:8px 12px;
+    }
     
     /* Specific column widths for better mobile */
-    #laborTable th:nth-child(1),#laborTable td:nth-child(1){min-width:150px}
-    #laborTable th:nth-child(7),#laborTable td:nth-child(7){min-width:220px}
-    #deliveryTable th:nth-child(5),#deliveryTable td:nth-child(5){min-width:220px}
-    #inspTable th:nth-child(5),#inspTable td:nth-child(5){min-width:220px}
-    #equipTable th:nth-child(5),#equipTable td:nth-child(5){min-width:220px}
+    #laborTable th:nth-child(1),#laborTable td:nth-child(1){min-width:180px}
+    #laborTable th:nth-child(7),#laborTable td:nth-child(7){min-width:250px}
+    #deliveryTable th:nth-child(5),#deliveryTable td:nth-child(5){min-width:250px}
+    #inspTable th:nth-child(5),#inspTable td:nth-child(5){min-width:250px}
+    #equipTable th:nth-child(5),#equipTable td:nth-child(5){min-width:250px}
 
     /* Tools & Pills */
     .tools{
       display:flex;gap:8px;flex-wrap:wrap;
       margin-bottom:12px;padding-bottom:12px;
       border-bottom:1px solid var(--border);
+      align-items:center;
     }
     .pill{
       display:inline-flex;align-items:center;gap:8px;
@@ -244,11 +281,11 @@
     .muted{color:var(--muted);font-size:13px}
     .danger{color:var(--danger)}
 
-    /* Gallery - Improved */
+    /* Gallery - Improved with better touch */
     .gallery{
       display:grid;
-      grid-template-columns:repeat(auto-fill,minmax(140px,1fr));
-      gap:12px;
+      grid-template-columns:repeat(auto-fill,minmax(160px,1fr));
+      gap:14px;
       margin-top:12px;
     }
     .photo-item{
@@ -258,6 +295,7 @@
       background:#f8fafc;
       border:1px solid var(--border);
       aspect-ratio:4/3;
+      cursor:pointer;
     }
     .photo-item img{
       width:100%;height:100%;
@@ -266,19 +304,52 @@
     }
     .photo-item:hover img{transform:scale(1.05)}
     .photo-item .remove-photo{
-      position:absolute;top:6px;right:6px;
-      background:rgba(239,68,68,0.9);
+      position:absolute;top:8px;right:8px;
+      background:rgba(239,68,68,0.95);
       color:#fff;
       border:none;
-      width:28px;height:28px;
+      width:32px;height:32px;
       border-radius:50%;
       cursor:pointer;
-      font-size:16px;
+      font-size:18px;
       display:flex;align-items:center;justify-content:center;
       opacity:0;
       transition:opacity 0.2s ease;
+      z-index:10;
     }
     .photo-item:hover .remove-photo{opacity:1}
+
+    /* Image Modal */
+    .modal{
+      display:none;
+      position:fixed;
+      top:0;left:0;right:0;bottom:0;
+      background:rgba(0,0,0,0.9);
+      z-index:2000;
+      align-items:center;
+      justify-content:center;
+      padding:20px;
+    }
+    .modal.active{display:flex}
+    .modal img{
+      max-width:100%;
+      max-height:90vh;
+      object-fit:contain;
+      border-radius:8px;
+    }
+    .modal-close{
+      position:absolute;
+      top:20px;right:20px;
+      background:#fff;
+      border:none;
+      width:48px;height:48px;
+      border-radius:50%;
+      cursor:pointer;
+      font-size:24px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
 
     /* KPI Cards */
     .kpi{display:flex;gap:16px;flex-wrap:wrap;margin-top:16px}
@@ -289,6 +360,7 @@
       border-radius:12px;
       padding:16px;
       box-shadow:var(--shadow);
+      min-height:90px;
     }
     .kpi .box label{
       font-size:12px;
@@ -306,9 +378,9 @@
 
     /* Progress Bar */
     .progress-bar{
-      height:4px;
+      height:6px;
       background:var(--border);
-      border-radius:2px;
+      border-radius:3px;
       overflow:hidden;
       margin:16px 0;
     }
@@ -321,39 +393,63 @@
     /* History Items */
     .history-item{
       display:flex;gap:12px;align-items:center;
-      margin:10px 0;padding:14px;
+      margin:10px 0;padding:16px;
       border:1px solid var(--border);
       border-radius:12px;
       background:#fff;
       transition:all 0.2s ease;
+      flex-wrap:wrap;
     }
     .history-item:hover{
       box-shadow:var(--shadow);
       border-color:var(--brand-light);
     }
-    .history-item .info{flex:1 1 auto}
-    .history-item .title{font-weight:600;color:var(--ink);margin-bottom:2px}
+    .history-item .info{flex:1 1 200px}
+    .history-item .title{font-weight:600;color:var(--ink);margin-bottom:4px}
     .history-item .meta{font-size:12px;color:var(--muted)}
+    .history-item .actions-group{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+    }
 
-    /* Toast Notifications */
+    /* Toast Notifications - Enhanced */
     .toast{
       position:fixed;bottom:24px;right:24px;
-      padding:14px 18px;
+      padding:16px 20px;
       background:#0f172a;
       color:#fff;
-      border-radius:10px;
+      border-radius:12px;
       box-shadow:var(--shadow-lg);
-      z-index:1000;
+      z-index:3000;
       animation:slideUp 0.3s ease;
       display:flex;align-items:center;gap:10px;
       max-width:400px;
+      font-weight:500;
+      font-size:14px;
     }
     .toast.success{background:#059669}
     .toast.error{background:#dc2626}
+    .toast.warning{background:#f59e0b}
     @keyframes slideUp{
       from{transform:translateY(100px);opacity:0}
       to{transform:translateY(0);opacity:1}
     }
+
+    /* Offline Indicator */
+    .offline-banner{
+      display:none;
+      position:fixed;
+      bottom:0;left:0;right:0;
+      background:var(--warn);
+      color:#fff;
+      padding:14px;
+      text-align:center;
+      font-weight:700;
+      z-index:1500;
+      font-size:14px;
+    }
+    .offline-banner.active{display:block}
 
     /* Responsive */
     @media (max-width:900px){
@@ -361,56 +457,71 @@
       .gallery{grid-template-columns:repeat(3,1fr)}
       table{min-width:900px}
     }
+    
     @media (max-width:600px){
-      .wrap{padding:12px}
-      .top{padding:10px 12px;gap:8px;flex-wrap:wrap}
-      .logo{width:36px;height:36px;font-size:14px;border-radius:10px}
+      .wrap{padding:16px}
+      .top{
+        padding:12px 16px;
+        gap:10px;
+        flex-direction:column;
+        align-items:flex-start;
+      }
+      .logo{width:40px;height:40px;font-size:16px;border-radius:12px}
       .brand-name{font-size:10px}
-      h1{font-size:16px}
-      .brand{margin-bottom:4px}
+      h1{font-size:18px}
+      .brand{margin-bottom:8px;width:100%}
       .actions{
-        gap:6px;
+        gap:8px;
         width:100%;
         margin-left:0;
         justify-content:flex-start;
       }
       .save-status{
-        font-size:11px;
-        padding:5px 10px;
+        font-size:12px;
+        padding:8px 12px;
         order:-1;
         width:100%;
       }
       button,.btn{
-        padding:7px 11px;
-        font-size:13px;
-        border-radius:8px;
-        flex:0 0 auto;
+        padding:10px 14px;
+        font-size:14px;
+        border-radius:10px;
+        flex:1 1 auto;
+        min-height:48px;
       }
-      .card{padding:14px;border-radius:12px}
-      .card h2{font-size:16px;margin-bottom:12px}
-      .row{grid-template-columns:1fr;gap:10px}
-      input,select,textarea{padding:10px 12px;font-size:15px}
+      .btn.small{
+        padding:8px 12px;
+        font-size:13px;
+        min-height:44px;
+      }
+      .card{padding:16px;border-radius:14px}
+      .card h2{font-size:17px;margin-bottom:14px}
+      .row{grid-template-columns:1fr;gap:12px}
+      input,select,textarea{padding:12px 14px;font-size:16px}
       
       /* Better table mobile handling */
       .table-wrap{
-        border-radius:8px;
-        margin-left:-14px;
-        margin-right:-14px;
+        border-radius:10px;
+        margin-left:-16px;
+        margin-right:-16px;
         border-left:none;
         border-right:none;
       }
-      table{min-width:1000px;font-size:14px}
-      th,td{padding:8px;font-size:13px}
-      td input,td textarea,td select{font-size:14px;padding:8px}
-      td textarea.grow{min-width:250px;line-height:1.5}
+      table{min-width:1000px;font-size:15px}
+      th,td{padding:10px 8px;font-size:14px}
+      td input,td textarea,td select{font-size:16px;padding:10px 12px}
+      td textarea.grow{min-width:280px;line-height:1.5}
       
-      .gallery{grid-template-columns:repeat(2,1fr);gap:10px}
-      .kpi{gap:10px}
-      .kpi .box{padding:12px;flex:1 1 140px}
-      .box b{font-size:24px}
-      .toast{bottom:16px;right:16px;left:16px;max-width:none}
-      .tools{flex-wrap:wrap;gap:6px}
+      .gallery{grid-template-columns:repeat(2,1fr);gap:12px}
+      .kpi{gap:12px}
+      .kpi .box{padding:14px;flex:1 1 140px;min-height:85px}
+      .box b{font-size:26px}
+      .toast{bottom:16px;right:16px;left:16px;max-width:none;font-size:14px}
+      .tools{flex-wrap:wrap;gap:8px}
       .muted{font-size:12px}
+      .history-item{padding:14px}
+      .history-item .actions-group{width:100%}
+      .modal-close{width:44px;height:44px;font-size:20px}
     }
 
     /* Print Styles */
@@ -419,7 +530,7 @@
         size:letter;
         margin:0.5in;
       }
-      header,.actions,.tools,.btn,.save-status{display:none !important}
+      header,.actions,.tools,.btn,.save-status,.offline-banner,.modal{display:none !important}
       body{
         background:#fff !important;
         color:#000 !important;
@@ -451,7 +562,6 @@
         overflow:visible !important;
       }
       
-      /* Table print optimization */
       .table-wrap{
         overflow:visible !important;
         border:none !important;
@@ -478,8 +588,6 @@
         background:#f0f0f0 !important;
         color:#000 !important;
         font-weight:bold !important;
-        -webkit-print-color-adjust:exact;
-        print-color-adjust:exact;
       }
       td input,td textarea,td select{
         font-size:10px !important;
@@ -490,35 +598,7 @@
         min-width:0 !important;
         width:100% !important;
       }
-      
-      /* Adjust column widths for print */
-      #laborTable th:nth-child(1),#laborTable td:nth-child(1){width:15%}
-      #laborTable th:nth-child(2),#laborTable td:nth-child(2){width:10%}
-      #laborTable th:nth-child(3),#laborTable td:nth-child(3){width:12%}
-      #laborTable th:nth-child(4),#laborTable td:nth-child(4){width:6%}
-      #laborTable th:nth-child(5),#laborTable td:nth-child(5){width:8%}
-      #laborTable th:nth-child(6),#laborTable td:nth-child(6){width:8%}
-      #laborTable th:nth-child(7),#laborTable td:nth-child(7){width:35%}
-      #laborTable th:nth-child(8),#laborTable td:nth-child(8){width:6%}
-      
-      #deliveryTable th:nth-child(1),#deliveryTable td:nth-child(1){width:8%}
-      #deliveryTable th:nth-child(2),#deliveryTable td:nth-child(2){width:15%}
-      #deliveryTable th:nth-child(3),#deliveryTable td:nth-child(3){width:20%}
-      #deliveryTable th:nth-child(4),#deliveryTable td:nth-child(4){width:12%}
-      #deliveryTable th:nth-child(5),#deliveryTable td:nth-child(5){width:25%}
-      #deliveryTable th:nth-child(6),#deliveryTable td:nth-child(6){width:14%}
-      
-      #inspTable th:nth-child(1),#inspTable td:nth-child(1){width:18%}
-      #inspTable th:nth-child(2),#inspTable td:nth-child(2){width:15%}
-      #inspTable th:nth-child(3),#inspTable td:nth-child(3){width:15%}
-      #inspTable th:nth-child(4),#inspTable td:nth-child(4){width:12%}
-      #inspTable th:nth-child(5),#inspTable td:nth-child(5){width:34%}
-      
-      #equipTable th:nth-child(1),#equipTable td:nth-child(1){width:18%}
-      #equipTable th:nth-child(2),#equipTable td:nth-child(2){width:18%}
-      #equipTable th:nth-child(3),#equipTable td:nth-child(3){width:8%}
-      #equipTable th:nth-child(4),#equipTable td:nth-child(4){width:15%}
-      #equipTable th:nth-child(5),#equipTable td:nth-child(5){width:35%}
+      td button{display:none !important}
       
       .kpi{display:flex !important;gap:8px;page-break-inside:avoid}
       .kpi .box{
@@ -527,8 +607,6 @@
         border:2px solid #000 !important;
         flex:1;
         padding:8px !important;
-        -webkit-print-color-adjust:exact;
-        print-color-adjust:exact;
       }
       .kpi .box label,.kpi .box b{color:#000 !important;font-size:11px !important}
       .kpi .box b{font-size:16px !important}
@@ -556,7 +634,7 @@
   <!-- Version Check & Cache Clear -->
   <script>
     (function(){
-      var APP_VERSION = '2025-10-09-PRO-v2';
+      var APP_VERSION = '2025-11-21-UPGRADED-v1';
       try {
         var stored = localStorage.getItem('app_version');
         if (stored !== APP_VERSION) {
@@ -581,6 +659,17 @@
       } catch (e) {}
     })();
   </script>
+
+  <!-- Offline Indicator -->
+  <div class="offline-banner" id="offlineBanner">
+    📡 You're offline. Changes are saved locally and will sync when reconnected.
+  </div>
+
+  <!-- Image Modal -->
+  <div class="modal" id="imageModal" onclick="if(event.target.id==='imageModal')closeImageModal()">
+    <button class="modal-close" onclick="closeImageModal()">×</button>
+    <img id="modalImg" src="" alt="Preview">
+  </div>
 
   <header>
     <div class="top">
@@ -664,6 +753,7 @@
         <h2>Manpower & Vendors</h2>
         <div class="tools">
           <button class="btn small" id="addLabor">➕ Add Row</button>
+          <button class="btn ghost small" id="add5Labor">➕ 5 Rows</button>
           <button class="btn ghost small" id="clearLabor">🗑️ Clear</button>
           <span class="muted">Track all subcontractors and crews on site</span>
         </div>
@@ -678,7 +768,7 @@
                 <th>Time On</th>
                 <th>Time Off</th>
                 <th>Notes</th>
-                <th style="width:50px">—</th>
+                <th style="width:60px">—</th>
               </tr>
             </thead>
             <tbody></tbody>
@@ -714,7 +804,7 @@
                 <th>For Area</th>
                 <th>Notes</th>
                 <th>Received By</th>
-                <th style="width:50px">—</th>
+                <th style="width:60px">—</th>
               </tr>
             </thead>
             <tbody></tbody>
@@ -738,7 +828,7 @@
                 <th>Building/Area</th>
                 <th>Status</th>
                 <th>Notes</th>
-                <th style="width:50px">—</th>
+                <th style="width:60px">—</th>
               </tr>
             </thead>
             <tbody></tbody>
@@ -763,7 +853,7 @@
                 <th>Qty</th>
                 <th>Location</th>
                 <th>Condition/Notes</th>
-                <th style="width:50px">—</th>
+                <th style="width:60px">—</th>
               </tr>
             </thead>
             <tbody></tbody>
@@ -802,7 +892,7 @@
         <h2>Site Photos</h2>
         <div class="tools">
           <label class="btn small" for="photoInput">📷 Add Photos</label>
-          <input type="file" id="photoInput" accept="image/*" multiple hidden>
+          <input type="file" id="photoInput" accept="image/*" multiple capture="environment" hidden>
           <button class="btn ghost small" id="clearPhotos">🗑️ Clear All</button>
           <span class="muted">Photos are compressed and stored locally</span>
         </div>
@@ -849,7 +939,7 @@
     function $(s, r){ return (r||document).querySelector(s); }
     function $$(s, r){ return Array.prototype.slice.call((r||document).querySelectorAll(s)); }
     
-    var STORAGE_KEY = 'dailyReportDrafts_v2';
+    var STORAGE_KEY = 'dailyReportDrafts_v3_upgraded';
     var currentId = null;
     var autoSaveTimer = null;
     var hasUnsavedChanges = false;
@@ -866,17 +956,26 @@
       }); 
     }
 
-    // Toast Notification System
+    // Toast Notification System - Enhanced
     function showToast(message, type){
       var existing = $('.toast');
       if(existing) existing.remove();
       
       var toast = document.createElement('div');
       toast.className = 'toast ' + (type || '');
-      toast.textContent = message;
+      
+      var icon = '';
+      if(type === 'success') icon = '✓ ';
+      if(type === 'error') icon = '⚠ ';
+      if(type === 'warning') icon = '⚡ ';
+      
+      toast.textContent = icon + message;
       document.body.appendChild(toast);
       
-      setTimeout(function(){ toast.remove(); }, 3000);
+      setTimeout(function(){ 
+        toast.style.animation = 'slideUp 0.3s ease reverse';
+        setTimeout(function(){ toast.remove(); }, 300);
+      }, 3000);
     }
 
     // Image Compression
@@ -919,7 +1018,7 @@
       
       if (notesCol) {
         var v = val ? escapeHtml(val) : '';
-        return '<textarea class="grow">'+v+'</textarea>';
+        return '<textarea class="grow" oninput="window.autoGrow(this)">'+v+'</textarea>';
       }
       
       if(timeCol){
@@ -933,9 +1032,14 @@
       if(!tbody) return;
       var tr = document.createElement('tr');
       tr.innerHTML = cells.map(function(c){ return '<td>'+c+'</td>'; }).join('') + 
-        '<td><button class="btn ghost small" data-remove title="Remove">✕</button></td>';
+        '<td><button class="btn ghost small" data-remove title="Remove Row">✕</button></td>';
       tbody.appendChild(tr);
-      $$('.grow', tr).forEach(autoGrow);
+      
+      // Auto-grow textareas
+      setTimeout(function(){
+        $$('.grow', tr).forEach(function(ta){ window.autoGrow(ta); });
+      }, 0);
+      
       updateKPIs();
       markUnsaved();
     }
@@ -1008,6 +1112,12 @@
       jsonToTable('#equipTable', data.equipment||[]);
       if($('#gallery')) $('#gallery').innerHTML = '';
       (data.photos||[]).forEach(function(src){ addPhotoToGallery(src); });
+      
+      // Auto-grow all textareas
+      setTimeout(function(){
+        $$('textarea').forEach(function(ta){ window.autoGrow(ta); });
+      }, 100);
+      
       updateKPIs();
       hasUnsavedChanges = false;
       updateSaveStatus('saved');
@@ -1017,8 +1127,8 @@
       if(!$('#gallery')) return;
       var item = document.createElement('div');
       item.className = 'photo-item';
-      item.innerHTML = '<img src="'+src+'" alt="Site photo" />' +
-        '<button class="remove-photo" data-remove-photo>✕</button>';
+      item.innerHTML = '<img src="'+src+'" alt="Site photo" onclick="window.openImageModal(\''+src+'\')" />' +
+        '<button class="remove-photo" data-remove-photo onclick="event.stopPropagation()">✕</button>';
       $('#gallery').appendChild(item);
     }
 
@@ -1045,15 +1155,16 @@
       if($('#kpiInsp')) $('#kpiInsp').textContent = tableToJSON('#inspTable').length;
     }
 
-    function autoGrow(el){ 
+    // Auto-grow textarea - exposed globally
+    window.autoGrow = function(el){ 
       if (!el) return;
       if(!el.value || el.value.trim() === ''){
-        el.style.height = '38px';
+        el.style.height = '42px';
         return;
       }
-      el.style.height='auto'; 
+      el.style.height='42px'; 
       el.style.height=(el.scrollHeight+2)+'px'; 
-    }
+    };
 
     function markUnsaved(){
       hasUnsavedChanges = true;
@@ -1073,15 +1184,15 @@
         textEl.textContent = 'Saving...';
       } else if(status === 'saved'){
         statusEl.classList.add('saved');
-        textEl.textContent = 'Saved';
+        textEl.textContent = 'All Changes Saved';
         setTimeout(function(){
           if(statusEl.classList.contains('saved')){
             statusEl.className = 'save-status';
             textEl.textContent = 'Ready';
           }
-        }, 2000);
+        }, 2500);
       } else {
-        textEl.textContent = 'Unsaved';
+        textEl.textContent = 'Unsaved Changes';
       }
     }
 
@@ -1089,7 +1200,7 @@
       if(autoSaveTimer) clearTimeout(autoSaveTimer);
       autoSaveTimer = setTimeout(function(){
         saveCurrentDraft(true);
-      }, 3000); // Auto-save after 3 seconds of inactivity
+      }, 2000); // Auto-save after 2 seconds of inactivity
     }
 
     function saveCurrentDraft(isAutoSave){
@@ -1110,7 +1221,7 @@
         }
         
         if(window.renderHistory) window.renderHistory();
-      }, 300);
+      }, 200);
     }
 
     function loadDraft(id){
@@ -1119,6 +1230,7 @@
       if(!d) return;
       currentId = id;
       setForm(d);
+      window.scrollTo({top: 0, behavior: 'smooth'});
       showToast('Report loaded', 'success');
     }
     
@@ -1159,6 +1271,7 @@
       // Keep labor, equipment, weather template
       currentId = newReport.id;
       setForm(newReport);
+      window.scrollTo({top: 0, behavior: 'smooth'});
       showToast('Previous report copied as template', 'success');
     }
 
@@ -1175,10 +1288,25 @@
       return errors;
     }
 
+    // Image Modal Functions - Exposed Globally
+    window.openImageModal = function(src){
+      $('#modalImg').src = src;
+      $('#imageModal').classList.add('active');
+      document.body.style.overflow = 'hidden';
+    };
+
+    window.closeImageModal = function(){
+      $('#imageModal').classList.remove('active');
+      document.body.style.overflow = '';
+    };
+
     // Event Handlers
     document.addEventListener('input', function(e){
       var el = e.target;
-      if (el && el.classList && el.classList.contains('grow')) autoGrow(el);
+      if (el && el.classList && el.classList.contains('grow')) window.autoGrow(el);
+      if (el && el.tagName === 'TEXTAREA' && !el.classList.contains('grow')) {
+        window.autoGrow(el);
+      }
       if (el && (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA' || el.tagName === 'SELECT')) {
         updateKPIs();
         markUnsaved();
@@ -1191,16 +1319,26 @@
 
       if (btn.hasAttribute('data-remove')) {
         var row = btn.closest && btn.closest('tr'); 
-        if(row) row.parentNode.removeChild(row);
-        updateKPIs(); 
-        markUnsaved();
+        if(row) {
+          row.style.opacity = '0.5';
+          setTimeout(function(){
+            row.parentNode.removeChild(row);
+            updateKPIs(); 
+            markUnsaved();
+          }, 150);
+        }
         return;
       }
 
       if(btn.hasAttribute('data-remove-photo')){
         var item = btn.closest('.photo-item');
-        if(item) item.remove();
-        markUnsaved();
+        if(item) {
+          item.style.opacity = '0.3';
+          setTimeout(function(){
+            item.remove();
+            markUnsaved();
+          }, 150);
+        }
         return;
       }
 
@@ -1217,6 +1355,7 @@
             currentId = null; 
             setForm({}); 
             seed(); 
+            window.scrollTo({top: 0, behavior: 'smooth'});
             showToast('New report started', '');
           }
           break;
@@ -1233,7 +1372,7 @@
           a.href = URL.createObjectURL(blob);
           a.download = 'daily-report_'+(data.date||'undated')+'_'+(data.customProject||data.project||'project').replace(/[^a-z0-9]/gi,'_')+'.json';
           a.click();
-          showToast('Report exported', 'success');
+          showToast('Report exported successfully', 'success');
           break;
 
         case 'printBtn':
@@ -1258,11 +1397,27 @@
           ]);
           break;
 
+        case 'add5Labor':
+          for(var i=0; i<5; i++){
+            addRow($('#laborTable tbody'), [
+              inputForCell(0,'' ,'#laborTable'),
+              inputForCell(1,'' ,'#laborTable'),
+              inputForCell(2,'' ,'#laborTable'),
+              inputForCell(3,'' ,'#laborTable'),
+              inputForCell(4,'' ,'#laborTable'),
+              inputForCell(5,'' ,'#laborTable'),
+              inputForCell(6,'' ,'#laborTable')
+            ]);
+          }
+          showToast('Added 5 rows', '');
+          break;
+
         case 'clearLabor':
           if(confirm('Clear all labor entries?')) { 
             $('#laborTable tbody').innerHTML=''; 
             updateKPIs(); 
             markUnsaved();
+            showToast('Labor entries cleared', '');
           }
           break;
 
@@ -1281,6 +1436,7 @@
           if(confirm('Clear all deliveries?')) { 
             $('#deliveryTable tbody').innerHTML=''; 
             markUnsaved();
+            showToast('Deliveries cleared', '');
           }
           break;
 
@@ -1299,6 +1455,7 @@
             $('#inspTable tbody').innerHTML=''; 
             updateKPIs();
             markUnsaved();
+            showToast('Inspections cleared', '');
           }
           break;
 
@@ -1316,6 +1473,7 @@
           if(confirm('Clear all equipment?')) { 
             $('#equipTable tbody').innerHTML=''; 
             markUnsaved();
+            showToast('Equipment cleared', '');
           }
           break;
 
@@ -1324,7 +1482,7 @@
             localStorage.removeItem(STORAGE_KEY); 
             var h = $('#history'); 
             if(h) h.innerHTML='<p class="muted">No drafts saved yet.</p>';
-            showToast('All reports deleted', '');
+            showToast('All reports deleted', 'warning');
           }
           break;
 
@@ -1374,8 +1532,10 @@
               '<div class="title">'+escapeHtml(projectName)+'</div>'+
               '<div class="meta">'+escapeHtml(date)+' • Saved: '+saved+'</div>'+
             '</div>'+
-            '<button class="btn small" data-load="'+d.id+'">Open</button>'+
-            '<button class="btn ghost small danger" data-del="'+d.id+'">Delete</button>'+
+            '<div class="actions-group">'+
+              '<button class="btn small" data-load="'+d.id+'">📂 Open</button>'+
+              '<button class="btn ghost small danger" data-del="'+d.id+'">🗑️ Delete</button>'+
+            '</div>'+
           '</div>';
         }).join('');
       }
@@ -1389,6 +1549,9 @@
       seed();
       renderHistory();
       updateKPIs();
+      
+      // Auto-grow all existing textareas
+      $$('textarea').forEach(function(ta){ window.autoGrow(ta); });
       
       // Warn on leaving with unsaved changes
       window.addEventListener('beforeunload', function(e){
@@ -1423,6 +1586,17 @@
           }
         }
       });
+
+      // Offline/Online detection
+      window.addEventListener('online', function(){
+        $('#offlineBanner').classList.remove('active');
+        showToast('Back online', 'success');
+      });
+      
+      window.addEventListener('offline', function(){
+        $('#offlineBanner').classList.add('active');
+        showToast('You are offline. Changes will be saved locally.', 'warning');
+      });
     });
 
     // Photo handling with compression
@@ -1436,11 +1610,11 @@
         
         var processed = 0;
         files.forEach(function(f){
-          compressImage(f, 1200, 0.85, function(compressed){
+          compressImage(f, 1400, 0.85, function(compressed){
             addPhotoToGallery(compressed);
             processed++;
             if(processed === files.length){
-              showToast(files.length+' photo(s) added', 'success');
+              showToast(files.length+' photo(s) added successfully', 'success');
               markUnsaved();
             }
           });
@@ -1455,7 +1629,7 @@
         if(confirm('Remove all photos from this report?')) {
           $('#gallery').innerHTML=''; 
           markUnsaved();
-          showToast('Photos cleared', '');
+          showToast('All photos removed', '');
         }
       });
     }
@@ -1473,15 +1647,26 @@
             var data = JSON.parse(ev.target.result);
             currentId = data.id || uid();
             setForm(data);
+            window.scrollTo({top: 0, behavior: 'smooth'});
             showToast('Report imported successfully', 'success');
           } catch(err){
-            showToast('Error importing file', 'error');
+            showToast('Error importing file: Invalid format', 'error');
           }
         };
         reader.readAsText(file);
         importFile.value = '';
       });
     }
+
+    // Prevent double-tap zoom on iOS
+    var lastTouchEnd = 0;
+    document.addEventListener('touchend', function(event) {
+      var now = Date.now();
+      if (now - lastTouchEnd <= 300) {
+        event.preventDefault();
+      }
+      lastTouchEnd = now;
+    }, false);
 
   })();
   </script>
