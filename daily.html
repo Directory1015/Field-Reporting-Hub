@@ -9,6 +9,10 @@
   <meta name="apple-mobile-web-app-title" content="Daily Reports">
   <title>Daily Reports - Comet Builders</title>
   <meta name="description" content="Professional construction daily report system with auto-save and photo compression." />
+  
+  <!-- Dropbox Chooser & Saver -->
+  <script type="text/javascript" src="https://www.dropbox.com/static/api/2/dropins.js" id="dropboxjs" data-app-key="yl8u0uma4iuutj3"></script>
+  
   <style>
     :root{
       --ink:#0a0f1e;
@@ -689,6 +693,7 @@
         <button class="btn ghost" id="copyPrevBtn" title="Copy Yesterday">📋 Copy Prev</button>
         <button class="btn" id="newBtn">🆕 New</button>
         <button class="btn" id="exportBtn">💾 Export</button>
+        <button class="btn ghost" id="saveToDropboxBtn" title="Save to Dropbox">📦 Dropbox</button>
         <label class="btn ghost" for="importFile">📥 Import</label>
         <input type="file" id="importFile" accept="application/json" hidden>
         <button class="btn success" id="printBtn">🖨️ Print</button>
@@ -1373,6 +1378,31 @@
           a.download = 'daily-report_'+(data.date||'undated')+'_'+(data.customProject||data.project||'project').replace(/[^a-z0-9]/gi,'_')+'.json';
           a.click();
           showToast('Report exported successfully', 'success');
+          break;
+
+        case 'saveToDropboxBtn':
+          var errors = validateForm();
+          if(errors.length){
+            showToast(errors[0], 'error');
+            return;
+          }
+          var data = getForm();
+          var blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
+          var filename = 'DailyReport_'+(data.date||'undated')+'_'+(data.customProject||data.project||'project').replace(/[^a-z0-9]/gi,'_')+'.json';
+          
+          // Create a File object from the Blob
+          var file = new File([blob], filename, {type: 'application/json'});
+          
+          Dropbox.save({
+            files: [file],
+            success: function(){
+              showToast('Report saved to Dropbox successfully!', 'success');
+            },
+            error: function(error){
+              showToast('Failed to save to Dropbox', 'error');
+              console.error('Dropbox save error:', error);
+            }
+          });
           break;
 
         case 'printBtn':
