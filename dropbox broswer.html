@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Dropbox Browser">
+  <meta name="theme-color" content="#0061ff">
+  <title>Dropbox File Browser - Comet Builders</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Dropbox Chooser -->
+  <script type="text/javascript" src="https://www.dropbox.com/static/api/2/dropins.js" id="dropboxjs" data-app-key="yl8u0uma4iuutj3"></script>
+  
+  <style>
+    :root{
+      --dropbox-blue:#0061ff;
+      --dropbox-blue-light:#0070ff;
+      --dropbox-blue-dark:#0052cc;
+      --white:#ffffff;
+      --gray:#6b7280;
+      --gray-dark:#374151;
+      --border:#e5e7eb;
+      --bg:#f8fafc;
+      --shadow:rgba(0,0,0,.08);
+      --shadow-lg:rgba(0,0,0,.12);
+    }
+    
+    *{box-sizing:border-box;margin:0;padding:0}
+    
+    html,body{
+      background:var(--bg);
+      color:#0b1220;
+      font-family:'Inter',-apple-system,BlinkMacSystemFont,system-ui,sans-serif;
+      line-height:1.6;
+      -webkit-tap-highlight-color:transparent;
+    }
+    
+    body{
+      padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+    }
+    
+    .wrap{
+      max-width:1200px;
+      margin:0 auto;
+      padding:24px;
+    }
+    
+    /* Header */
+    header{
+      position:sticky;
+      top:0;
+      z-index:100;
+      background:#fff;
+      border-bottom:2px solid var(--border);
+      box-shadow:0 2px 8px var(--shadow);
+      margin:0 -24px 32px;
+      padding:20px 24px;
+    }
+    
+    .header-content{
+      max-width:1200px;
+      margin:0 auto;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      flex-wrap:wrap;
+      gap:16px;
+    }
+    
+    .brand-section{
+      display:flex;
+      align-items:center;
+      gap:12px;
+    }
+    
+    .logo{
+      width:48px;
+      height:48px;
+      border-radius:12px;
+      background:linear-gradient(135deg,var(--dropbox-blue),var(--dropbox-blue-light));
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:24px;
+      box-shadow:0 4px 12px rgba(0,97,255,0.3);
+    }
+    
+    .brand-text h1{
+      font-size:1.5rem;
+      font-weight:800;
+      color:var(--gray-dark);
+      line-height:1.2;
+    }
+    
+    .brand-text .subtitle{
+      font-size:0.85rem;
+      color:var(--gray);
+      font-weight:600;
+    }
+    
+    .header-actions{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    
+    /* Buttons */
+    .btn{
+      appearance:none;
+      border:1px solid transparent;
+      background:linear-gradient(135deg,var(--dropbox-blue),var(--dropbox-blue-light));
+      color:#fff;
+      padding:10px 18px;
+      border-radius:10px;
+      font-weight:700;
+      font-size:0.9rem;
+      cursor:pointer;
+      transition:all 0.2s ease;
+      text-decoration:none;
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      min-height:44px;
+      justify-content:center;
+      box-shadow:0 2px 8px rgba(0,97,255,0.2);
+      user-select:none;
+    }
+    
+    .btn:hover{
+      background:linear-gradient(135deg,var(--dropbox-blue-light),var(--dropbox-blue));
+      transform:translateY(-2px);
+      box-shadow:0 4px 12px rgba(0,97,255,0.3);
+    }
+    
+    .btn:active{
+      transform:translateY(0) scale(0.98);
+    }
+    
+    .btn.ghost{
+      background:transparent;
+      border:1px solid var(--border);
+      color:var(--gray-dark);
+      box-shadow:none;
+    }
+    
+    .btn.ghost:hover{
+      background:#f9fafb;
+      border-color:var(--gray);
+    }
+    
+    .btn.large{
+      padding:16px 24px;
+      font-size:1rem;
+      min-height:56px;
+    }
+    
+    /* Info Box */
+    .info-box{
+      background:#fff;
+      border:1px solid var(--border);
+      border-radius:16px;
+      padding:24px;
+      margin-bottom:32px;
+      box-shadow:0 4px 12px var(--shadow);
+    }
+    
+    .info-box h2{
+      font-size:1.3rem;
+      margin-bottom:12px;
+      color:var(--gray-dark);
+      font-weight:800;
+    }
+    
+    .info-box p{
+      color:var(--gray);
+      margin-bottom:16px;
+      line-height:1.7;
+    }
+    
+    .feature-list{
+      display:grid;
+      gap:12px;
+      margin:20px 0;
+    }
+    
+    .feature-item{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      padding:12px;
+      background:#f8fafc;
+      border-radius:10px;
+      font-size:0.95rem;
+    }
+    
+    .feature-item .icon{
+      font-size:1.5rem;
+      flex-shrink:0;
+    }
+    
+    /* Selected Files */
+    .selected-files{
+      background:#fff;
+      border:1px solid var(--border);
+      border-radius:16px;
+      padding:24px;
+      margin-bottom:24px;
+      box-shadow:0 4px 12px var(--shadow);
+    }
+    
+    .selected-files h2{
+      font-size:1.3rem;
+      margin-bottom:20px;
+      color:var(--gray-dark);
+      font-weight:800;
+      display:flex;
+      align-items:center;
+      gap:8px;
+    }
+    
+    .file-list{
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+    }
+    
+    .file-item{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      padding:16px;
+      background:#f8fafc;
+      border:1px solid var(--border);
+      border-radius:12px;
+      transition:all 0.2s ease;
+    }
+    
+    .file-item:hover{
+      background:#fff;
+      box-shadow:0 2px 8px var(--shadow);
+      transform:translateY(-2px);
+    }
+    
+    .file-info{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      flex:1;
+      min-width:0;
+    }
+    
+    .file-icon{
+      font-size:2rem;
+      flex-shrink:0;
+    }
+    
+    .file-details{
+      flex:1;
+      min-width:0;
+    }
+    
+    .file-name{
+      font-weight:700;
+      color:var(--gray-dark);
+      margin-bottom:4px;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      white-space:nowrap;
+    }
+    
+    .file-meta{
+      font-size:0.85rem;
+      color:var(--gray);
+    }
+    
+    .file-actions{
+      display:flex;
+      gap:8px;
+      flex-shrink:0;
+    }
+    
+    .empty-state{
+      text-align:center;
+      padding:60px 20px;
+      color:var(--gray);
+    }
+    
+    .empty-state .icon{
+      font-size:4rem;
+      margin-bottom:16px;
+      opacity:0.5;
+    }
+    
+    .empty-state h3{
+      font-size:1.2rem;
+      margin-bottom:8px;
+      color:var(--gray-dark);
+    }
+    
+    /* Toast */
+    .toast{
+      position:fixed;
+      bottom:24px;
+      right:24px;
+      background:#0f172a;
+      color:#fff;
+      padding:16px 20px;
+      border-radius:12px;
+      box-shadow:0 8px 24px var(--shadow-lg);
+      z-index:1000;
+      animation:slideUp 0.3s ease;
+      display:flex;
+      align-items:center;
+      gap:10px;
+      max-width:400px;
+      font-weight:500;
+    }
+    
+    .toast.success{background:#059669}
+    .toast.info{background:#0061ff}
+    
+    @keyframes slideUp{
+      from{transform:translateY(100px);opacity:0}
+      to{transform:translateY(0);opacity:1}
+    }
+    
+    footer{
+      margin-top:40px;
+      padding-top:24px;
+      border-top:1px solid var(--border);
+      text-align:center;
+      color:var(--gray);
+      font-size:0.9rem;
+    }
+    
+    /* Mobile */
+    @media(max-width:768px){
+      .wrap{padding:16px}
+      
+      header{
+        margin:0 -16px 24px;
+        padding:16px;
+      }
+      
+      .header-content{
+        flex-direction:column;
+        align-items:flex-start;
+      }
+      
+      .logo{
+        width:40px;
+        height:40px;
+        font-size:20px;
+      }
+      
+      .brand-text h1{font-size:1.3rem}
+      .brand-text .subtitle{font-size:0.8rem}
+      
+      .header-actions{
+        width:100%;
+      }
+      
+      .header-actions .btn{
+        flex:1;
+      }
+      
+      .info-box,.selected-files{
+        padding:20px;
+      }
+      
+      .btn.large{
+        padding:14px 20px;
+        font-size:0.95rem;
+        width:100%;
+      }
+      
+      .file-item{
+        flex-direction:column;
+        align-items:flex-start;
+      }
+      
+      .file-actions{
+        width:100%;
+      }
+      
+      .file-actions .btn{
+        flex:1;
+      }
+      
+      .toast{
+        bottom:16px;
+        right:16px;
+        left:16px;
+        max-width:none;
+      }
+    }
+  </style>
+</head>
+<body>
+  
+  <header>
+    <div class="header-content">
+      <div class="brand-section">
+        <div class="logo">📦</div>
+        <div class="brand-text">
+          <h1>Dropbox File Browser</h1>
+          <div class="subtitle">Comet Builders LLC</div>
+        </div>
+      </div>
+      <div class="header-actions">
+        <a href="index.html" class="btn ghost">← Back to Hub</a>
+        <a href="https://www.dropbox.com/home" target="_blank" class="btn">Open Dropbox</a>
+      </div>
+    </div>
+  </header>
+
+  <div class="wrap">
+    
+    <!-- Info Section -->
+    <div class="info-box">
+      <h2>Access Your Project Files</h2>
+      <p>Browse and select files from your Dropbox account. Perfect for accessing plans, specs, photos, and documents while working in the field.</p>
+      
+      <div class="feature-list">
+        <div class="feature-item">
+          <div class="icon">📄</div>
+          <div>Select any file type - PDFs, images, documents, CAD files</div>
+        </div>
+        <div class="feature-item">
+          <div class="icon">🔗</div>
+          <div>Get shareable links to send to team members</div>
+        </div>
+        <div class="feature-item">
+          <div class="icon">👁️</div>
+          <div>Preview and download files directly</div>
+        </div>
+        <div class="feature-item">
+          <div class="icon">📱</div>
+          <div>Works seamlessly on mobile and desktop</div>
+        </div>
+      </div>
+      
+      <div style="margin-top:24px;text-align:center">
+        <button class="btn large" id="chooserBtn" onclick="openDropboxChooser()">
+          📂 Browse Dropbox Files
+        </button>
+      </div>
+    </div>
+    
+    <!-- Selected Files Display -->
+    <div class="selected-files" id="selectedFilesSection" style="display:none">
+      <h2>📎 Selected Files</h2>
+      <div class="file-list" id="fileList"></div>
+    </div>
+    
+    <footer>
+      © <span id="year"></span> Comet Builders LLC • Powered by Dropbox
+    </footer>
+  </div>
+
+  <script>
+    (function(){
+      'use strict';
+      
+      let selectedFiles = [];
+      
+      function showToast(message, type){
+        const existing = document.querySelector('.toast');
+        if(existing) existing.remove();
+        
+        const toast = document.createElement('div');
+        toast.className = 'toast ' + (type || '');
+        const icon = type === 'success' ? '✓ ' : type === 'info' ? 'ℹ️ ' : '';
+        toast.textContent = icon + message;
+        document.body.appendChild(toast);
+        
+        setTimeout(() => toast.remove(), 3000);
+      }
+      
+      function getFileIcon(filename){
+        const ext = filename.split('.').pop().toLowerCase();
+        const iconMap = {
+          'pdf': '📄',
+          'doc': '📝', 'docx': '📝',
+          'xls': '📊', 'xlsx': '📊',
+          'ppt': '📊', 'pptx': '📊',
+          'jpg': '🖼️', 'jpeg': '🖼️', 'png': '🖼️', 'gif': '🖼️',
+          'zip': '🗜️', 'rar': '🗜️',
+          'dwg': '📐', 'dxf': '📐',
+          'txt': '📃'
+        };
+        return iconMap[ext] || '📁';
+      }
+      
+      function formatBytes(bytes){
+        if(bytes === 0) return '0 Bytes';
+        const k = 1024;
+        const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+        return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
+      }
+      
+      function renderFiles(){
+        const section = document.getElementById('selectedFilesSection');
+        const fileList = document.getElementById('fileList');
+        
+        if(!selectedFiles.length){
+          section.style.display = 'none';
+          return;
+        }
+        
+        section.style.display = 'block';
+        
+        fileList.innerHTML = selectedFiles.map((file, index) => `
+          <div class="file-item">
+            <div class="file-info">
+              <div class="file-icon">${getFileIcon(file.name)}</div>
+              <div class="file-details">
+                <div class="file-name">${file.name}</div>
+                <div class="file-meta">${formatBytes(file.bytes)} • Added ${new Date().toLocaleTimeString()}</div>
+              </div>
+            </div>
+            <div class="file-actions">
+              <a href="${file.link}" target="_blank" class="btn ghost" style="text-decoration:none">
+                👁️ View
+              </a>
+              <button class="btn ghost" onclick="removeFile(${index})">
+                🗑️ Remove
+              </button>
+            </div>
+          </div>
+        `).join('');
+      }
+      
+      window.openDropboxChooser = function(){
+        Dropbox.choose({
+          success: function(files) {
+            files.forEach(file => {
+              selectedFiles.push(file);
+            });
+            renderFiles();
+            showToast(`${files.length} file${files.length !== 1 ? 's' : ''} selected`, 'success');
+          },
+          cancel: function() {
+            // User canceled
+          },
+          linkType: "preview",
+          multiselect: true,
+          extensions: ['.pdf', '.doc', '.docx', '.xls', '.xlsx', '.jpg', '.jpeg', '.png', '.dwg', '.dxf', '.txt', '.zip'],
+          folderselect: false,
+          sizeLimit: 1024 * 1024 * 1024 // 1GB limit
+        });
+      };
+      
+      window.removeFile = function(index){
+        selectedFiles.splice(index, 1);
+        renderFiles();
+        showToast('File removed', 'info');
+      };
+      
+      // Initialize
+      document.addEventListener('DOMContentLoaded', function(){
+        document.getElementById('year').textContent = new Date().getFullYear();
+      });
+      
+    })();
+  </script>
+</body>
+</html>
