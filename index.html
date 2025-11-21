@@ -6,11 +6,13 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="Comet Hub">
-  <meta name="theme-color" content="#2563eb">
+  <meta name="theme-color" content="#1e3a8a">
   
-  <!-- App Icons for Home Screen -->
-  <link rel="apple-touch-icon" sizes="180x180" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'><rect width='180' height='180' fill='%232563eb' rx='40'/><path d='M90 40l15.6 31.8L144 78l-24 23.4 5.4 33.6L90 118.8 54.6 135l5.4-33.6L36 78l38.4-6.2L90 40z' fill='%23ffffff'/></svg>">
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%232563eb' rx='20'/><path d='M50 20l8.7 17.7L78 41l-13.3 13 3 19.7L50 66.3 32.3 73.7l3-19.7L22 41l19.3-3.3L50 20z' fill='%23ffffff'/></svg>">
+  <!-- App Icons for Home Screen - Updated with Comet Apartments Logo -->
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/comet_apartments_180x180.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="assets/comet_apartments_192x192.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="assets/comet_apartments_512x512.png">
+  <link rel="icon" type="image/svg+xml" href="assets/comet_apartments_logo.svg">
   
   <title>Comet — Site Reports Hub</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -73,10 +75,12 @@
       gap:14px;
     }
     
-    .brandmark svg{
-      width:42px;
-      height:42px;
+    .brandmark svg,
+    .brandmark img{
+      width:56px;
+      height:56px;
       filter:drop-shadow(0 2px 4px rgba(37,99,235,0.2));
+      border-radius:12px;
     }
     
     .brand-text{
@@ -394,9 +398,10 @@
         gap:12px;
       }
       
-      .brandmark svg{
-        width:36px;
-        height:36px;
+      .brandmark svg,
+      .brandmark img{
+        width:48px;
+        height:48px;
       }
       
       .brand{
@@ -586,15 +591,8 @@
   <div class="container">
     <header>
       <div class="brandmark">
-        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="Comet Builders Logo">
-          <path d="M12 2l2.6 5.3L20 8l-4 3.9.9 5.6L12 15.8 7.1 17.5 8 11.9 4 8l5.4-.7L12 2z" fill="url(#gradient)" opacity="1"/>
-          <defs>
-            <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" style="stop-color:#2563eb;stop-opacity:1" />
-              <stop offset="100%" style="stop-color:#3b82f6;stop-opacity:1" />
-            </linearGradient>
-          </defs>
-        </svg>
+        <!-- Updated Comet Apartments Logo -->
+        <img src="assets/comet_apartments_logo.svg" alt="Comet Builders Logo" onerror="this.style.display='none'">
         <div class="brand-text">
           <div class="brand">Comet Builders LLC</div>
           <div class="sub">Field Reporting Hub</div>
@@ -606,7 +604,7 @@
     <!-- Quick Stats -->
     <div class="stats-bar">
       <div class="stat-item">
-        <div class="stat-value">5</div>
+        <div class="stat-value">6</div>
         <div class="stat-label">Tools Available</div>
       </div>
       <div class="stat-item">
@@ -716,11 +714,11 @@
 
     <footer>
       <p>© <span id="year"></span> Comet Builders LLC. All rights reserved.</p>
-      <p style="margin-top:8px;font-size:0.85em">Need help? Contact your site supervisor or <a href="/cdn-cgi/l/email-protection#a9dadcd9d9c6dbdde9cac6c4ccddcbdcc0c5cdccdbda87cac6c4"><span class="__cf_email__" data-cfemail="82f1f7f2f2edf0f6c2e1edefe7f6e0f7ebeee6e7f0f1ace1edef">[email&#160;protected]</span></a></p>
+      <p style="margin-top:8px;font-size:0.85em">Need help? Contact your site supervisor or <a href="mailto:support@cometbuilders.com">support@cometbuilders.com</a></p>
     </footer>
   </div>
 
-  <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+  <script>
     // Set current year
     document.getElementById('year').textContent = new Date().getFullYear();
     
@@ -756,4 +754,14 @@
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
       anchor.addEventListener('click', function (e) {
         e.preventDefault();
-        const target = document.querySe
+        const target = document.querySelector(this.getAttribute('href'));
+        if(target){
+          target.scrollIntoView({
+            behavior: 'smooth'
+          });
+        }
+      });
+    });
+  </script>
+</body>
+</html>
