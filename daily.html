@@ -154,6 +154,11 @@
       border-color: rgba(16, 185, 129, 0.5);
     }
     
+    .save-status.unsaved{
+      background: rgba(239, 68, 68, 0.2);
+      border-color: rgba(239, 68, 68, 0.4);
+    }
+    
     .save-status .dot{
       width: 6px;
       height: 6px;
@@ -641,6 +646,8 @@
       background: var(--card);
       transition: all 0.2s ease;
       flex-wrap: wrap;
+      cursor: pointer;
+      user-select: none;
     }
     
     .history-item:hover{
@@ -656,6 +663,20 @@
       font-weight: 600;
       color: var(--text);
       margin-bottom: 0.25rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .history-item .title::before{
+      content: '▶';
+      font-size: 0.75rem;
+      color: var(--primary);
+      transition: transform 0.2s ease;
+    }
+    
+    .history-item.expanded .title::before{
+      transform: rotate(90deg);
     }
     
     .history-item .meta{
@@ -664,9 +685,17 @@
     }
     
     .history-item .actions-group{
-      display: flex;
+      display: none;
       gap: 0.5rem;
       flex-wrap: wrap;
+      width: 100%;
+      margin-top: 0.5rem;
+      padding-top: 0.75rem;
+      border-top: 1px solid var(--border);
+    }
+    
+    .history-item.expanded .actions-group{
+      display: flex;
     }
     
     .history-item .btn{
@@ -860,8 +889,18 @@
         padding: 0.875rem;
       }
       
+      .history-item .title{
+        font-size: 0.9375rem;
+      }
+      
       .history-item .actions-group{
         width: 100%;
+        gap: 0.5rem;
+      }
+      
+      .history-item .btn{
+        flex: 1 1 auto;
+        min-width: 0;
       }
     }
 
@@ -1193,6 +1232,7 @@
         <div class="dropdown" id="actionsDropdown">
           <button class="btn dropdown-toggle" id="actionsToggle">⚡ Actions</button>
           <div class="dropdown-menu" id="actionsMenu">
+            <button id="saveBtn" class="success">💾 Save Report</button>
             <button id="copyPrevBtn">📋 Copy Yesterday</button>
             <button id="newBtn">🆕 New Report</button>
             <button id="exportBtn">💾 Export JSON</button>
@@ -1434,7 +1474,7 @@
         <h2>Saved Reports</h2>
         <div class="tools">
           <button class="btn warn small" id="wipeAll">🗑️ Delete All Drafts</button>
-          <span class="muted">Reports saved in your browser. Export JSON for backup.</span>
+          <span class="muted">Click any report to expand and see actions. Export JSON for backup.</span>
         </div>
         <div id="history"></div>
       </div>
@@ -1717,7 +1757,7 @@
     function markUnsaved(){
       hasUnsavedChanges = true;
       updateSaveStatus('unsaved');
-      scheduleAutoSave();
+      // Auto-save disabled - user must manually save
     }
 
     function updateSaveStatus(status){
@@ -1732,15 +1772,18 @@
         textEl.textContent = 'Saving...';
       } else if(status === 'saved'){
         statusEl.classList.add('saved');
-        textEl.textContent = 'Saved';
+        textEl.textContent = 'Saved ✓';
         setTimeout(function(){
           if(statusEl.classList.contains('saved')){
             statusEl.className = 'save-status';
             textEl.textContent = 'Ready';
           }
-        }, 2500);
+        }, 3000);
+      } else if(status === 'unsaved'){
+        statusEl.classList.add('unsaved');
+        textEl.textContent = 'Unsaved Changes';
       } else {
-        textEl.textContent = 'Unsaved';
+        textEl.textContent = 'Ready';
       }
     }
 
@@ -1859,6 +1902,14 @@
 
     document.addEventListener('click', function(e){
       var btn = e.target.closest ? e.target.closest('button') : null;
+      
+      // Handle history item expansion
+      var historyItem = e.target.closest('.history-item');
+      if(historyItem && !btn){
+        historyItem.classList.toggle('expanded');
+        return;
+      }
+      
       if (!btn) return;
 
       if (btn.hasAttribute('data-remove')) {
@@ -1887,6 +1938,15 @@
       }
 
       switch (btn.id) {
+        case 'saveBtn':
+          var errors = validateForm();
+          if(errors.length){
+            showToast(errors[0], 'error');
+            return;
+          }
+          saveCurrentDraft(false);
+          break;
+
         case 'copyPrevBtn':
           if(confirm('Copy previous report as a template? This will replace current unsaved changes.')){
             copyPreviousReport();
@@ -2105,11 +2165,11 @@
           return '<div class="history-item">'+
             '<div class="info">'+
               '<div class="title">'+escapeHtml(projectName)+'</div>'+
-              '<div class="meta">'+escapeHtml(date)+' • Saved: '+saved+'</div>'+
+              '<div class="meta">'+escapeHtml(date)+' • Saved: '+saved+' • Click to expand</div>'+
             '</div>'+
             '<div class="actions-group">'+
-              '<button class="btn small" data-load="'+d.id+'">📂 Open</button>'+
-              '<button class="btn small danger" data-del="'+d.id+'">🗑️ Delete</button>'+
+              '<button class="btn small" data-load="'+d.id+'" onclick="event.stopPropagation()">📂 Open</button>'+
+              '<button class="btn small danger" data-del="'+d.id+'" onclick="event.stopPropagation()">🗑️ Delete</button>'+
             '</div>'+
           '</div>';
         }).join('');
@@ -2136,6 +2196,7 @@
       });
 
       window.addEventListener('beforeprint', function(){
+        // Auto-save before printing/PDF (this is intentional)
         saveCurrentDraft(true);
         // Change document title to the filename for PDF save/share
         if(window.pdfFilename){
