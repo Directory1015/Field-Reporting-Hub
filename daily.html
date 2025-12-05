@@ -915,14 +915,16 @@
     }
 
    /* ============================================
-   PRINT STYLES - FIXED VERSION
+ /* ============================================
+   PRINT STYLES - FIXED VERSION v2
    Replace your existing @media print section with this
+   WIDER TABLES - NO TEXT WRAPPING
    ============================================ */
 
 @media print {
   @page {
-    size: letter;
-    margin: 0.4in 0.5in;
+    size: letter landscape;
+    margin: 0.3in;
   }
 
   /* Hide UI elements */
@@ -951,8 +953,8 @@
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
     padding: 0 !important;
-    font-size: 9pt !important;
-    line-height: 1.4 !important;
+    font-size: 8pt !important;
+    line-height: 1.3 !important;
   }
 
   .wrap {
@@ -961,7 +963,7 @@
   }
 
   .grid {
-    gap: 0.5rem !important;
+    gap: 0.4rem !important;
   }
 
   .card {
@@ -970,23 +972,23 @@
     border: 1.5pt solid #000 !important;
     box-shadow: none !important;
     page-break-inside: avoid;
-    margin-bottom: 0.4rem;
-    padding: 0.5rem !important;
+    margin-bottom: 0.35rem;
+    padding: 0.4rem !important;
     border-radius: 0 !important;
   }
 
   .card h2 {
     page-break-after: avoid;
-    font-size: 10pt !important;
+    font-size: 9pt !important;
     font-weight: bold !important;
-    margin-bottom: 0.3rem !important;
+    margin-bottom: 0.25rem !important;
     color: #000 !important;
   }
 
   .card h2::before {
     background: #000 !important;
     width: 3px !important;
-    height: 1rem !important;
+    height: 0.9rem !important;
   }
 
   /* ===== FORM INPUTS - SHOW FULL TEXT ===== */
@@ -997,20 +999,18 @@
     color: #000 !important;
     border: 1pt solid #555 !important;
     -webkit-text-fill-color: #000 !important;
-    font-size: 9pt !important;
-    padding: 0.15rem 0.25rem !important;
+    font-size: 8pt !important;
+    padding: 0.1rem 0.2rem !important;
     overflow: visible !important;
     text-overflow: unset !important;
-    white-space: pre-wrap !important;
-    word-wrap: break-word !important;
-    word-break: break-word !important;
+    white-space: nowrap !important;
     height: auto !important;
-    min-height: 1.2em !important;
+    min-height: 1em !important;
     max-height: none !important;
     border-radius: 0 !important;
   }
 
-  /* Textareas show all content */
+  /* Textareas can wrap since they have longer content */
   textarea {
     min-height: auto !important;
     height: auto !important;
@@ -1023,9 +1023,9 @@
   .row {
     display: grid !important;
     grid-template-columns: repeat(12, 1fr) !important;
-    gap: 0.25rem !important;
+    gap: 0.2rem !important;
     page-break-inside: avoid;
-    margin-bottom: 0.3rem !important;
+    margin-bottom: 0.25rem !important;
   }
 
   .row > div {
@@ -1033,27 +1033,27 @@
   }
 
   label {
-    font-size: 7pt !important;
+    font-size: 6pt !important;
     font-weight: bold !important;
-    margin-bottom: 0.1rem !important;
+    margin-bottom: 0.05rem !important;
     color: #000 !important;
     text-transform: uppercase !important;
   }
 
-  /* ===== TABLES - SHOW ALL CONTENT ===== */
+  /* ===== TABLES - WIDER, NO WRAPPING ===== */
   .table-wrap {
     overflow: visible !important;
     border: none !important;
-    margin: 0.25rem 0 !important;
+    margin: 0.2rem 0 !important;
     border-radius: 0 !important;
   }
 
   table {
     width: 100% !important;
     min-width: 0 !important;
-    font-size: 8pt !important;
+    font-size: 7pt !important;
     page-break-inside: auto;
-    table-layout: fixed !important;
+    table-layout: auto !important;
     border-collapse: collapse !important;
   }
 
@@ -1074,40 +1074,42 @@
   td {
     border: 1pt solid #000 !important;
     color: #000 !important;
-    padding: 0.15rem 0.2rem !important;
-    font-size: 8pt !important;
-    white-space: pre-wrap !important;
-    word-wrap: break-word !important;
-    word-break: break-word !important;
+    padding: 0.1rem 0.15rem !important;
+    font-size: 7pt !important;
+    white-space: nowrap !important;
     overflow: visible !important;
     vertical-align: top !important;
-    max-width: none !important;
   }
 
   th {
     background: #ddd !important;
     color: #000 !important;
     font-weight: bold !important;
-    font-size: 7pt !important;
+    font-size: 6pt !important;
     text-transform: uppercase !important;
   }
 
-  /* Table inputs - SHOW ALL TEXT */
+  /* Table inputs - NO WRAPPING */
   td input,
   td textarea,
   td select {
-    font-size: 8pt !important;
-    padding: 0.1rem !important;
+    font-size: 7pt !important;
+    padding: 0.05rem !important;
     width: 100% !important;
     border: none !important;
     background: transparent !important;
     overflow: visible !important;
-    white-space: pre-wrap !important;
-    word-wrap: break-word !important;
-    word-break: break-word !important;
+    white-space: nowrap !important;
     height: auto !important;
     min-height: auto !important;
     max-height: none !important;
+  }
+
+  /* Only Notes column can wrap */
+  td:nth-child(7) textarea,
+  td:nth-child(5) textarea {
+    white-space: pre-wrap !important;
+    word-wrap: break-word !important;
   }
 
   td textarea.grow {
@@ -1130,9 +1132,9 @@
   /* ===== KPI BOXES ===== */
   .kpi {
     display: flex !important;
-    gap: 0.25rem !important;
+    gap: 0.2rem !important;
     page-break-inside: avoid;
-    margin-top: 0.3rem !important;
+    margin-top: 0.25rem !important;
   }
 
   .kpi .box {
@@ -1140,25 +1142,25 @@
     color: #000 !important;
     border: 1.5pt solid #000 !important;
     flex: 1;
-    padding: 0.25rem !important;
+    padding: 0.2rem !important;
     min-height: auto !important;
     border-radius: 0 !important;
   }
 
   .kpi .box label {
     color: #000 !important;
-    font-size: 6pt !important;
+    font-size: 5pt !important;
   }
 
   .kpi .box b {
     color: #000 !important;
-    font-size: 12pt !important;
+    font-size: 11pt !important;
   }
 
   /* ===== PHOTOS ===== */
   .gallery {
-    grid-template-columns: repeat(4, 1fr) !important;
-    gap: 0.25rem !important;
+    grid-template-columns: repeat(5, 1fr) !important;
+    gap: 0.2rem !important;
     page-break-inside: avoid;
   }
 
@@ -1172,7 +1174,7 @@
   }
 
   .photo-item img {
-    max-height: 90px !important;
+    max-height: 80px !important;
   }
 }
   </style>
