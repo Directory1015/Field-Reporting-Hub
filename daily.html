@@ -915,35 +915,15 @@
     }
 
  /* ============================================
-   PRINT STYLES - FIXED VERSION v3
+   PRINT STYLES - DAILY REPORTS v4
    Replace your existing @media print section with this
-   FIXES: Sign-off boxes showing full text
+   INCLUDES: Header with logo on print
    ============================================ */
 
 @media print {
   @page {
     size: letter portrait;
     margin: 0.35in;
-  }
-
-  /* Hide UI elements */
-  header,
-  .actions,
-  .tools,
-  .btn,
-  .save-status,
-  .offline-banner,
-  .modal,
-  .dropdown,
-  .toast {
-    display: none !important;
-  }
-
-  /* HIDE SAVED REPORTS SECTION */
-  #historyCard,
-  #history,
-  .history-item {
-    display: none !important;
   }
 
   body {
@@ -954,6 +934,70 @@
     padding: 0 !important;
     font-size: 8pt !important;
     line-height: 1.3 !important;
+  }
+
+  /* ===== HEADER - SHOW WITH LOGO ===== */
+  header {
+    display: block !important;
+    position: static !important;
+    box-shadow: none !important;
+    background: #1e293b !important;
+    padding: 0.4rem 0.5rem !important;
+    margin-bottom: 0.4rem !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .header-content {
+    max-width: 100% !important;
+  }
+
+  .brand {
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.5rem !important;
+    margin-bottom: 0 !important;
+  }
+
+  .logo-container {
+    width: 40px !important;
+    height: 40px !important;
+    flex-shrink: 0 !important;
+  }
+
+  .logo-container svg {
+    width: 100% !important;
+    height: 100% !important;
+  }
+
+  .brand-text h1 {
+    font-size: 12pt !important;
+    color: white !important;
+    margin: 0 !important;
+  }
+
+  .brand-text .subtitle {
+    font-size: 9pt !important;
+    color: #fbbf24 !important;
+  }
+
+  /* Hide action buttons but keep header */
+  .actions,
+  .dropdown,
+  .save-status,
+  .btn,
+  .tools,
+  .offline-banner,
+  .modal,
+  .toast {
+    display: none !important;
+  }
+
+  /* HIDE SAVED REPORTS SECTION */
+  #historyCard,
+  #history,
+  .history-item {
+    display: none !important;
   }
 
   .wrap {
@@ -1050,10 +1094,9 @@
     margin-bottom: 0.05rem !important;
     color: #000 !important;
     text-transform: uppercase !important;
-    white-space: nowrap !important;
   }
 
-  /* ===== TABLES - AUTO WIDTH ===== */
+  /* ===== TABLES - SHOW ALL CONTENT ===== */
   .table-wrap {
     overflow: visible !important;
     border: none !important;
@@ -1100,6 +1143,8 @@
     font-weight: bold !important;
     font-size: 6pt !important;
     text-transform: uppercase !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
   }
 
   /* Table inputs */
@@ -1194,6 +1239,13 @@
 
   .photo-item img {
     max-height: 80px !important;
+  }
+}
+
+/* Hide history section - backup rule */
+@media print {
+  .card:nth-last-child(1) {
+    display: none !important;
   }
 }
   </style>
