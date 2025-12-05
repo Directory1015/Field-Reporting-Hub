@@ -914,17 +914,16 @@
       }
     }
 
-   /* ============================================
  /* ============================================
-   PRINT STYLES - FIXED VERSION v2
+   PRINT STYLES - FIXED VERSION v3
    Replace your existing @media print section with this
-   WIDER TABLES - NO TEXT WRAPPING
+   FIXES: Sign-off boxes showing full text
    ============================================ */
 
 @media print {
   @page {
-    size: letter landscape;
-    margin: 0.3in;
+    size: letter portrait;
+    margin: 0.35in;
   }
 
   /* Hide UI elements */
@@ -991,45 +990,58 @@
     height: 0.9rem !important;
   }
 
-  /* ===== FORM INPUTS - SHOW FULL TEXT ===== */
+  /* ===== ROW LAYOUT - FULL WIDTH FOR FORM FIELDS ===== */
+  .row {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 0.3rem !important;
+    page-break-inside: avoid;
+    margin-bottom: 0.25rem !important;
+  }
+
+  .row > div {
+    flex: 1 1 auto !important;
+    min-width: 120px !important;
+    overflow: visible !important;
+  }
+
+  /* ===== FORM INPUTS - SHOW FULL TEXT, NO CLIPPING ===== */
   input,
-  select,
+  select {
+    background: white !important;
+    color: #000 !important;
+    border: 1pt solid #555 !important;
+    -webkit-text-fill-color: #000 !important;
+    font-size: 8pt !important;
+    padding: 0.15rem 0.2rem !important;
+    overflow: visible !important;
+    text-overflow: unset !important;
+    white-space: nowrap !important;
+    height: auto !important;
+    min-height: 1.2em !important;
+    max-height: none !important;
+    border-radius: 0 !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Textareas can wrap since they have longer content */
   textarea {
     background: white !important;
     color: #000 !important;
     border: 1pt solid #555 !important;
     -webkit-text-fill-color: #000 !important;
     font-size: 8pt !important;
-    padding: 0.1rem 0.2rem !important;
-    overflow: visible !important;
-    text-overflow: unset !important;
-    white-space: nowrap !important;
-    height: auto !important;
-    min-height: 1em !important;
-    max-height: none !important;
-    border-radius: 0 !important;
-  }
-
-  /* Textareas can wrap since they have longer content */
-  textarea {
+    padding: 0.15rem 0.2rem !important;
     min-height: auto !important;
     height: auto !important;
     overflow: visible !important;
     resize: none !important;
     white-space: pre-wrap !important;
-  }
-
-  /* Row layout for print */
-  .row {
-    display: grid !important;
-    grid-template-columns: repeat(12, 1fr) !important;
-    gap: 0.2rem !important;
-    page-break-inside: avoid;
-    margin-bottom: 0.25rem !important;
-  }
-
-  .row > div {
-    overflow: visible !important;
+    word-wrap: break-word !important;
+    border-radius: 0 !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
   }
 
   label {
@@ -1038,9 +1050,10 @@
     margin-bottom: 0.05rem !important;
     color: #000 !important;
     text-transform: uppercase !important;
+    white-space: nowrap !important;
   }
 
-  /* ===== TABLES - WIDER, NO WRAPPING ===== */
+  /* ===== TABLES - AUTO WIDTH ===== */
   .table-wrap {
     overflow: visible !important;
     border: none !important;
@@ -1089,9 +1102,8 @@
     text-transform: uppercase !important;
   }
 
-  /* Table inputs - NO WRAPPING */
+  /* Table inputs */
   td input,
-  td textarea,
   td select {
     font-size: 7pt !important;
     padding: 0.05rem !important;
@@ -1105,11 +1117,18 @@
     max-height: none !important;
   }
 
-  /* Only Notes column can wrap */
-  td:nth-child(7) textarea,
-  td:nth-child(5) textarea {
+  td textarea {
+    font-size: 7pt !important;
+    padding: 0.05rem !important;
+    width: 100% !important;
+    border: none !important;
+    background: transparent !important;
+    overflow: visible !important;
     white-space: pre-wrap !important;
     word-wrap: break-word !important;
+    height: auto !important;
+    min-height: auto !important;
+    max-height: none !important;
   }
 
   td textarea.grow {
