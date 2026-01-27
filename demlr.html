@@ -16,7 +16,10 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
   <style>
     :root{
-      --ink:#0f172a; --bg:#ffffff; --card:#ffffff; --muted:#6b7280; --border:#e5e7eb; --ok:#16a34a;
+      --ink:#0f172a; --bg:#ffffff; --card:#ffffff; --muted:#6b7280; --border:#e5e7eb; --ok:#16a34a; --warn:#b45309; --danger:#dc2626;
+    }
+    [data-theme="dark"]{
+      --ink:#f1f5f9; --bg:#0f172a; --card:#1e293b; --muted:#94a3b8; --border:#334155; --ok:#22c55e; --warn:#f59e0b; --danger:#ef4444;
     }
     *{box-sizing:border-box}
     html{
@@ -36,37 +39,51 @@
     a{color:#0ea5e9;text-decoration:none}
     .wrap{max-width:1100px;margin:0 auto;padding:24px}
 
-    header{position:sticky;top:0;z-index:5;background:#fff;border-bottom:1px solid var(--border)}
-    .top{display:flex;align-items:center;gap:14px;max-width:1100px;margin:0 auto;padding:14px 24px}
+    header{position:sticky;top:0;z-index:5;background:var(--card);border-bottom:1px solid var(--border)}
+    .top{display:flex;align-items:center;gap:14px;max-width:1100px;margin:0 auto;padding:14px 24px;flex-wrap:wrap}
     .brand{font-weight:800}
     .actions{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap}
     button,.btn{
       border:1px solid var(--border);
-      background:#fff;
+      background:var(--card);
       color:var(--ink);
       padding:10px 14px;
       border-radius:10px;
       cursor:pointer;
-      display:inline-block;
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
       text-decoration:none;
+      font-size:14px;
       -webkit-tap-highlight-color:transparent;
       touch-action:manipulation;
       user-select:none;
       -webkit-user-select:none;
     }
-    button:hover,.btn:hover{background:#f3f4f6}
+    button:hover,.btn:hover{background:var(--border)}
     button:active,.btn:active{transform:scale(0.96)}
-    .btn.primary{background:var(--ink);color:#fff;border-color:var(--ink)}
+    .btn.primary{background:var(--ink);color:var(--bg);border-color:var(--ink)}
     .btn.ok{background:var(--ok);color:#fff;border-color:var(--ok)}
-    .btn.warn{background:#b45309;color:#fff;border-color:#b45309}
-    .btn.ghost{background:#fff;border-color:var(--border)}
+    .btn.warn{background:var(--warn);color:#fff;border-color:var(--warn)}
+    .btn.danger{background:var(--danger);color:#fff;border-color:var(--danger)}
+    .btn.ghost{background:var(--card);border-color:var(--border)}
+    .btn.small{padding:6px 10px;font-size:12px}
     .muted{color:var(--muted);font-size:12px}
 
     .grid{display:grid;gap:16px;grid-template-columns:repeat(12,1fr)}
-    .card{grid-column:span 12;background:var(--card);border:1px solid var(--border);border-radius:16px;padding:16px}
-    .card h2{font-size:16px;margin:0 0 12px 0}
+    .card{grid-column:span 12;background:var(--card);border:1px solid var(--border);border-radius:16px;padding:16px;transition:all 0.2s}
+    .card h2{font-size:16px;margin:0 0 12px 0;display:flex;align-items:center;gap:10px;cursor:pointer}
+    .card h2 .toggle{font-size:12px;color:var(--muted);transition:transform 0.2s}
+    .card.collapsed .toggle{transform:rotate(-90deg)}
+    .card.collapsed .card-content{display:none}
+    .card-content{transition:all 0.2s}
     .row{display:grid;grid-template-columns:repeat(12,1fr);gap:12px;margin-bottom:10px}
-    label{font-size:12px;color:var(--muted)}
+    label{font-size:12px;color:var(--muted);display:block;margin-bottom:4px}
+
+    /* Status indicator */
+    .status{position:fixed;bottom:20px;right:20px;padding:10px 16px;border-radius:10px;font-size:12px;background:var(--ok);color:#fff;opacity:0;transition:opacity 0.3s;z-index:100}
+    .status.show{opacity:1}
+    .status.error{background:var(--danger)}
 
     /* Inputs */
     input[type="text"],input[type="number"],input[type="date"],input[type="datetime-local"],
@@ -75,13 +92,15 @@
       padding:10px 12px;
       border-radius:10px;
       border:1px solid var(--border);
-      background:#fff;
+      background:var(--card);
       color:var(--ink);
       font-size:16px;
       -webkit-appearance:none;
       appearance:none;
     }
-    textarea{min-height:110px;resize:vertical}
+    input:focus,select:focus,textarea:focus{outline:2px solid #0ea5e9;outline-offset:-1px}
+    input.invalid,select.invalid,textarea.invalid{border-color:var(--danger);background:rgba(220,38,38,0.05)}
+    textarea{min-height:80px;resize:vertical}
     .checklist{display:grid;gap:8px}
     .checklist label{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--ink)}
     .checklist input[type="checkbox"]{width:20px;height:20px;accent-color:var(--ink)}
@@ -90,10 +109,10 @@
     /* Tables */
     table{width:100%;border-collapse:collapse;table-layout:fixed}
     th,td{border:1px solid var(--border);padding:8px;text-align:left;vertical-align:top;overflow-wrap:anywhere;word-break:normal;white-space:normal}
-    th{background:#f8fafc}
+    th{background:var(--bg)}
     .tight td,.tight th{padding:6px}
     .small{font-size:12px;color:var(--muted)}
-    .info{background:#f8fafc;border:1px solid var(--border);border-radius:10px;padding:10px}
+    .info{background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:10px}
 
     /* Scroll wrapper for wide tables */
     .scrollwrap{overflow:auto;margin-top:8px;border-radius:10px;-webkit-overflow-scrolling:touch}
@@ -107,6 +126,16 @@
       -webkit-tap-highlight-color:transparent;
     }
     .ynna-cell input[type="radio"]{width:20px;height:20px;accent-color:currentColor}
+
+    /* Template modal */
+    .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:50;display:none;align-items:center;justify-content:center;padding:20px}
+    .modal-overlay.show{display:flex}
+    .modal{background:var(--card);border-radius:16px;padding:24px;max-width:500px;width:100%;max-height:80vh;overflow:auto}
+    .modal h3{margin:0 0 16px 0}
+    .modal-actions{display:flex;gap:8px;margin-top:16px;justify-content:flex-end}
+
+    /* Dark mode toggle */
+    .theme-toggle{background:none;border:none;font-size:20px;cursor:pointer;padding:8px}
 
     /* Mobile optimizations */
     @media (max-width:900px){
@@ -171,6 +200,7 @@
       
       .actions .btn{
         width:100%;
+        justify-content:center;
       }
     }
 
@@ -184,9 +214,10 @@
 
     /* PRINT: unclip, let tables break nicely with repeating headers */
     @media print{
-      header,.actions,.tools,.btn{display:none !important}
+      header,.actions,.tools,.btn,.theme-toggle,.status{display:none !important}
       body{background:#fff !important;color:#000 !important;padding:0 !important}
-      .card{break-inside:avoid;border:1px solid #000 !important}
+      .card{break-inside:avoid;border:1px solid #000 !important;background:#fff !important}
+      .card.collapsed .card-content{display:block !important}
       .scrollwrap{overflow:visible !important}
       table{width:100% !important;min-width:auto !important}
       thead{display:table-header-group}
@@ -203,270 +234,342 @@
   <header>
     <div class="top">
       <div class="brand">DEMLR Monitoring</div>
+      <button type="button" class="theme-toggle" id="themeToggle" title="Toggle dark mode">🌙</button>
       <div class="actions">
-        <a class="btn ghost" href="index.html">Home</a>
-        <a class="btn ghost" href="daily.html">Daily Reports</a>
-        <button type="button" class="btn primary" id="saveBtn">Save Draft</button>
-        <button type="button" class="btn" id="newBtn">New</button>
-        <button type="button" class="btn ok" id="printBtn">Print / PDF</button>
+        <button type="button" class="btn ghost" id="templateBtn">📋 Templates</button>
+        <button type="button" class="btn ghost" id="copyPrevBtn">📄 Copy Previous</button>
+        <button type="button" class="btn primary" id="saveBtn">💾 Save Draft</button>
+        <button type="button" class="btn" id="newBtn">✨ New</button>
+        <button type="button" class="btn ok" id="printBtn">🖨️ Print / PDF</button>
       </div>
     </div>
   </header>
 
+  <div class="status" id="status">Saved</div>
+
+  <!-- Template Modal -->
+  <div class="modal-overlay" id="templateModal">
+    <div class="modal">
+      <h3>Project Templates</h3>
+      <p class="small">Save project info as a template to quickly start new inspections.</p>
+      <div id="templateList"></div>
+      <div class="modal-actions">
+        <button type="button" class="btn" id="saveTemplateBtn">💾 Save Current as Template</button>
+        <button type="button" class="btn ghost" id="closeTemplateBtn">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Copy Previous Modal -->
+  <div class="modal-overlay" id="copyModal">
+    <div class="modal">
+      <h3>Copy Previous Inspection</h3>
+      <p class="small">Select a previous inspection to copy Part 3 measures from. Dates and Y/N fields will be cleared.</p>
+      <div id="copyList"></div>
+      <div class="modal-actions">
+        <button type="button" class="btn ghost" id="closeCopyBtn">Close</button>
+      </div>
+    </div>
+  </div>
+
   <div class="wrap">
     <section class="grid">
       <!-- Project Meta -->
-      <div class="card">
-        <h2>Project Information</h2>
-        <div class="row">
-          <div style="grid-column:span 6"><label for="project_name">Project Name</label><input id="project_name" placeholder="e.g., Comet Pittsboro"/></div>
-          <div style="grid-column:span 3"><label for="permit_no">Project/Permit #</label><input id="permit_no"/></div>
-          <div style="grid-column:span 3"><label for="authority">Land Quality / Local Program (Approving Authority)</label><input id="authority"/></div>
+      <div class="card" data-section="project">
+        <h2><span class="toggle">▼</span> Project Information</h2>
+        <div class="card-content">
+          <div class="row">
+            <div style="grid-column:span 6"><label for="project_name">Project Name <span style="color:var(--danger)">*</span></label><input id="project_name" placeholder="e.g., Comet Pittsboro" required/></div>
+            <div style="grid-column:span 3"><label for="permit_no">Project/Permit #</label><input id="permit_no"/></div>
+            <div style="grid-column:span 3"><label for="authority">Land Quality / Local Program (Approving Authority)</label><input id="authority"/></div>
+          </div>
+          <div class="row">
+            <div style="grid-column:span 3"><label for="plan_approval">Date of Plan Approval</label><input id="plan_approval" type="date"/></div>
+            <div style="grid-column:span 3"><label for="expiration">Expiration Date (if applicable)</label><input id="expiration" type="date"/></div>
+            <div style="grid-column:span 3"><label for="coc_number">NCG010000 Certificate of Coverage #</label><input id="coc_number"/></div>
+            <div style="grid-column:span 3"><label for="coc_date">Date of COC Issuance</label><input id="coc_date" type="date"/></div>
+          </div>
+          <div class="small">Coverage under the NCG010000 permit must be renewed annually, if issued after April 1, 2019 until Notice of Termination is filed and approved.</div>
         </div>
-        <div class="row">
-          <div style="grid-column:span 3"><label for="plan_approval">Date of Plan Approval</label><input id="plan_approval" type="date"/></div>
-          <div style="grid-column:span 3"><label for="expiration">Expiration Date (if applicable)</label><input id="expiration" type="date"/></div>
-          <div style="grid-column:span 3"><label for="coc_number">NCG010000 Certificate of Coverage #</label><input id="coc_number"/></div>
-          <div style="grid-column:span 3"><label for="coc_date">Date of COC Issuance</label><input id="coc_date" type="date"/></div>
-        </div>
-        <div class="small">Coverage under the NCG010000 permit must be renewed annually, if issued after April 1, 2019 until Notice of Termination is filed and approved.</div>
       </div>
 
       <!-- Part 1A -->
-      <div class="card">
-        <h2>Part 1A — Rainfall Data (inches)</h2>
-        <div class="row">
-          <div style="grid-column:span 1"><label for="rain_mon">Mon</label><input id="rain_mon" type="number" step="0.01"></div>
-          <div style="grid-column:span 1"><label for="rain_tue">Tue</label><input id="rain_tue" type="number" step="0.01"></div>
-          <div style="grid-column:span 1"><label for="rain_wed">Wed</label><input id="rain_wed" type="number" step="0.01"></div>
-          <div style="grid-column:span 1"><label for="rain_thu">Thu</label><input id="rain_thu" type="number" step="0.01"></div>
-          <div style="grid-column:span 1"><label for="rain_fri">Fri</label><input id="rain_fri" type="number" step="0.01"></div>
-          <div style="grid-column:span 1"><label for="rain_sat">Sat (Optional)</label><input id="rain_sat" type="number" step="0.01"></div>
-          <div style="grid-column:span 1"><label for="rain_sun">Sun (Optional)</label><input id="rain_sun" type="number" step="0.01"></div>
+      <div class="card" data-section="rainfall">
+        <h2><span class="toggle">▼</span> Part 1A — Rainfall Data (inches)</h2>
+        <div class="card-content">
+          <div class="row">
+            <div style="grid-column:span 3"><label for="week_of">Week Of <span style="color:var(--danger)">*</span></label><input id="week_of" type="date" required/></div>
+            <div style="grid-column:span 3"><label for="week_end">Week Ending</label><input id="week_end" type="date"/></div>
+          </div>
+          <div class="row">
+            <div style="grid-column:span 1"><label for="rain_mon">Mon</label><input id="rain_mon" type="number" step="0.01"></div>
+            <div style="grid-column:span 1"><label for="rain_tue">Tue</label><input id="rain_tue" type="number" step="0.01"></div>
+            <div style="grid-column:span 1"><label for="rain_wed">Wed</label><input id="rain_wed" type="number" step="0.01"></div>
+            <div style="grid-column:span 1"><label for="rain_thu">Thu</label><input id="rain_thu" type="number" step="0.01"></div>
+            <div style="grid-column:span 1"><label for="rain_fri">Fri</label><input id="rain_fri" type="number" step="0.01"></div>
+            <div style="grid-column:span 1"><label for="rain_sat">Sat</label><input id="rain_sat" type="number" step="0.01"></div>
+            <div style="grid-column:span 1"><label for="rain_sun">Sun</label><input id="rain_sun" type="number" step="0.01"></div>
+            <div style="grid-column:span 2"><label>Weekly Total</label><input id="rain_total" type="text" readonly style="background:var(--bg)"/></div>
+          </div>
         </div>
       </div>
 
       <!-- Part 1B -->
-      <div class="card">
-        <h2>Part 1B — Phase(s) of the Plan</h2>
-        <div class="checklist">
-          <label><input type="checkbox" id="phase_install"> Initial installation of erosion and sediment control measures</label>
-          <label><input type="checkbox" id="phase_cg"> Clearing &amp; grubbing of existing ground cover</label>
-          <label><input type="checkbox" id="phase_grading"> Completion of any grading that requires ground cover</label>
-          <label><input type="checkbox" id="phase_complete"> Completion of all land-disturbing activity, construction or development</label>
-          <label><input type="checkbox" id="phase_permcover"> Permanent ground cover sufficient to restrain erosion has been established</label>
-        </div>
-        <div class="row" style="margin-top:10px">
-          <div style="grid-column:span 12"><label for="limits">Any site or project conditions that limit completion of inspection? If yes, explain areas that were inaccessible.</label><textarea id="limits"></textarea></div>
+      <div class="card" data-section="phase">
+        <h2><span class="toggle">▼</span> Part 1B — Phase(s) of the Plan</h2>
+        <div class="card-content">
+          <div class="checklist">
+            <label><input type="checkbox" id="phase_install"> Initial installation of erosion and sediment control measures</label>
+            <label><input type="checkbox" id="phase_cg"> Clearing &amp; grubbing of existing ground cover</label>
+            <label><input type="checkbox" id="phase_grading"> Completion of any grading that requires ground cover</label>
+            <label><input type="checkbox" id="phase_complete"> Completion of all land-disturbing activity, construction or development</label>
+            <label><input type="checkbox" id="phase_permcover"> Permanent ground cover sufficient to restrain erosion has been established</label>
+          </div>
+          <div class="row" style="margin-top:10px">
+            <div style="grid-column:span 12"><label for="limits">Any site or project conditions that limit completion of inspection? If yes, explain areas that were inaccessible.</label><textarea id="limits"></textarea></div>
+          </div>
         </div>
       </div>
 
       <!-- Part 2 -->
-      <div class="card">
-        <h2>Part 2 — Stormwater Plans &amp; Controls</h2>
-        <div class="small">For each item, select Y / N / N/A. All "No" items should be referenced and corrected in Part 3A.</div>
+      <div class="card" data-section="controls">
+        <h2><span class="toggle">▼</span> Part 2 — Stormwater Plans &amp; Controls</h2>
+        <div class="card-content">
+          <div class="small">For each item, select Y / N / N/A. All "No" items should be referenced and corrected in Part 3A.</div>
 
-        <!-- 2A -->
-        <h3 class="small" style="margin-top:12px">Part 2A: Storm Water Plans and Related Documents</h3>
-        <table class="tight" id="part2aTable">
-          <thead>
-            <tr><th style="width:60px">Ref</th><th>Question</th><th style="width:70px">Yes</th><th style="width:70px">No</th><th style="width:70px">N/A</th></tr>
-          </thead>
+          <!-- 2A -->
+          <h3 class="small" style="margin-top:12px">Part 2A: Storm Water Plans and Related Documents</h3>
+          <table class="tight" id="part2aTable">
+            <thead>
+              <tr><th style="width:60px">Ref</th><th>Question</th><th style="width:70px">Yes</th><th style="width:70px">No</th><th style="width:70px">N/A</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>A</td>
+                <td>Is the approval letter or certificate, COC and a copy of the NPDES CGP on site? (Electronic CGP acceptable)</td>
+                <td class="ynna-cell"><label class="selector" for="p2a_0_y"><input id="p2a_0_y" type="radio" name="p2a_0" value="Y"></label></td>
+                <td class="ynna-cell"><label class="selector" for="p2a_0_n"><input id="p2a_0_n" type="radio" name="p2a_0" value="N"></label></td>
+                <td class="ynna-cell"><label class="selector" for="p2a_0_na"><input id="p2a_0_na" type="radio" name="p2a_0" value="NA"></label></td>
+              </tr>
+              <tr>
+                <td>B</td>
+                <td>Is the approved plan on site and current?</td>
+                <td class="ynna-cell"><label class="selector" for="p2a_1_y"><input id="p2a_1_y" type="radio" name="p2a_1" value="Y"></label></td>
+                <td class="ynna-cell"><label class="selector" for="p2a_1_n"><input id="p2a_1_n" type="radio" name="p2a_1" value="N"></label></td>
+                <td class="ynna-cell"><label class="selector" for="p2a_1_na"><input id="p2a_1_na" type="radio" name="p2a_1" value="NA"></label></td>
+              </tr>
+            </tbody>
+          </table>
+
+          <!-- 2B -->
+          <h3 class="small" style="margin-top:12px">Part 2B: Stormwater Pollutant Controls</h3>
+          <table class="tight" id="part2bTable">
+            <thead>
+              <tr><th style="width:60px">Ref</th><th>Question</th><th style="width:70px">Yes</th><th style="width:70px">No</th><th style="width:70px">N/A</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>C</td><td>Are erosion and sediment controls shown on the approved plan installed and operating properly with no repairs needed?</td><td class="ynna-cell"><label class="selector" for="p2b_0_y"><input id="p2b_0_y" type="radio" name="p2b_0" value="Y"></label></td><td class="ynna-cell"><label class="selector" for="p2b_0_n"><input id="p2b_0_n" type="radio" name="p2b_0" value="N"></label></td><td class="ynna-cell"><label class="selector" for="p2b_0_na"><input id="p2b_0_na" type="radio" name="p2b_0" value="NA"></label></td></tr>
+              <tr><td>D</td><td>Are stormwater controls shown on the approved plan installed and operating properly with no repairs needed?</td><td class="ynna-cell"><label class="selector" for="p2b_1_y"><input id="p2b_1_y" type="radio" name="p2b_1" value="Y"></label></td><td class="ynna-cell"><label class="selector" for="p2b_1_n"><input id="p2b_1_n" type="radio" name="p2b_1" value="N"></label></td><td class="ynna-cell"><label class="selector" for="p2b_1_na"><input id="p2b_1_na" type="radio" name="p2b_1" value="NA"></label></td></tr>
+              <tr><td>E</td><td>Vehicle Tracking: Are construction entrances operating properly with no repairs needed?</td><td class="ynna-cell"><label class="selector" for="p2b_2_y"><input id="p2b_2_y" type="radio" name="p2b_2" value="Y"></label></td><td class="ynna-cell"><label class="selector" for="p2b_2_n"><input id="p2b_2_n" type="radio" name="p2b_2" value="N"></label></td><td class="ynna-cell"><label class="selector" for="p2b_2_na"><input id="p2b_2_na" type="radio" name="p2b_2" value="NA"></label></td></tr>
+              <tr><td>F</td><td>Soil Stabilization: Are areas where construction activities have ceased properly stabilized within required timeframes?</td><td class="ynna-cell"><label class="selector" for="p2b_3_y"><input id="p2b_3_y" type="radio" name="p2b_3" value="Y"></label></td><td class="ynna-cell"><label class="selector" for="p2b_3_n"><input id="p2b_3_n" type="radio" name="p2b_3" value="N"></label></td><td class="ynna-cell"><label class="selector" for="p2b_3_na"><input id="p2b_3_na" type="radio" name="p2b_3" value="NA"></label></td></tr>
+              <tr><td>G</td><td>Are earthen stockpiles stabilized or otherwise protected, and located at least 50 ft away or downhill from drain inlets and surface waters?</td><td class="ynna-cell"><label class="selector" for="p2b_4_y"><input id="p2b_4_y" type="radio" name="p2b_4" value="Y"></label></td><td class="ynna-cell"><label class="selector" for="p2b_4_n"><input id="p2b_4_n" type="radio" name="p2b_4" value="N"></label></td><td class="ynna-cell"><label class="selector" for="p2b_4_na"><input id="p2b_4_na" type="radio" name="p2b_4" value="NA"></label></td></tr>
+            </tbody>
+          </table>
+          <div class="small info" style="margin-top:8px">Report oil spills and releases of hazardous substances to the appropriate DEQ Regional Office within 24 hours of discovery.</div>
+
+          <!-- 2C -->
+          <h3 class="small" style="margin-top:12px">Part 2C: Non-Storm Water Pollutant Controls</h3>
+          <table class="tight" id="part2cTable">
+            <thead>
+              <tr><th style="width:60px">Ref</th><th>Question</th><th style="width:70px">Yes</th><th style="width:70px">No</th><th style="width:70px">N/A</th></tr>
+            </thead>
           <tbody>
-            <tr>
-              <td>A</td>
-              <td>Is the approval letter or certificate, COC and a copy of the NPDES CGP on site? (Electronic CGP acceptable)</td>
-              <td class="ynna-cell"><label class="selector" for="p2a_0_y"><input id="p2a_0_y" type="radio" name="p2a_0" value="Y"></label></td>
-              <td class="ynna-cell"><label class="selector" for="p2a_0_n"><input id="p2a_0_n" type="radio" name="p2a_0" value="N"></label></td>
-              <td class="ynna-cell"><label class="selector" for="p2a_0_na"><input id="p2a_0_na" type="radio" name="p2a_0" value="NA"></label></td>
-            </tr>
-            <tr>
-              <td>B</td>
-              <td>Is the approved plan on site and current?</td>
-              <td class="ynna-cell"><label class="selector" for="p2a_1_y"><input id="p2a_1_y" type="radio" name="p2a_1" value="Y"></label></td>
-              <td class="ynna-cell"><label class="selector" for="p2a_1_n"><input id="p2a_1_n" type="radio" name="p2a_1" value="N"></label></td>
-              <td class="ynna-cell"><label class="selector" for="p2a_1_na"><input id="p2a_1_na" type="radio" name="p2a_1" value="NA"></label></td>
-            </tr>
+            <tr><td>H</td><td>Concrete, stucco, paint, etc. washouts: Installed, properly located, posted and operating with no repairs needed?</td><td class="ynna-cell"><label class="selector" for="p2c_0_y"><input id="p2c_0_y" type="radio" name="p2c_0" value="Y"></label></td><td class="ynna-cell"><label class="selector" for="p2c_0_n"><input id="p2c_0_n" type="radio" name="p2c_0" value="N"></label></td><td class="ynna-cell"><label class="selector" for="p2c_0_na"><input id="p2c_0_na" type="radio" name="p2c_0" value="NA"></label></td></tr>
+            <tr><td>I</td><td>Solid &amp; hazardous wastes: Are trash, debris, and hazardous materials properly managed?</td><td class="ynna-cell"><label class="selector" for="p2c_1_y"><input id="p2c_1_y" type="radio" name="p2c_1" value="Y"></label></td><td class="ynna-cell"><label class="selector" for="p2c_1_n"><input id="p2c_1_n" type="radio" name="p2c_1" value="N"></label></td><td class="ynna-cell"><label class="selector" for="p2c_1_na"><input id="p2c_1_na" type="radio" name="p2c_1" value="NA"></label></td></tr>
+            <tr><td>J</td><td>Sanitary waste: Are portable toilets properly located and operating with no visible repairs needed?</td><td class="ynna-cell"><label class="selector" for="p2c_2_y"><input id="p2c_2_y" type="radio" name="p2c_2" value="Y"></label></td><td class="ynna-cell"><label class="selector" for="p2c_2_n"><input id="p2c_2_n" type="radio" name="p2c_2" value="N"></label></td><td class="ynna-cell"><label class="selector" for="p2c_2_na"><input id="p2c_2_na" type="radio" name="p2c_2" value="NA"></label></td></tr>
+            <tr><td>K</td><td>Equipment and stored fluids: Are fuels, lubricants, hydraulic fluids, etc. contained so as not to enter surface and ground waters?</td><td class="ynna-cell"><label class="selector" for="p2c_3_y"><input id="p2c_3_y" type="radio" name="p2c_3" value="Y"></label></td><td class="ynna-cell"><label class="selector" for="p2c_3_n"><input id="p2c_3_n" type="radio" name="p2c_3" value="N"></label></td><td class="ynna-cell"><label class="selector" for="p2c_3_na"><input id="p2c_3_na" type="radio" name="p2c_3" value="NA"></label></td></tr>
           </tbody>
-        </table>
+          </table>
+          <div class="small info" style="margin-top:8px">Report visible sedimentation into streams or wetlands to the appropriate DEQ Regional Office within 24 hours of discovery.</div>
 
-        <!-- 2B -->
-        <h3 class="small" style="margin-top:12px">Part 2B: Stormwater Pollutant Controls</h3>
-        <table class="tight" id="part2bTable">
-          <thead>
-            <tr><th style="width:60px">Ref</th><th>Question</th><th style="width:70px">Yes</th><th style="width:70px">No</th><th style="width:70px">N/A</th></tr>
-          </thead>
-          <tbody>
-            <tr><td>C</td><td>Are erosion and sediment controls shown on the approved plan installed and operating properly with no repairs needed?</td><td class="ynna-cell"><label class="selector" for="p2b_0_y"><input id="p2b_0_y" type="radio" name="p2b_0" value="Y"></label></td><td class="ynna-cell"><label class="selector" for="p2b_0_n"><input id="p2b_0_n" type="radio" name="p2b_0" value="N"></label></td><td class="ynna-cell"><label class="selector" for="p2b_0_na"><input id="p2b_0_na" type="radio" name="p2b_0" value="NA"></label></td></tr>
-            <tr><td>D</td><td>Are stormwater controls shown on the approved plan installed and operating properly with no repairs needed?</td><td class="ynna-cell"><label class="selector" for="p2b_1_y"><input id="p2b_1_y" type="radio" name="p2b_1" value="Y"></label></td><td class="ynna-cell"><label class="selector" for="p2b_1_n"><input id="p2b_1_n" type="radio" name="p2b_1" value="N"></label></td><td class="ynna-cell"><label class="selector" for="p2b_1_na"><input id="p2b_1_na" type="radio" name="p2b_1" value="NA"></label></td></tr>
-            <tr><td>E</td><td>Vehicle Tracking: Are construction entrances operating properly with no repairs needed?</td><td class="ynna-cell"><label class="selector" for="p2b_2_y"><input id="p2b_2_y" type="radio" name="p2b_2" value="Y"></label></td><td class="ynna-cell"><label class="selector" for="p2b_2_n"><input id="p2b_2_n" type="radio" name="p2b_2" value="N"></label></td><td class="ynna-cell"><label class="selector" for="p2b_2_na"><input id="p2b_2_na" type="radio" name="p2b_2" value="NA"></label></td></tr>
-            <tr><td>F</td><td>Soil Stabilization: Are areas where construction activities have ceased properly stabilized within required timeframes?</td><td class="ynna-cell"><label class="selector" for="p2b_3_y"><input id="p2b_3_y" type="radio" name="p2b_3" value="Y"></label></td><td class="ynna-cell"><label class="selector" for="p2b_3_n"><input id="p2b_3_n" type="radio" name="p2b_3" value="N"></label></td><td class="ynna-cell"><label class="selector" for="p2b_3_na"><input id="p2b_3_na" type="radio" name="p2b_3" value="NA"></label></td></tr>
-            <tr><td>G</td><td>Are earthen stockpiles stabilized or otherwise protected, and located at least 50 ft away or downhill from drain inlets and surface waters?</td><td class="ynna-cell"><label class="selector" for="p2b_4_y"><input id="p2b_4_y" type="radio" name="p2b_4" value="Y"></label></td><td class="ynna-cell"><label class="selector" for="p2b_4_n"><input id="p2b_4_n" type="radio" name="p2b_4" value="N"></label></td><td class="ynna-cell"><label class="selector" for="p2b_4_na"><input id="p2b_4_na" type="radio" name="p2b_4" value="NA"></label></td></tr>
-          </tbody>
-        </table>
-        <div class="small info" style="margin-top:8px">Report oil spills and releases of hazardous substances to the appropriate DEQ Regional Office within 24 hours of discovery.</div>
-
-        <!-- 2C -->
-        <h3 class="small" style="margin-top:12px">Part 2C: Non-Storm Water Pollutant Controls</h3>
-        <table class="tight" id="part2cTable">
-          <thead>
-            <tr><th style="width:60px">Ref</th><th>Question</th><th style="width:70px">Yes</th><th style="width:70px">No</th><th style="width:70px">N/A</th></tr>
-          </thead>
-        <tbody>
-          <tr><td>H</td><td>Concrete, stucco, paint, etc. washouts: Installed, properly located, posted and operating with no repairs needed?</td><td class="ynna-cell"><label class="selector" for="p2c_0_y"><input id="p2c_0_y" type="radio" name="p2c_0" value="Y"></label></td><td class="ynna-cell"><label class="selector" for="p2c_0_n"><input id="p2c_0_n" type="radio" name="p2c_0" value="N"></label></td><td class="ynna-cell"><label class="selector" for="p2c_0_na"><input id="p2c_0_na" type="radio" name="p2c_0" value="NA"></label></td></tr>
-          <tr><td>I</td><td>Solid &amp; hazardous wastes: Are trash, debris, and hazardous materials properly managed?</td><td class="ynna-cell"><label class="selector" for="p2c_1_y"><input id="p2c_1_y" type="radio" name="p2c_1" value="Y"></label></td><td class="ynna-cell"><label class="selector" for="p2c_1_n"><input id="p2c_1_n" type="radio" name="p2c_1" value="N"></label></td><td class="ynna-cell"><label class="selector" for="p2c_1_na"><input id="p2c_1_na" type="radio" name="p2c_1" value="NA"></label></td></tr>
-          <tr><td>J</td><td>Sanitary waste: Are portable toilets properly located and operating with no visible repairs needed?</td><td class="ynna-cell"><label class="selector" for="p2c_2_y"><input id="p2c_2_y" type="radio" name="p2c_2" value="Y"></label></td><td class="ynna-cell"><label class="selector" for="p2c_2_n"><input id="p2c_2_n" type="radio" name="p2c_2" value="N"></label></td><td class="ynna-cell"><label class="selector" for="p2c_2_na"><input id="p2c_2_na" type="radio" name="p2c_2" value="NA"></label></td></tr>
-          <tr><td>K</td><td>Equipment and stored fluids: Are fuels, lubricants, hydraulic fluids, etc. contained so as not to enter surface and ground waters?</td><td class="ynna-cell"><label class="selector" for="p2c_3_y"><input id="p2c_3_y" type="radio" name="p2c_3" value="Y"></label></td><td class="ynna-cell"><label class="selector" for="p2c_3_n"><input id="p2c_3_n" type="radio" name="p2c_3" value="N"></label></td><td class="ynna-cell"><label class="selector" for="p2c_3_na"><input id="p2c_3_na" type="radio" name="p2c_3" value="NA"></label></td></tr>
-        </tbody>
-        </table>
-        <div class="small info" style="margin-top:8px">Report visible sedimentation into streams or wetlands to the appropriate DEQ Regional Office within 24 hours of discovery.</div>
-
-        <!-- 2D -->
-        <h3 class="small" style="margin-top:12px">Part 2D: Sedimentation</h3>
-        <table class="tight" id="part2dTable">
-          <thead>
-            <tr><th style="width:60px">Ref</th><th>Question</th><th style="width:70px">Yes</th><th style="width:70px">No</th><th style="width:70px">N/A</th></tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>L</td>
-              <td>Are sediment or other pollutants noted beyond the approved/permitted limits of disturbance?</td>
-              <td class="ynna-cell"><label class="selector" for="p2d_0_y"><input id="p2d_0_y" type="radio" name="p2d_0" value="Y"></label></td>
-              <td class="ynna-cell"><label class="selector" for="p2d_0_n"><input id="p2d_0_n" type="radio" name="p2d_0" value="N"></label></td>
-              <td class="ynna-cell"><label class="selector" for="p2d_0_na"><input id="p2d_0_na" type="radio" name="p2d_0" value="NA"></label></td>
-            </tr>
-            <tr>
-              <td>M</td>
-              <td>Are BMPs detected as releasing sediment or other pollutants into receiving waters?</td>
-              <td class="ynna-cell"><label class="selector" for="p2d_1_y"><input id="p2d_1_y" type="radio" name="p2d_1" value="Y"></label></td>
-              <td class="ynna-cell"><label class="selector" for="p2d_1_n"><input id="p2d_1_n" type="radio" name="p2d_1" value="N"></label></td>
-              <td class="ynna-cell"><label class="selector" for="p2d_1_na"><input id="p2d_1_na" type="radio" name="p2d_1" value="NA"></label></td>
-            </tr>
-          </tbody>
-        </table>
+          <!-- 2D -->
+          <h3 class="small" style="margin-top:12px">Part 2D: Sedimentation</h3>
+          <table class="tight" id="part2dTable">
+            <thead>
+              <tr><th style="width:60px">Ref</th><th>Question</th><th style="width:70px">Yes</th><th style="width:70px">No</th><th style="width:70px">N/A</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>L</td>
+                <td>Are sediment or other pollutants noted beyond the approved/permitted limits of disturbance?</td>
+                <td class="ynna-cell"><label class="selector" for="p2d_0_y"><input id="p2d_0_y" type="radio" name="p2d_0" value="Y"></label></td>
+                <td class="ynna-cell"><label class="selector" for="p2d_0_n"><input id="p2d_0_n" type="radio" name="p2d_0" value="N"></label></td>
+                <td class="ynna-cell"><label class="selector" for="p2d_0_na"><input id="p2d_0_na" type="radio" name="p2d_0" value="NA"></label></td>
+              </tr>
+              <tr>
+                <td>M</td>
+                <td>Are BMPs detected as releasing sediment or other pollutants into receiving waters?</td>
+                <td class="ynna-cell"><label class="selector" for="p2d_1_y"><input id="p2d_1_y" type="radio" name="p2d_1" value="Y"></label></td>
+                <td class="ynna-cell"><label class="selector" for="p2d_1_n"><input id="p2d_1_n" type="radio" name="p2d_1" value="N"></label></td>
+                <td class="ynna-cell"><label class="selector" for="p2d_1_na"><input id="p2d_1_na" type="radio" name="p2d_1" value="NA"></label></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
 
       <!-- Part 3A -->
-      <div class="card">
-        <h2>Part 3A — Erosion &amp; Sedimentation Control Measures</h2>
-        <div class="small">Inspect at least once per 7 calendar days and within 24 hours of ≥ 1.0" rainfall in 24 hours.</div>
-        <div class="scrollwrap">
-          <table id="part3aTable">
-            <thead>
-              <tr>
-                <th>Measure ID / Location and Description</th>
-                <th>Reference(s)</th>
-                <th>Operating Properly? (Y/N)</th>
-                <th>Inspection Date</th>
-                <th>Describe Actions Needed</th>
-                <th>Date Previous Action(s) Observed as Corrected</th>
-                <th style="width:56px">—</th>
-              </tr>
-            </thead>
-            <tbody></tbody>
-          </table>
+      <div class="card" data-section="part3a">
+        <h2><span class="toggle">▼</span> Part 3A — Erosion &amp; Sedimentation Control Measures</h2>
+        <div class="card-content">
+          <div class="small">Inspect at least once per 7 calendar days and within 24 hours of ≥ 1.0" rainfall in 24 hours.</div>
+          <div class="tools">
+            <button type="button" class="btn small" id="addRow3a">➕ Add Row</button>
+          </div>
+          <div class="scrollwrap">
+            <table id="part3aTable">
+              <thead>
+                <tr>
+                  <th>Measure ID / Location and Description</th>
+                  <th>Reference(s)</th>
+                  <th>Operating Properly? (Y/N)</th>
+                  <th>Inspection Date</th>
+                  <th>Describe Actions Needed</th>
+                  <th>Date Previous Action(s) Observed as Corrected</th>
+                  <th>Photo Ref</th>
+                  <th style="width:56px">—</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+          <p class="small" style="margin-top:10px">Report unanticipated bypasses or non-compliance conditions that may endanger health or the environment to the appropriate DEQ Regional Office within 24 hours of discovery.</p>
         </div>
-        <p class="small" style="margin-top:10px">Report unanticipated bypasses or non-compliance conditions that may endanger health or the environment to the appropriate DEQ Regional Office within 24 hours of discovery.</p>
       </div>
 
       <!-- Part 3B -->
-      <div class="card">
-        <h2>Part 3B — Stormwater Discharge Outfalls (SDOs)</h2>
-        <div class="small">Inspect at least once per 7 calendar days and within 24 hours of ≥ 1.0" rainfall in 24 hours.</div>
-        <div class="scrollwrap">
-          <table id="part3bTable">
-            <thead>
-              <tr>
-                <th>Stormwater Discharge Outfall ID / Location</th>
-                <th>Any Visible Sedimentation in Streams/Wetlands/Outside Site Limits? (Y/N)</th>
-                <th>Any Increase in Stream Turbidity from Discharge? (Y/N)</th>
-                <th>Any Visible Erosion below SDO? (Y/N)</th>
-                <th>Any visible oil sheen / floating or suspended solids / discoloration? (Y/N)</th>
-                <th>Inspection Date</th>
-                <th>Describe Actions Needed</th>
-                <th>Date Previous Action(s) Observed as Corrected</th>
-                <th style="width:56px">—</th>
-              </tr>
-            </thead>
-            <tbody></tbody>
-          </table>
+      <div class="card" data-section="part3b">
+        <h2><span class="toggle">▼</span> Part 3B — Stormwater Discharge Outfalls (SDOs)</h2>
+        <div class="card-content">
+          <div class="small">Inspect at least once per 7 calendar days and within 24 hours of ≥ 1.0" rainfall in 24 hours.</div>
+          <div class="tools">
+            <button type="button" class="btn small" id="addRow3b">➕ Add Row</button>
+          </div>
+          <div class="scrollwrap">
+            <table id="part3bTable">
+              <thead>
+                <tr>
+                  <th>Stormwater Discharge Outfall ID / Location</th>
+                  <th>Any Visible Sedimentation in Streams/Wetlands/Outside Site Limits? (Y/N)</th>
+                  <th>Any Increase in Stream Turbidity from Discharge? (Y/N)</th>
+                  <th>Any Visible Erosion below SDO? (Y/N)</th>
+                  <th>Any visible oil sheen / floating or suspended solids / discoloration? (Y/N)</th>
+                  <th>Inspection Date</th>
+                  <th>Describe Actions Needed</th>
+                  <th>Date Previous Action(s) Observed as Corrected</th>
+                  <th>Photo Ref</th>
+                  <th style="width:56px">—</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
         </div>
       </div>
 
       <!-- Part 3C -->
-      <div class="card">
-        <h2>Part 3C — Ground Stabilization</h2>
-        <div class="small">Must be recorded, at a minimum, after each phase. Add rows as needed.</div>
-        <div class="scrollwrap">
-          <table id="part3cTable">
-            <thead>
-              <tr>
-                <th>Site area description and location where activities have temporarily or permanently ceased</th>
-                <th>Time Limit for Ground Cover</th>
-                <th>Have stabilization measures been installed? (Y/N)</th>
-                <th>Temporary or Permanent (T/P)</th>
-                <th>Is Ground Cover sufficient to restrain erosion? (Y/N)</th>
-                <th>Original Inspection Date</th>
-                <th>Describe Actions Needed</th>
-                <th>Date Previous Action(s) Observed as Corrected</th>
-                <th style="width:56px">—</th>
-              </tr>
-            </thead>
-            <tbody></tbody>
-          </table>
+      <div class="card" data-section="part3c">
+        <h2><span class="toggle">▼</span> Part 3C — Ground Stabilization</h2>
+        <div class="card-content">
+          <div class="small">Must be recorded, at a minimum, after each phase. Add rows as needed.</div>
+          <div class="tools">
+            <button type="button" class="btn small" id="addRow3c">➕ Add Row</button>
+          </div>
+          <div class="scrollwrap">
+            <table id="part3cTable">
+              <thead>
+                <tr>
+                  <th>Site area description and location where activities have temporarily or permanently ceased</th>
+                  <th>Time Limit for Ground Cover</th>
+                  <th>Have stabilization measures been installed? (Y/N)</th>
+                  <th>Temporary or Permanent (T/P)</th>
+                  <th>Is Ground Cover sufficient to restrain erosion? (Y/N)</th>
+                  <th>Original Inspection Date</th>
+                  <th>Describe Actions Needed</th>
+                  <th>Date Previous Action(s) Observed as Corrected</th>
+                  <th>Photo Ref</th>
+                  <th style="width:56px">—</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
         </div>
       </div>
 
       <!-- Part 3D -->
-      <div class="card">
-        <h2>Part 3D — New or Revised Measures</h2>
-        <div class="small">Document measures omitted/installed/altered/relocated/removed since last inspection. Add rows as needed. Corrective actions should be included in Part 3A.</div>
-        <div class="scrollwrap">
-          <table id="part3dTable">
-            <thead>
-              <tr>
-                <th>Measure ID or Location and Description</th>
-                <th>Proposed Dimensions (ft.)</th>
-                <th>Actual Dimensions (ft.)</th>
-                <th>Significant Deviation from Plan? (Y/N)</th>
-                <th>Date measure observed as installed / altered / relocated / removed</th>
-                <th>Installed (I) / Altered (A) / Relocated (R) / Removed (X)</th>
-                <th style="width:56px">—</th>
-              </tr>
-            </thead>
-            <tbody></tbody>
-          </table>
+      <div class="card" data-section="part3d">
+        <h2><span class="toggle">▼</span> Part 3D — New or Revised Measures</h2>
+        <div class="card-content">
+          <div class="small">Document measures omitted/installed/altered/relocated/removed since last inspection. Add rows as needed. Corrective actions should be included in Part 3A.</div>
+          <div class="tools">
+            <button type="button" class="btn small" id="addRow3d">➕ Add Row</button>
+          </div>
+          <div class="scrollwrap">
+            <table id="part3dTable">
+              <thead>
+                <tr>
+                  <th>Measure ID or Location and Description</th>
+                  <th>Proposed Dimensions (ft.)</th>
+                  <th>Actual Dimensions (ft.)</th>
+                  <th>Significant Deviation from Plan? (Y/N)</th>
+                  <th>Date measure observed as installed / altered / relocated / removed</th>
+                  <th>Installed (I) / Altered (A) / Relocated (R) / Removed (X)</th>
+                  <th>Photo Ref</th>
+                  <th style="width:56px">—</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+          <div class="small">*Significant deviation means any omission, alteration or relocation of a measure that prevents it from performing as intended.</div>
         </div>
-        <div class="small">*Significant deviation means any omission, alteration or relocation of a measure that prevents it from performing as intended.</div>
       </div>
 
       <!-- Part 4 -->
-      <div class="card">
-        <h2>Part 4 — Signature of Inspector</h2>
-        <div class="row">
-          <div style="grid-column:span 4"><label for="inspector_name">Inspector Name</label><input id="inspector_name"/></div>
-          <div style="grid-column:span 4"><label for="employer">Employer</label><input id="employer"/></div>
-          <div style="grid-column:span 4"><label for="inspector_type">Inspector Type</label><select id="inspector_type"><option>FRP/Permittee</option><option>Agent/Designee</option></select></div>
-        </div>
-        <div class="row">
-          <div style="grid-column:span 3"><label for="address">Address</label><input id="address"/></div>
-          <div style="grid-column:span 3"><label for="county">County</label><input id="county"/></div>
-          <div style="grid-column:span 3"><label for="phone">Phone Number</label><input id="phone"/></div>
-          <div style="grid-column:span 3"><label for="email">Email Address</label><input id="email" type="email"/></div>
-        </div>
-        <div class="row">
-          <div style="grid-column:span 4"><label for="inspection_dt">Date &amp; Time of Inspection</label><input id="inspection_dt" type="datetime-local"/></div>
+      <div class="card" data-section="inspector">
+        <h2><span class="toggle">▼</span> Part 4 — Signature of Inspector</h2>
+        <div class="card-content">
+          <div class="row">
+            <div style="grid-column:span 4"><label for="inspector_name">Inspector Name <span style="color:var(--danger)">*</span></label><input id="inspector_name" required/></div>
+            <div style="grid-column:span 4"><label for="employer">Employer</label><input id="employer"/></div>
+            <div style="grid-column:span 4"><label for="inspector_type">Inspector Type</label><select id="inspector_type"><option>FRP/Permittee</option><option>Agent/Designee</option></select></div>
+          </div>
+          <div class="row">
+            <div style="grid-column:span 3"><label for="address">Address</label><input id="address"/></div>
+            <div style="grid-column:span 3"><label for="county">County</label><input id="county"/></div>
+            <div style="grid-column:span 3"><label for="phone">Phone Number</label><input id="phone"/></div>
+            <div style="grid-column:span 3"><label for="email">Email Address</label><input id="email" type="email"/></div>
+          </div>
+          <div class="row">
+            <div style="grid-column:span 4"><label for="inspection_dt">Date &amp; Time of Inspection <span style="color:var(--danger)">*</span></label><input id="inspection_dt" type="datetime-local" required/></div>
+          </div>
         </div>
       </div>
 
       <!-- History -->
-      <div class="card">
-        <h2>Saved DEMLR Drafts (this browser)</h2>
-        <div class="tools">
-          <button type="button" class="btn warn" id="wipeAll">Delete All Drafts</button>
-          <span class="muted">(Drafts save to your browser only.)</span>
+      <div class="card" data-section="history">
+        <h2><span class="toggle">▼</span> Saved DEMLR Drafts (this browser)</h2>
+        <div class="card-content">
+          <div class="tools">
+            <button type="button" class="btn danger" id="wipeAll">🗑️ Delete All Drafts</button>
+            <button type="button" class="btn ghost" id="exportBtn">📤 Export All (JSON)</button>
+            <button type="button" class="btn ghost" id="importBtn">📥 Import</button>
+            <input type="file" id="importFile" accept=".json" style="display:none">
+            <span class="muted">(Drafts save to your browser only.)</span>
+          </div>
+          <div id="history"></div>
         </div>
-        <div id="history"></div>
       </div>
     </section>
   </div>
@@ -475,12 +578,83 @@
   (function(){
     function $(s,r){return (r||document).querySelector(s)}
     function $$(s,r){return Array.from((r||document).querySelectorAll(s))}
-    const STORAGE_KEY='demlrDrafts_v8';
+    
+    const STORAGE_KEY='demlrDrafts_v9';
+    const TEMPLATE_KEY='demlrTemplates_v1';
+    const THEME_KEY='demlrTheme';
+    
     let currentId=null;
+    let autoSaveTimer=null;
+    
     const uid=()=>Math.random().toString(36).slice(2)+Date.now().toString(36);
     const getDrafts=()=>{try{return JSON.parse(localStorage.getItem(STORAGE_KEY)||'[]')}catch(e){return[]}}
     const setDrafts=(a)=>localStorage.setItem(STORAGE_KEY,JSON.stringify(a))
+    const getTemplates=()=>{try{return JSON.parse(localStorage.getItem(TEMPLATE_KEY)||'[]')}catch(e){return[]}}
+    const setTemplates=(a)=>localStorage.setItem(TEMPLATE_KEY,JSON.stringify(a))
 
+    // Status indicator
+    function showStatus(msg, isError=false){
+      const el=$('#status');
+      el.textContent=msg;
+      el.classList.toggle('error',isError);
+      el.classList.add('show');
+      setTimeout(()=>el.classList.remove('show'),2000);
+    }
+
+    // Theme
+    function initTheme(){
+      const saved=localStorage.getItem(THEME_KEY);
+      if(saved==='dark') document.documentElement.setAttribute('data-theme','dark');
+      updateThemeIcon();
+    }
+    function toggleTheme(){
+      const isDark=document.documentElement.getAttribute('data-theme')==='dark';
+      if(isDark){
+        document.documentElement.removeAttribute('data-theme');
+        localStorage.setItem(THEME_KEY,'light');
+      }else{
+        document.documentElement.setAttribute('data-theme','dark');
+        localStorage.setItem(THEME_KEY,'dark');
+      }
+      updateThemeIcon();
+    }
+    function updateThemeIcon(){
+      const isDark=document.documentElement.getAttribute('data-theme')==='dark';
+      $('#themeToggle').textContent=isDark?'☀️':'🌙';
+    }
+
+    // Collapsible sections
+    function initCollapsible(){
+      $$('.card h2').forEach(h2=>{
+        h2.addEventListener('click',()=>{
+          h2.closest('.card').classList.toggle('collapsed');
+        });
+      });
+    }
+
+    // Rainfall total
+    function updateRainTotal(){
+      const days=['mon','tue','wed','thu','fri','sat','sun'];
+      let total=0;
+      days.forEach(d=>{
+        const v=parseFloat($('#rain_'+d)?.value)||0;
+        total+=v;
+      });
+      $('#rain_total').value=total.toFixed(2)+'"';
+    }
+
+    // Week end auto-calculate
+    function updateWeekEnd(){
+      const weekOf=$('#week_of')?.value;
+      if(weekOf){
+        const d=new Date(weekOf);
+        d.setDate(d.getDate()+6);
+        const pad=n=>String(n).padStart(2,'0');
+        $('#week_end').value=`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+      }
+    }
+
+    // Part 2 helpers
     function part2ToJSON(sel){
       return $$(sel+' tbody tr').map(tr=>{
         const tds=tr.querySelectorAll('td');
@@ -501,12 +675,15 @@
       });
     }
 
+    // Table row helpers
     function addRow(tb,cells){
       if(!tb) return;
       const tr=document.createElement('tr');
-      tr.innerHTML=cells.map(c=>`<td>${c}</td>`).join('')+`<td style="width:56px"><button type="button" class="btn ghost" data-remove>✕</button></td>`;
+      tr.innerHTML=cells.map(c=>`<td>${c}</td>`).join('')+`<td style="width:56px"><button type="button" class="btn ghost small" data-remove>✕</button></td>`;
       tb.appendChild(tr);
+      scheduleAutoSave();
     }
+    
     function tableToJSON(sel,rm){
       return $$(sel+' tbody tr').map(tr=>{
         const tds=Array.from(tr.querySelectorAll('td'));
@@ -517,26 +694,54 @@
         });
       });
     }
+    
     function jsonToTable(sel,rows,cellFn){
       const tb=$(sel+' tbody'); if(!tb) return;
       tb.innerHTML='';
       (rows||[]).forEach(r=>addRow(tb,r.map((v,i)=>cellFn(i,v))));
     }
+    
+    // Cell templates for each Part 3 table - now with Photo Ref column
     const p3aCell=(i,v)=> i===2?`<input value="${v||''}" placeholder="Y/N">`
       : i===3||i===5?`<input type="date" value="${v||''}">`
       : i===4?`<textarea>${v||''}</textarea>`
+      : i===6?`<input value="${v||''}" placeholder="Photo #">`
       : `<input value="${v||''}">`;
+      
     const p3bCell=(i,v)=> [1,2,3,4].includes(i)?`<input value="${v||''}" placeholder="Y/N">`
       : [5,7].includes(i)?`<input type="date" value="${v||''}">`
-      : i===6?`<textarea>${v||''}</textarea>`:`<input value="${v||''}">`;
+      : i===6?`<textarea>${v||''}</textarea>`
+      : i===8?`<input value="${v||''}" placeholder="Photo #">`
+      :`<input value="${v||''}">`;
+      
     const p3cCell=(i,v)=> i===2||i===4?`<input value="${v||''}" placeholder="Y/N">`
       : i===3?`<input value="${v||''}" placeholder="T/P">`
       : i===5||i===7?`<input type="date" value="${v||''}">`
-      : i===6?`<textarea>${v||''}</textarea>`:`<input value="${v||''}">`;
+      : i===6?`<textarea>${v||''}</textarea>`
+      : i===8?`<input value="${v||''}" placeholder="Photo #">`
+      :`<input value="${v||''}">`;
+      
     const p3dCell=(i,v)=> i===3?`<input value="${v||''}" placeholder="Y/N">`
       : i===4?`<input type="date" value="${v||''}">`
-      : i===5?`<input value="${v||''}" placeholder="I/A/R/X">`:`<input value="${v||''}">`;
+      : i===5?`<input value="${v||''}" placeholder="I/A/R/X">`
+      : i===6?`<input value="${v||''}" placeholder="Photo #">`
+      :`<input value="${v||''}">`;
 
+    // Add row handlers
+    $('#addRow3a')?.addEventListener('click',()=>{
+      addRow($('#part3aTable tbody'),['<input placeholder="Measure ID / Location">','<input placeholder="Ref">','<input placeholder="Y/N">','<input type="date">','<textarea></textarea>','<input type="date">','<input placeholder="Photo #">']);
+    });
+    $('#addRow3b')?.addEventListener('click',()=>{
+      addRow($('#part3bTable tbody'),['<input placeholder="Outfall ID">','<input placeholder="Y/N">','<input placeholder="Y/N">','<input placeholder="Y/N">','<input placeholder="Y/N">','<input type="date">','<textarea></textarea>','<input type="date">','<input placeholder="Photo #">']);
+    });
+    $('#addRow3c')?.addEventListener('click',()=>{
+      addRow($('#part3cTable tbody'),['<input placeholder="Area description">','<input placeholder="Time limit">','<input placeholder="Y/N">','<input placeholder="T/P">','<input placeholder="Y/N">','<input type="date">','<textarea></textarea>','<input type="date">','<input placeholder="Photo #">']);
+    });
+    $('#addRow3d')?.addEventListener('click',()=>{
+      addRow($('#part3dTable tbody'),['<input placeholder="Measure ID">','<input placeholder="Proposed ft.">','<input placeholder="Actual ft.">','<input placeholder="Y/N">','<input type="date">','<input placeholder="I/A/R/X">','<input placeholder="Photo #">']);
+    });
+
+    // Form data
     function getForm(){
       return {
         id: currentId||uid(),
@@ -547,6 +752,8 @@
         expiration:$('#expiration')?.value||'',
         coc_number:$('#coc_number')?.value||'',
         coc_date:$('#coc_date')?.value||'',
+        week_of:$('#week_of')?.value||'',
+        week_end:$('#week_end')?.value||'',
         rain_mon:$('#rain_mon')?.value||'',
         rain_tue:$('#rain_tue')?.value||'',
         rain_wed:$('#rain_wed')?.value||'',
@@ -579,11 +786,13 @@
         savedAt:new Date().toISOString()
       };
     }
+    
     function setForm(d){
       const setVal=(s,v)=>{const el=$(s); if(el) el.value=v||''}
       const setChk=(s,v)=>{const el=$(s); if(el) el.checked=!!v}
       setVal('#project_name',d.project_name); setVal('#permit_no',d.permit_no); setVal('#authority',d.authority);
       setVal('#plan_approval',d.plan_approval); setVal('#expiration',d.expiration); setVal('#coc_number',d.coc_number); setVal('#coc_date',d.coc_date);
+      setVal('#week_of',d.week_of); setVal('#week_end',d.week_end);
       setVal('#rain_mon',d.rain_mon); setVal('#rain_tue',d.rain_tue); setVal('#rain_wed',d.rain_wed); setVal('#rain_thu',d.rain_thu);
       setVal('#rain_fri',d.rain_fri); setVal('#rain_sat',d.rain_sat); setVal('#rain_sun',d.rain_sun);
       setChk('#phase_install',d.phase_install); setChk('#phase_cg',d.phase_cg); setChk('#phase_grading',d.phase_grading);
@@ -595,44 +804,331 @@
       jsonToTable('#part3dTable',d.part3d||[],p3dCell);
       setVal('#inspector_name',d.inspector_name); setVal('#employer',d.employer); setVal('#inspector_type',d.inspector_type);
       setVal('#address',d.address); setVal('#county',d.county); setVal('#phone',d.phone); setVal('#email',d.email); setVal('#inspection_dt',d.inspection_dt);
+      updateRainTotal();
     }
 
+    // Validation
+    function validateForm(){
+      let valid=true;
+      const required=['#project_name','#week_of','#inspector_name','#inspection_dt'];
+      required.forEach(sel=>{
+        const el=$(sel);
+        if(!el?.value?.trim()){
+          el?.classList.add('invalid');
+          valid=false;
+        }else{
+          el?.classList.remove('invalid');
+        }
+      });
+      return valid;
+    }
+
+    // Auto-save
+    function scheduleAutoSave(){
+      if(autoSaveTimer) clearTimeout(autoSaveTimer);
+      autoSaveTimer=setTimeout(()=>{
+        saveDraft(true);
+      },2000);
+    }
+    
+    function saveDraft(auto=false){
+      const draft=getForm();
+      if(!draft.project_name && !auto) return showStatus('Enter project name first',true);
+      if(!draft.project_name) return; // Don't auto-save empty forms
+      
+      const ds=getDrafts();
+      const i=ds.findIndex(d=>d.id===draft.id);
+      if(i>=0) ds[i]=draft; else ds.push(draft);
+      setDrafts(ds);
+      currentId=draft.id;
+      renderHistory();
+      showStatus(auto?'Auto-saved':'Saved');
+    }
+
+    // History
     function renderHistory(){
       const drafts=getDrafts().sort((a,b)=>(b.savedAt||'').localeCompare(a.savedAt||''));
       const el=$('#history'); if(!el) return;
       if(!drafts.length){el.innerHTML='<p class="muted">No drafts saved yet.</p>';return;}
       el.innerHTML=drafts.map(d=>`
-        <div style="display:flex;gap:10px;align-items:center;margin:8px 0;padding:10px;border:1px solid var(--border);border-radius:10px">
-          <div style="flex:1 1 auto">${(d.savedAt||'').slice(0,10)} · ${(d.project_name||'Project')}</div>
-          <button type="button" class="btn" data-load="${d.id}">Open</button>
-          <button type="button" class="btn ghost" data-del="${d.id}">Delete</button>
+        <div style="display:flex;gap:10px;align-items:center;margin:8px 0;padding:10px;border:1px solid var(--border);border-radius:10px;flex-wrap:wrap">
+          <div style="flex:1 1 auto">
+            <strong>${d.project_name||'Untitled'}</strong><br>
+            <span class="muted">${d.week_of?'Week of '+d.week_of:''} · Saved ${(d.savedAt||'').slice(0,16).replace('T',' ')}</span>
+          </div>
+          <button type="button" class="btn small" data-load="${d.id}">Open</button>
+          <button type="button" class="btn ghost small" data-del="${d.id}">Delete</button>
         </div>`).join('');
     }
-    document.addEventListener('click',e=>{
-      const rm=e.target.closest?.('button[data-remove]'); if(rm){e.preventDefault(); rm.closest('tr')?.remove(); return;}
-      const load=e.target.closest?.('button[data-load]'); if(load){e.preventDefault(); const id=load.getAttribute('data-load'); const d=getDrafts().find(x=>x.id===id); if(d){currentId=id; setForm(d);} return;}
-      const del=e.target.closest?.('button[data-del]'); if(del){e.preventDefault(); const id=del.getAttribute('data-del'); if(confirm('Delete this draft?')){ setDrafts(getDrafts().filter(x=>x.id!==id)); if(currentId===id) currentId=null; renderHistory();}}
-    });
 
-    $('#saveBtn')?.addEventListener('click',e=>{e.preventDefault(); const draft=getForm(); const ds=getDrafts(); const i=ds.findIndex(d=>d.id===draft.id); if(i>=0) ds[i]=draft; else ds.push(draft); setDrafts(ds); currentId=draft.id; renderHistory();});
-    $('#newBtn')?.addEventListener('click',e=>{e.preventDefault(); if(confirm('Clear the form for a new DEMLR entry?')){currentId=null; $('#part3aTable tbody').innerHTML=''; $('#part3bTable tbody').innerHTML=''; $('#part3cTable tbody').innerHTML=''; $('#part3dTable tbody').innerHTML=''; seed();}});
-    $('#printBtn')?.addEventListener('click',e=>{e.preventDefault(); setTimeout(()=>window.print(),0)});
-    $('#wipeAll')?.addEventListener('click',()=>{if(confirm('Delete all saved drafts in this browser?')){localStorage.removeItem(STORAGE_KEY); renderHistory();}});
-
-    function seed(){
-      addRow($('#part3aTable tbody'),['<input placeholder="Measure ID / Location and Description">','<input placeholder="Ref letter(s) e.g., A,C">','<input placeholder="Y/N">','<input type="date">','<textarea placeholder="Corrective actions..."></textarea>','<input type="date">']);
-      addRow($('#part3bTable tbody'),['<input placeholder="Outfall ID / Location">','<input placeholder="Y/N">','<input placeholder="Y/N">','<input placeholder="Y/N">','<input placeholder="Y/N">','<input type="date">','<textarea placeholder="Corrective actions..."></textarea>','<input type="date">']);
-      addRow($('#part3cTable tbody'),['<input placeholder="Area description and location">','<input placeholder="Time limit">','<input placeholder="Y/N">','<input placeholder="T/P">','<input placeholder="Y/N">','<input type="date">','<textarea placeholder="Corrective actions..."></textarea>','<input type="date">']);
-      addRow($('#part3dTable tbody'),['<input placeholder="Measure ID / Location and Description">','<input placeholder="Proposed ft.">','<input placeholder="Actual ft.">','<input placeholder="Y/N">','<input type="date">','<input placeholder="I/A/R/X">']);
+    // Templates
+    function renderTemplates(){
+      const templates=getTemplates();
+      const el=$('#templateList'); if(!el) return;
+      if(!templates.length){
+        el.innerHTML='<p class="muted">No templates saved yet. Fill in project info and save as template.</p>';
+        return;
+      }
+      el.innerHTML=templates.map((t,i)=>`
+        <div style="display:flex;gap:10px;align-items:center;margin:8px 0;padding:10px;border:1px solid var(--border);border-radius:10px">
+          <div style="flex:1 1 auto"><strong>${t.project_name||'Untitled'}</strong></div>
+          <button type="button" class="btn small" data-loadtemplate="${i}">Use</button>
+          <button type="button" class="btn ghost small" data-deltemplate="${i}">Delete</button>
+        </div>`).join('');
+    }
+    
+    function loadTemplate(idx){
+      const templates=getTemplates();
+      const t=templates[idx];
+      if(!t) return;
+      // Load only project info, not inspection data
+      $('#project_name').value=t.project_name||'';
+      $('#permit_no').value=t.permit_no||'';
+      $('#authority').value=t.authority||'';
+      $('#plan_approval').value=t.plan_approval||'';
+      $('#expiration').value=t.expiration||'';
+      $('#coc_number').value=t.coc_number||'';
+      $('#coc_date').value=t.coc_date||'';
+      $('#inspector_name').value=t.inspector_name||'';
+      $('#employer').value=t.employer||'';
+      $('#inspector_type').value=t.inspector_type||'';
+      $('#address').value=t.address||'';
+      $('#county').value=t.county||'';
+      $('#phone').value=t.phone||'';
+      $('#email').value=t.email||'';
+      $('#templateModal').classList.remove('show');
+      showStatus('Template loaded');
+    }
+    
+    function saveTemplate(){
+      const form=getForm();
+      if(!form.project_name) return showStatus('Enter project name first',true);
+      const template={
+        project_name:form.project_name,
+        permit_no:form.permit_no,
+        authority:form.authority,
+        plan_approval:form.plan_approval,
+        expiration:form.expiration,
+        coc_number:form.coc_number,
+        coc_date:form.coc_date,
+        inspector_name:form.inspector_name,
+        employer:form.employer,
+        inspector_type:form.inspector_type,
+        address:form.address,
+        county:form.county,
+        phone:form.phone,
+        email:form.email
+      };
+      const templates=getTemplates();
+      templates.push(template);
+      setTemplates(templates);
+      renderTemplates();
+      showStatus('Template saved');
     }
 
-    document.addEventListener('DOMContentLoaded',()=>{
+    // Copy previous
+    function renderCopyList(){
+      const drafts=getDrafts().sort((a,b)=>(b.savedAt||'').localeCompare(a.savedAt||''));
+      const el=$('#copyList'); if(!el) return;
+      if(!drafts.length){
+        el.innerHTML='<p class="muted">No previous inspections to copy from.</p>';
+        return;
+      }
+      el.innerHTML=drafts.slice(0,10).map(d=>`
+        <div style="display:flex;gap:10px;align-items:center;margin:8px 0;padding:10px;border:1px solid var(--border);border-radius:10px">
+          <div style="flex:1 1 auto">
+            <strong>${d.project_name||'Untitled'}</strong><br>
+            <span class="muted">${d.week_of?'Week of '+d.week_of:''}</span>
+          </div>
+          <button type="button" class="btn small" data-copyfrom="${d.id}">Copy</button>
+        </div>`).join('');
+    }
+    
+    function copyFromPrevious(id){
+      const drafts=getDrafts();
+      const src=drafts.find(d=>d.id===id);
+      if(!src) return;
+      
+      // Copy Part 3 tables but clear dates and Y/N fields
+      function clearRowDates(rows){
+        return (rows||[]).map(row=>row.map((cell,i)=>{
+          // Clear date fields and Y/N fields - keep descriptions
+          if(cell.match(/^\d{4}-\d{2}-\d{2}$/)) return '';
+          if(cell.match(/^[YN]$/i)) return '';
+          return cell;
+        }));
+      }
+      
+      jsonToTable('#part3aTable',clearRowDates(src.part3a),p3aCell);
+      jsonToTable('#part3bTable',clearRowDates(src.part3b),p3bCell);
+      jsonToTable('#part3cTable',clearRowDates(src.part3c),p3cCell);
+      jsonToTable('#part3dTable',clearRowDates(src.part3d),p3dCell);
+      
+      $('#copyModal').classList.remove('show');
+      showStatus('Measures copied - update dates and status');
+    }
+
+    // Export/Import
+    function exportAll(){
+      const data={
+        drafts:getDrafts(),
+        templates:getTemplates(),
+        exportedAt:new Date().toISOString()
+      };
+      const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+      const url=URL.createObjectURL(blob);
+      const a=document.createElement('a');
+      a.href=url;
+      a.download=`demlr-backup-${new Date().toISOString().slice(0,10)}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+      showStatus('Exported');
+    }
+    
+    function importData(file){
+      const reader=new FileReader();
+      reader.onload=e=>{
+        try{
+          const data=JSON.parse(e.target.result);
+          if(data.drafts) setDrafts(data.drafts);
+          if(data.templates) setTemplates(data.templates);
+          renderHistory();
+          renderTemplates();
+          showStatus('Imported successfully');
+        }catch(err){
+          showStatus('Invalid file',true);
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    // Event listeners
+    document.addEventListener('click',e=>{
+      const rm=e.target.closest?.('button[data-remove]'); 
+      if(rm){e.preventDefault(); rm.closest('tr')?.remove(); scheduleAutoSave(); return;}
+      
+      const load=e.target.closest?.('button[data-load]'); 
+      if(load){e.preventDefault(); const id=load.getAttribute('data-load'); const d=getDrafts().find(x=>x.id===id); if(d){currentId=id; setForm(d); showStatus('Loaded');} return;}
+      
+      const del=e.target.closest?.('button[data-del]'); 
+      if(del){e.preventDefault(); const id=del.getAttribute('data-del'); if(confirm('Delete this draft?')){ setDrafts(getDrafts().filter(x=>x.id!==id)); if(currentId===id) currentId=null; renderHistory(); showStatus('Deleted');} return;}
+      
+      const loadT=e.target.closest?.('button[data-loadtemplate]');
+      if(loadT){e.preventDefault(); loadTemplate(parseInt(loadT.getAttribute('data-loadtemplate'))); return;}
+      
+      const delT=e.target.closest?.('button[data-deltemplate]');
+      if(delT){e.preventDefault(); const i=parseInt(delT.getAttribute('data-deltemplate')); const t=getTemplates(); t.splice(i,1); setTemplates(t); renderTemplates(); return;}
+      
+      const copyFrom=e.target.closest?.('button[data-copyfrom]');
+      if(copyFrom){e.preventDefault(); copyFromPrevious(copyFrom.getAttribute('data-copyfrom')); return;}
+    });
+
+    // Input change listeners for auto-save and calculations
+    document.addEventListener('input',e=>{
+      if(e.target.matches('input,textarea,select')){
+        scheduleAutoSave();
+        if(e.target.id?.startsWith('rain_')) updateRainTotal();
+        if(e.target.id==='week_of') updateWeekEnd();
+      }
+    });
+    document.addEventListener('change',e=>{
+      if(e.target.matches('input[type="checkbox"],input[type="radio"]')){
+        scheduleAutoSave();
+      }
+    });
+
+    // Button handlers
+    $('#saveBtn')?.addEventListener('click',e=>{e.preventDefault(); if(validateForm()) saveDraft(); else showStatus('Fill required fields',true);});
+    
+    $('#newBtn')?.addEventListener('click',e=>{
+      e.preventDefault(); 
+      if(confirm('Clear the form for a new DEMLR entry?')){
+        currentId=null; 
+        $$('input:not([type="radio"]):not([type="checkbox"]),textarea').forEach(el=>el.value='');
+        $$('input[type="checkbox"]').forEach(el=>el.checked=false);
+        $$('input[type="radio"]').forEach(el=>el.checked=false);
+        $('#part3aTable tbody').innerHTML=''; 
+        $('#part3bTable tbody').innerHTML=''; 
+        $('#part3cTable tbody').innerHTML=''; 
+        $('#part3dTable tbody').innerHTML=''; 
+        seed();
+        setCurrentDateTime();
+      }
+    });
+    
+    $('#printBtn')?.addEventListener('click',e=>{
+      e.preventDefault(); 
+      if(!validateForm()){showStatus('Fill required fields before printing',true); return;}
+      setTimeout(()=>window.print(),0);
+    });
+    
+    $('#wipeAll')?.addEventListener('click',()=>{
+      if(confirm('Delete all saved drafts in this browser?')){
+        localStorage.removeItem(STORAGE_KEY); 
+        renderHistory();
+        showStatus('All drafts deleted');
+      }
+    });
+    
+    $('#themeToggle')?.addEventListener('click',toggleTheme);
+    
+    $('#templateBtn')?.addEventListener('click',()=>{
+      renderTemplates();
+      $('#templateModal').classList.add('show');
+    });
+    $('#closeTemplateBtn')?.addEventListener('click',()=>$('#templateModal').classList.remove('show'));
+    $('#saveTemplateBtn')?.addEventListener('click',saveTemplate);
+    
+    $('#copyPrevBtn')?.addEventListener('click',()=>{
+      renderCopyList();
+      $('#copyModal').classList.add('show');
+    });
+    $('#closeCopyBtn')?.addEventListener('click',()=>$('#copyModal').classList.remove('show'));
+    
+    $('#exportBtn')?.addEventListener('click',exportAll);
+    $('#importBtn')?.addEventListener('click',()=>$('#importFile').click());
+    $('#importFile')?.addEventListener('change',e=>{
+      if(e.target.files[0]) importData(e.target.files[0]);
+      e.target.value='';
+    });
+
+    // Close modals on overlay click
+    $$('.modal-overlay').forEach(m=>{
+      m.addEventListener('click',e=>{
+        if(e.target===m) m.classList.remove('show');
+      });
+    });
+
+    function setCurrentDateTime(){
       if($('#inspection_dt') && !$('#inspection_dt').value){
         const n=new Date(), pad=n=>String(n).padStart(2,'0');
         $('#inspection_dt').value = `${n.getFullYear()}-${pad(n.getMonth()+1)}-${pad(n.getDate())}T${pad(n.getHours())}:${pad(n.getMinutes())}`;
       }
+    }
+
+    function seed(){
+      if(!$('#part3aTable tbody').children.length){
+        addRow($('#part3aTable tbody'),['<input placeholder="Measure ID / Location">','<input placeholder="Ref">','<input placeholder="Y/N">','<input type="date">','<textarea></textarea>','<input type="date">','<input placeholder="Photo #">']);
+      }
+      if(!$('#part3bTable tbody').children.length){
+        addRow($('#part3bTable tbody'),['<input placeholder="Outfall ID">','<input placeholder="Y/N">','<input placeholder="Y/N">','<input placeholder="Y/N">','<input placeholder="Y/N">','<input type="date">','<textarea></textarea>','<input type="date">','<input placeholder="Photo #">']);
+      }
+      if(!$('#part3cTable tbody').children.length){
+        addRow($('#part3cTable tbody'),['<input placeholder="Area description">','<input placeholder="Time limit">','<input placeholder="Y/N">','<input placeholder="T/P">','<input placeholder="Y/N">','<input type="date">','<textarea></textarea>','<input type="date">','<input placeholder="Photo #">']);
+      }
+      if(!$('#part3dTable tbody').children.length){
+        addRow($('#part3dTable tbody'),['<input placeholder="Measure ID">','<input placeholder="Proposed ft.">','<input placeholder="Actual ft.">','<input placeholder="Y/N">','<input type="date">','<input placeholder="I/A/R/X">','<input placeholder="Photo #">']);
+      }
+    }
+
+    // Init
+    document.addEventListener('DOMContentLoaded',()=>{
+      initTheme();
+      initCollapsible();
+      setCurrentDateTime();
       seed();
       renderHistory();
+      updateRainTotal();
     });
     
     // Prevent double-tap zoom on iOS
@@ -648,5 +1144,3 @@
   </script>
 </body>
 </html>
-
-
