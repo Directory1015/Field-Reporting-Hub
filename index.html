@@ -8,583 +8,545 @@
   <meta name="apple-mobile-web-app-title" content="Comet Hub">
   <meta name="theme-color" content="#0f172a">
   
-  <!-- App Icons for Home Screen -->
   <link rel="apple-touch-icon" sizes="180x180" href="assets/comet_builders_180x180.png">
   <link rel="icon" type="image/png" sizes="192x192" href="assets/comet_builders_192x192.png">
-  <link rel="icon" type="image/png" sizes="512x512" href="assets/comet_builders_512x512.png">
   <link rel="icon" type="image/svg+xml" href="assets/comet_builders_logo.svg">
   
   <title>Comet — Site Reports Hub</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=JetBrains+Mono:wght@400;500;600&family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
   <style>
-    :root{
+    :root {
+      /* Match original page colors */
       --primary: #2563eb;
       --primary-hover: #1d4ed8;
       --primary-light: #dbeafe;
-      --accent: #fbbf24;
       --dark: #0f172a;
       --dark-light: #1e293b;
-      --bg: #f8fafc;
-      --card: #ffffff;
-      --border: #e2e8f0;
-      --border-dark: #cbd5e1;
-      --text: #0f172a;
-      --text-muted: #64748b;
-      --success: #10b981;
+      --accent: #fbbf24;
+      --white: #ffffff;
+      --gray-50: #f8fafc;
+      --gray-100: #f1f5f9;
+      --gray-200: #e2e8f0;
+      --gray-300: #cbd5e1;
+      --gray-400: #94a3b8;
+      --gray-500: #64748b;
+      --gray-600: #475569;
+      --gray-700: #334155;
+      --gray-800: #1e293b;
+      --gray-900: #0f172a;
+      --green: #10b981;
       --warn: #f59e0b;
       --danger: #ef4444;
+      --radius: 14px;
+      --radius-sm: 10px;
+      --font-display: 'Outfit', sans-serif;
+      --font-body: 'DM Sans', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
       --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
       --shadow: 0 4px 12px rgba(0,0,0,0.08);
+      --shadow-md: 0 8px 24px rgba(0,0,0,0.1);
       --shadow-lg: 0 10px 40px rgba(0,0,0,0.12);
     }
-    
-    *{
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-    
-    html{
-      -webkit-overflow-scrolling: touch;
-      -webkit-text-size-adjust: 100%;
-      scroll-behavior: smooth;
-    }
-    
-    body{
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background: var(--bg);
-      color: var(--text);
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { -webkit-overflow-scrolling: touch; scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font-body);
+      background: var(--gray-50);
+      color: var(--gray-900);
       line-height: 1.6;
       -webkit-tap-highlight-color: transparent;
-      padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+      min-height: 100dvh;
     }
 
-    /* Header - Matching Daily Reports Style */
-    header{
-      background: linear-gradient(135deg, var(--dark) 0%, var(--dark-light) 100%);
-      color: white;
-      padding: 1rem;
-      box-shadow: var(--shadow-lg);
+    /* ─── Header — matches original ─── */
+    header {
       position: sticky;
       top: 0;
       z-index: 100;
+      background: linear-gradient(135deg, var(--dark) 0%, var(--dark-light) 100%);
+      color: white;
+      padding: 0.875rem 1.25rem;
+      box-shadow: var(--shadow-lg);
     }
-    
-    .header-content{
-      max-width: 1200px;
+
+    .header-inner {
+      max-width: 1320px;
       margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
     }
-    
-    .brand{
+
+    .brand {
       display: flex;
       align-items: center;
       gap: 0.75rem;
     }
-    
-    .logo-container{
-      width: 48px;
-      height: 48px;
-      flex-shrink: 0;
-    }
-    
-    .logo-container svg,
-    .logo-container img{
-      width: 100%;
-      height: 100%;
-      filter: drop-shadow(0 2px 8px rgba(0,0,0,0.3));
+
+    .logo-mark {
+      width: 48px; height: 48px;
       border-radius: 8px;
+      overflow: hidden;
+      flex-shrink: 0;
+      filter: drop-shadow(0 2px 8px rgba(0,0,0,0.3));
     }
-    
-    .brand-text h1{
+    .logo-mark svg, .logo-mark img { width: 100%; height: 100%; display: block; }
+
+    .brand-text h1 {
+      font-family: var(--font-display);
       font-size: 1.125rem;
       font-weight: 800;
       letter-spacing: 0.5px;
-      margin: 0;
       line-height: 1.2;
     }
-    
-    .brand-text .subtitle{
+    .brand-text .tagline {
       font-size: 0.8125rem;
       opacity: 0.9;
       font-weight: 500;
       color: var(--accent);
     }
 
-    /* Container */
-    .container{
-      max-width: 1200px;
+    .live-clock {
+      font-family: var(--font-mono);
+      font-size: 0.8125rem;
+      color: rgba(255,255,255,0.9);
+      background: rgba(255,255,255,0.08);
+      padding: 6px 12px;
+      border-radius: 8px;
+      border: 1px solid rgba(255,255,255,0.12);
+      white-space: nowrap;
+    }
+    .live-clock .date-part { color: rgba(255,255,255,0.55); }
+
+    /* ─── Main ─── */
+    .main-wrap {
+      max-width: 1320px;
       margin: 0 auto;
-      padding: 1.5rem 1rem 3rem;
+      padding: 1.5rem 1.25rem 4rem;
     }
-    
-    /* Grid Layout */
-    .grid{
-      display: grid;
-      gap: 1.5rem;
-      margin-top: 0;
+
+    /* ─── Status Bar ─── */
+    .status-bar {
+      display: flex;
+      gap: 0.75rem;
+      margin-bottom: 1.75rem;
+      overflow-x: auto;
+      scrollbar-width: none;
+      padding-bottom: 4px;
     }
-    
-    @media(min-width: 800px){
-      .grid{
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
+    .status-bar::-webkit-scrollbar { display: none; }
+
+    .stat-chip {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--primary-light);
+      border: 1px solid #bfdbfe;
+      border-radius: var(--radius-sm);
+      padding: 10px 16px;
+      white-space: nowrap;
+      flex-shrink: 0;
+      transition: all 0.2s;
     }
-    
-    /* Card Styles */
-    .card{
-      border: 1px solid var(--border);
-      background: var(--card);
+    .stat-chip:hover { border-color: #93c5fd; box-shadow: var(--shadow-sm); }
+    .stat-chip .dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+    .stat-chip .dot.green { background: var(--green); box-shadow: 0 0 6px rgba(16,185,129,0.3); }
+    .stat-chip .dot.amber { background: var(--warn); box-shadow: 0 0 6px rgba(245,158,11,0.3); }
+    .stat-chip .dot.blue  { background: var(--primary); box-shadow: 0 0 6px rgba(37,99,235,0.3); }
+    .stat-chip .label { font-size: 0.8125rem; color: var(--gray-500); }
+    .stat-chip .value { font-family: var(--font-mono); font-weight: 600; font-size: 0.875rem; color: var(--dark); }
+
+    /* ─── Quick Actions ─── */
+    .quick-actions { margin-bottom: 1.75rem; }
+    .quick-actions h3 {
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      font-weight: 600;
+      color: var(--gray-400);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 0.75rem;
+    }
+    .quick-grid { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+    .quick-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: var(--font-body);
+      font-size: 0.8125rem;
+      font-weight: 600;
+      color: var(--primary);
+      background: var(--primary-light);
+      border: 1px solid #bfdbfe;
+      border-radius: 999px;
+      padding: 8px 16px;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+    .quick-btn:hover {
+      background: #bfdbfe;
+      border-color: #93c5fd;
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-sm);
+    }
+    .kbd {
+      font-family: var(--font-mono);
+      font-size: 0.625rem;
+      background: var(--white);
+      border: 1px solid #bfdbfe;
+      border-radius: 4px;
+      padding: 2px 5px;
+      color: var(--gray-400);
+      margin-left: 4px;
+    }
+
+    /* ─── Toolbar ─── */
+    .toolbar {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+    }
+    .search-box { flex: 1; min-width: 200px; position: relative; }
+    .search-box input {
+      width: 100%;
+      background: var(--white);
+      border: 1px solid var(--gray-200);
+      color: var(--gray-900);
+      font-family: var(--font-body);
+      font-size: 0.9375rem;
+      padding: 10px 14px 10px 40px;
+      border-radius: var(--radius-sm);
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .search-box input::placeholder { color: var(--gray-400); }
+    .search-box input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(37,99,235,0.12);
+    }
+    .search-box .search-icon {
+      position: absolute; left: 13px; top: 50%; transform: translateY(-50%);
+      color: var(--gray-400); font-size: 1rem; pointer-events: none;
+    }
+
+    .filter-btn {
+      font-family: var(--font-body);
+      font-size: 0.8125rem;
+      font-weight: 600;
+      padding: 10px 16px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--gray-200);
+      background: var(--white);
+      color: var(--gray-500);
+      cursor: pointer;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+    .filter-btn:hover {
+      border-color: #93c5fd;
+      color: var(--primary);
+      background: var(--primary-light);
+    }
+    .filter-btn.active {
+      border-color: var(--primary);
+      color: var(--white);
+      background: var(--primary);
+      box-shadow: 0 2px 8px rgba(37,99,235,0.25);
+    }
+
+    /* ─── Card Grid ─── */
+    .card-grid { display: grid; gap: 1rem; grid-template-columns: 1fr; }
+    @media (min-width: 680px)  { .card-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (min-width: 1100px) { .card-grid { grid-template-columns: repeat(3, 1fr); } }
+
+    /* ─── Cards ─── */
+    .card {
+      background: var(--white);
+      border: 1px solid var(--gray-200);
       border-radius: 16px;
       padding: 1.5rem;
       display: flex;
       flex-direction: column;
-      gap: 1rem;
-      box-shadow: var(--shadow);
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      gap: 0.875rem;
       position: relative;
       overflow: hidden;
+      transition: transform 0.25s cubic-bezier(0.4,0,0.2,1), border-color 0.25s, box-shadow 0.25s;
+      box-shadow: var(--shadow);
     }
-    
-    .card::before{
+    .card::before {
       content: '';
       position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
+      top: 0; left: 0; right: 0;
       height: 3px;
       background: linear-gradient(90deg, var(--primary), var(--primary-hover));
       opacity: 0;
-      transition: opacity 0.3s ease;
+      transition: opacity 0.25s;
     }
-    
-    .card:hover{
+    .card:hover {
       transform: translateY(-4px);
-      box-shadow: var(--shadow-lg);
       border-color: var(--primary-hover);
+      box-shadow: var(--shadow-lg);
     }
-    
-    .card:hover::before{
-      opacity: 1;
+    .card:hover::before { opacity: 1; }
+
+    .card-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 0.75rem;
     }
-    
-    .card-badge{
-      display: inline-flex;
+    .card-icon {
+      width: 44px; height: 44px;
+      border-radius: 12px;
+      display: flex;
       align-items: center;
-      gap: 6px;
-      padding: 6px 12px;
-      border-radius: 999px;
-      font-size: 0.75rem;
-      border: 1px solid var(--primary);
-      background: rgba(37, 99, 235, 0.06);
-      color: var(--primary);
-      font-weight: 700;
-      align-self: flex-start;
-      letter-spacing: 0.03em;
-      text-transform: uppercase;
-    }
-    
-    .card-badge::before{
-      content: '';
-      width: 5px;
-      height: 5px;
-      border-radius: 50%;
-      background: currentColor;
-    }
-    
-    .card h2{
-      margin: 0;
+      justify-content: center;
       font-size: 1.25rem;
-      color: #111827;
-      font-weight: 800;
-      line-height: 1.3;
-      letter-spacing: -0.01em;
+      flex-shrink: 0;
+      background: var(--primary-light);
+      border: 1px solid #bfdbfe;
     }
-    
-    .card-description{
-      color: var(--text-muted);
-      margin: 0;
+    .card-tag {
+      font-family: var(--font-mono);
+      font-size: 0.625rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--primary);
+      background: rgba(37,99,235,0.06);
+      padding: 4px 10px;
+      border-radius: 6px;
+      white-space: nowrap;
+      border: 1px solid var(--primary);
+    }
+    .card h2 {
+      font-family: var(--font-display);
+      font-size: 1.25rem;
+      font-weight: 800;
+      letter-spacing: -0.01em;
+      line-height: 1.3;
+      color: #111827;
+    }
+    .card-desc {
       font-size: 0.9375rem;
+      color: var(--gray-500);
       line-height: 1.6;
       flex-grow: 1;
     }
-    
-    /* Info Box */
-    .info-box{
+
+    .tips-box {
       background: #f0f9ff;
       border: 1px solid #bfdbfe;
+      border-radius: var(--radius-sm);
       padding: 14px;
-      border-radius: 10px;
       font-size: 0.875rem;
-      margin-top: 4px;
-    }
-    
-    .info-box strong{
-      color: #1e40af;
-      display: block;
-      margin-bottom: 8px;
-    }
-    
-    .info-box ul{
-      margin: 0;
-      padding-left: 20px;
-      line-height: 1.8;
       color: #374151;
     }
-    
-    /* Action Buttons */
-    .actions{
-      margin-top: auto;
+    .tips-box strong {
+      display: block;
+      color: #1e40af;
+      margin-bottom: 8px;
+    }
+    .tips-box ul { margin: 0; padding-left: 20px; line-height: 1.8; }
+
+    .card-actions {
       display: flex;
       gap: 0.75rem;
       flex-wrap: wrap;
+      margin-top: auto;
       padding-top: 8px;
     }
-    
-    .btn{
+
+    .btn {
       appearance: none;
-      border: 1px solid transparent;
-      background: linear-gradient(135deg, var(--primary), var(--primary-hover));
-      color: white;
-      padding: 0.75rem 1.25rem;
-      border-radius: 12px;
-      text-decoration: none;
-      font-weight: 700;
+      font-family: var(--font-body);
       font-size: 0.9375rem;
+      font-weight: 700;
+      border: 1px solid transparent;
+      border-radius: 12px;
+      padding: 0.75rem 1.25rem;
       display: inline-flex;
       align-items: center;
       justify-content: center;
       gap: 6px;
-      transition: all 0.2s ease;
       cursor: pointer;
-      box-shadow: 0 2px 8px rgba(37, 99, 235, 0.2);
+      text-decoration: none;
+      transition: all 0.2s;
       min-height: 44px;
       user-select: none;
-      -webkit-user-select: none;
+      white-space: nowrap;
     }
-    
-    .btn:hover{
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary), var(--primary-hover));
+      color: white;
+      box-shadow: 0 2px 8px rgba(37,99,235,0.2);
+    }
+    .btn-primary:hover {
       background: linear-gradient(135deg, var(--primary-hover), var(--primary));
       transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+      box-shadow: 0 4px 12px rgba(37,99,235,0.3);
     }
-    
-    .btn:active{
-      transform: translateY(0) scale(0.98);
-      box-shadow: 0 2px 4px rgba(37, 99, 235, 0.2);
-    }
-    
-    .btn.ghost{
+    .btn-primary:active { transform: translateY(0) scale(0.98); box-shadow: 0 2px 4px rgba(37,99,235,0.2); }
+
+    .btn-ghost {
       background: transparent;
       border: 1px solid var(--primary);
       color: var(--primary);
       box-shadow: none;
     }
-    
-    .btn.ghost:hover{
-      background: rgba(37, 99, 235, 0.08);
+    .btn-ghost:hover {
+      background: rgba(37,99,235,0.08);
       border-color: var(--primary-hover);
-      box-shadow: 0 2px 8px rgba(37, 99, 235, 0.15);
+      box-shadow: 0 2px 8px rgba(37,99,235,0.15);
     }
-    
-    .btn-icon{
-      font-size: 1.1em;
-    }
-    
-    /* Footer */
-    footer{
-      margin-top: 3rem;
-      color: var(--text-muted);
-      text-align: center;
+
+    /* ─── Footer ─── */
+    footer {
+      border-top: 1px solid var(--gray-200);
       padding: 1.5rem 0;
-      border-top: 1px solid var(--border);
+      text-align: center;
+      color: var(--gray-500);
       font-size: 0.9rem;
     }
-    
-    footer a{
-      color: var(--primary);
-      text-decoration: none;
-      font-weight: 600;
-      transition: color 0.2s ease;
-    }
-    
-    footer a:hover{
-      color: var(--primary-hover);
-    }
-    
-    /* Offline Indicator */
-    .offline-banner{
+    footer a { color: var(--primary); text-decoration: none; font-weight: 600; }
+    footer a:hover { color: var(--primary-hover); }
+
+    /* ─── Offline ─── */
+    .offline-banner {
       display: none;
       position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
+      bottom: 0; left: 0; right: 0;
       background: linear-gradient(135deg, #f59e0b, #d97706);
       color: white;
       padding: 0.75rem;
       text-align: center;
       font-weight: 700;
-      z-index: 1000;
       font-size: 0.875rem;
-      box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+      z-index: 1000;
+      box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
     }
-    
-    .offline-banner.active{
-      display: block;
-      animation: slideUpBanner 0.3s ease;
+    .offline-banner.active { display: block; animation: slideUp 0.3s ease; }
+    @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+
+    /* ─── Reveal ─── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(16px);
+      animation: revealUp 0.5s cubic-bezier(0.4,0,0.2,1) forwards;
     }
-    
-    @keyframes slideUpBanner{
-      from{ transform: translateY(100%); }
-      to{ transform: translateY(0); }
+    @keyframes revealUp { to { opacity: 1; transform: translateY(0); } }
+    .reveal:nth-child(1) { animation-delay: 0.04s; }
+    .reveal:nth-child(2) { animation-delay: 0.08s; }
+    .reveal:nth-child(3) { animation-delay: 0.12s; }
+    .reveal:nth-child(4) { animation-delay: 0.16s; }
+    .reveal:nth-child(5) { animation-delay: 0.20s; }
+    .reveal:nth-child(6) { animation-delay: 0.24s; }
+
+    /* ─── Mobile ─── */
+    @media (max-width: 768px) {
+      header { padding: 0.875rem; }
+      .logo-mark { width: 42px; height: 42px; }
+      .brand-text h1 { font-size: 1rem; }
+      .brand-text .tagline { font-size: 0.75rem; }
+      .live-clock .date-part { display: none; }
+      .main-wrap { padding: 1.25rem 0.875rem 3rem; }
+      .card { padding: 1.25rem; border-radius: 14px; gap: 0.875rem; }
+      .card:active { transform: scale(0.98); }
+      .card h2 { font-size: 1.125rem; }
+      .card-desc { font-size: 0.875rem; }
+      .card-actions { flex-direction: column; gap: 0.625rem; }
+      .btn { width: 100%; text-align: center; padding: 0.875rem 1rem; min-height: 48px; }
+      .stat-chip { padding: 8px 12px; }
+      .quick-grid { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; padding-bottom: 4px; }
+      .quick-grid::-webkit-scrollbar { display: none; }
+      .kbd { display: none; }
+    }
+    @media (max-width: 400px) {
+      .main-wrap { padding: 0.875rem; }
+      .card { padding: 1rem; }
+      .card h2 { font-size: 1.0625rem; }
+      .card-desc { font-size: 0.8125rem; }
+      .btn { font-size: 0.875rem; padding: 0.75rem 0.875rem; }
+    }
+    @media (min-width: 1400px) {
+      .main-wrap { max-width: 1400px; }
     }
 
-    /* Mobile Optimizations */
-    @media(max-width: 768px){
-      header{
-        padding: 0.875rem;
-      }
-      
-      .logo-container{
-        width: 42px;
-        height: 42px;
-      }
-      
-      .brand{
-        gap: 0.625rem;
-      }
-      
-      .brand-text h1{
-        font-size: 1rem;
-      }
-      
-      .brand-text .subtitle{
-        font-size: 0.75rem;
-      }
-      
-      .container{
-        padding: 1rem 0.75rem 2rem;
-      }
-      
-      .grid{
-        gap: 1.25rem;
-      }
-      
-      .card{
-        padding: 1.25rem;
-        border-radius: 14px;
-        box-shadow: 0 2px 8px var(--shadow);
-        gap: 0.875rem;
-      }
-      
-      .card:active{
-        transform: scale(0.98);
-      }
-      
-      .card-badge{
-        font-size: 0.7rem;
-        padding: 5px 10px;
-      }
-      
-      .card h2{
-        font-size: 1.125rem;
-      }
-      
-      .card-description{
-        font-size: 0.875rem;
-      }
-      
-      .info-box{
-        font-size: 0.8125rem;
-        padding: 12px;
-      }
-      
-      .actions{
-        gap: 0.625rem;
-        flex-direction: column;
-      }
-      
-      .btn{
-        width: 100%;
-        text-align: center;
-        padding: 0.875rem 1rem;
-        font-size: 0.9375rem;
-        min-height: 48px;
-      }
-      
-      footer{
-        margin-top: 2.5rem;
-        font-size: 0.8125rem;
-        padding: 1.25rem 0;
-      }
-    }
-
-    /* Extra small phones */
-    @media(max-width: 400px){
-      .container{
-        padding: 0.875rem;
-      }
-      
-      .card{
-        padding: 1rem;
-      }
-      
-      .card h2{
-        font-size: 1.0625rem;
-      }
-      
-      .card-description{
-        font-size: 0.8125rem;
-      }
-      
-      .btn{
-        font-size: 0.875rem;
-        padding: 0.75rem 0.875rem;
-      }
-    }
-    
-    /* Large screens */
-    @media(min-width: 1400px){
-      .container{
-        max-width: 1400px;
-      }
-      
-      .grid{
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-      }
-    }
-    
-    /* Print styles */
-    @media print{
-      body{
-        background: white;
-      }
-      
-      header, .offline-banner{
-        display: none;
-      }
-      
-      .card{
-        break-inside: avoid;
-        box-shadow: none;
-        border: 1px solid #ddd;
-      }
-    }
-    
-    /* Focus styles for accessibility */
-    .btn:focus-visible{
+    /* ─── A11y ─── */
+    .btn:focus-visible, .quick-btn:focus-visible, .filter-btn:focus-visible, .search-box input:focus-visible {
       outline: 3px solid var(--primary);
       outline-offset: 2px;
     }
-    
-    /* Reduced motion support */
-    @media (prefers-reduced-motion: reduce){
-      *, *::before, *::after{
-        animation-duration: 0.01ms !important;
-        animation-iteration-count: 1 !important;
-        transition-duration: 0.01ms !important;
-      }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+    }
+    @media print {
+      header, .offline-banner { display: none; }
+      body { background: white; }
+      .card { break-inside: avoid; box-shadow: none; border: 1px solid #ddd; }
     }
   </style>
 </head>
 <body>
-  <!-- Offline Indicator -->
-  <div class="offline-banner" id="offlineBanner">
-    📡 You're offline. Some features may be limited.
-  </div>
+  <div class="offline-banner" id="offlineBanner">📡 You're offline. Some features may be limited.</div>
 
   <header>
-    <div class="header-content">
+    <div class="header-inner">
       <div class="brand">
-        <div class="logo-container">
+        <div class="logo-mark">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
             <defs>
-              <linearGradient id="professionalBg" x1="0%" y1="0%" x2="0%" y2="100%">
-                <stop offset="0%" style="stop-color:#1e3a8a;stop-opacity:1" />
-                <stop offset="100%" style="stop-color:#0f172a;stop-opacity:1" />
-              </linearGradient>
-              <linearGradient id="brickGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-                <stop offset="0%" style="stop-color:#7c3aed;stop-opacity:0.3" />
-                <stop offset="100%" style="stop-color:#6366f1;stop-opacity:0.5" />
-              </linearGradient>
-              <linearGradient id="sidingGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-                <stop offset="0%" style="stop-color:#60a5fa;stop-opacity:0.6" />
-                <stop offset="100%" style="stop-color:#3b82f6;stop-opacity:0.7" />
-              </linearGradient>
-              <linearGradient id="roofGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-                <stop offset="0%" style="stop-color:#94a3b8;stop-opacity:0.8" />
-                <stop offset="100%" style="stop-color:#64748b;stop-opacity:0.9" />
-              </linearGradient>
-              <linearGradient id="cometGold" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" style="stop-color:#fde047;stop-opacity:1" />
-                <stop offset="50%" style="stop-color:#fbbf24;stop-opacity:1" />
-                <stop offset="100%" style="stop-color:#f59e0b;stop-opacity:1" />
-              </linearGradient>
+              <linearGradient id="professionalBg" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" style="stop-color:#1e3a8a;stop-opacity:1"/><stop offset="100%" style="stop-color:#0f172a;stop-opacity:1"/></linearGradient>
+              <linearGradient id="cometGold" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#fde047;stop-opacity:1"/><stop offset="50%" style="stop-color:#fbbf24;stop-opacity:1"/><stop offset="100%" style="stop-color:#f59e0b;stop-opacity:1"/></linearGradient>
+              <linearGradient id="brickGrad" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" style="stop-color:#7c3aed;stop-opacity:0.3"/><stop offset="100%" style="stop-color:#6366f1;stop-opacity:0.5"/></linearGradient>
+              <linearGradient id="sidingGrad" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" style="stop-color:#60a5fa;stop-opacity:0.6"/><stop offset="100%" style="stop-color:#3b82f6;stop-opacity:0.7"/></linearGradient>
+              <linearGradient id="roofGrad" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" style="stop-color:#94a3b8;stop-opacity:0.8"/><stop offset="100%" style="stop-color:#64748b;stop-opacity:0.9"/></linearGradient>
             </defs>
             <rect width="512" height="512" rx="110" fill="url(#professionalBg)"/>
             <path d="M 80 90 L 380 155" stroke="url(#cometGold)" stroke-width="5" fill="none" opacity="0.7" stroke-linecap="round"/>
             <path d="M 90 95 L 375 157" stroke="#fde047" stroke-width="2.5" fill="none" opacity="0.9" stroke-linecap="round"/>
-            <circle cx="390" cy="160" r="20" fill="url(#cometGold)"/>
-            <circle cx="390" cy="160" r="12" fill="#fde047"/>
+            <circle cx="390" cy="160" r="20" fill="url(#cometGold)"/><circle cx="390" cy="160" r="12" fill="#fde047"/>
             <path d="M 390 160 l 9 5 l 5 9 l -5 -9 l -9 5 l 5 -9 l 9 -5 l -5 9 z" fill="#ffffff" opacity="0.9"/>
             <circle cx="256" cy="280" r="140" fill="#0f172a" stroke="url(#cometGold)" stroke-width="6"/>
             <circle cx="256" cy="280" r="130" fill="#1e293b"/>
             <rect x="130" y="310" width="55" height="50" fill="url(#brickGrad)"/>
-            <rect x="135" y="318" width="10" height="12" fill="#dbeafe" opacity="0.9"/>
-            <rect x="148" y="318" width="10" height="12" fill="#dbeafe" opacity="0.9"/>
-            <rect x="161" y="318" width="10" height="12" fill="#dbeafe" opacity="0.9"/>
-            <rect x="135" y="345" width="10" height="12" fill="#dbeafe" opacity="0.9"/>
-            <rect x="161" y="345" width="10" height="12" fill="#dbeafe" opacity="0.9"/>
-            <rect x="148" y="345" width="10" height="15" fill="#1e3a8a" opacity="0.8"/>
+            <rect x="135" y="318" width="10" height="12" fill="#dbeafe" opacity="0.9"/><rect x="148" y="318" width="10" height="12" fill="#dbeafe" opacity="0.9"/><rect x="161" y="318" width="10" height="12" fill="#dbeafe" opacity="0.9"/>
+            <rect x="135" y="345" width="10" height="12" fill="#dbeafe" opacity="0.9"/><rect x="161" y="345" width="10" height="12" fill="#dbeafe" opacity="0.9"/><rect x="148" y="345" width="10" height="15" fill="#1e3a8a" opacity="0.8"/>
             <rect x="130" y="295" width="55" height="15" fill="url(#sidingGrad)"/>
-            <rect x="135" y="298" width="10" height="10" fill="#dbeafe" opacity="0.9"/>
-            <rect x="148" y="298" width="10" height="10" fill="#dbeafe" opacity="0.9"/>
-            <rect x="161" y="298" width="10" height="10" fill="#dbeafe" opacity="0.9"/>
+            <rect x="135" y="298" width="10" height="10" fill="#dbeafe" opacity="0.9"/><rect x="148" y="298" width="10" height="10" fill="#dbeafe" opacity="0.9"/><rect x="161" y="298" width="10" height="10" fill="#dbeafe" opacity="0.9"/>
             <path d="M 127 295 L 157.5 270 L 188 295 Z" fill="url(#roofGrad)"/>
             <rect x="195" y="300" width="65" height="60" fill="url(#brickGrad)"/>
-            <rect x="200" y="308" width="11" height="14" fill="#dbeafe"/>
-            <rect x="215" y="308" width="11" height="14" fill="#dbeafe"/>
-            <rect x="230" y="308" width="11" height="14" fill="#dbeafe"/>
-            <rect x="245" y="308" width="11" height="14" fill="#dbeafe"/>
-            <rect x="200" y="340" width="11" height="18" fill="#1e3a8a" opacity="0.8"/>
-            <rect x="230" y="340" width="11" height="18" fill="#1e3a8a" opacity="0.8"/>
+            <rect x="200" y="308" width="11" height="14" fill="#dbeafe"/><rect x="215" y="308" width="11" height="14" fill="#dbeafe"/><rect x="230" y="308" width="11" height="14" fill="#dbeafe"/><rect x="245" y="308" width="11" height="14" fill="#dbeafe"/>
+            <rect x="200" y="340" width="11" height="18" fill="#1e3a8a" opacity="0.8"/><rect x="230" y="340" width="11" height="18" fill="#1e3a8a" opacity="0.8"/>
             <rect x="195" y="285" width="65" height="15" fill="url(#sidingGrad)"/>
-            <rect x="200" y="288" width="11" height="10" fill="#dbeafe"/>
-            <rect x="215" y="288" width="11" height="10" fill="#dbeafe"/>
-            <rect x="230" y="288" width="11" height="10" fill="#dbeafe"/>
-            <rect x="245" y="288" width="11" height="10" fill="#dbeafe"/>
+            <rect x="200" y="288" width="11" height="10" fill="#dbeafe"/><rect x="215" y="288" width="11" height="10" fill="#dbeafe"/><rect x="230" y="288" width="11" height="10" fill="#dbeafe"/><rect x="245" y="288" width="11" height="10" fill="#dbeafe"/>
             <rect x="195" y="270" width="65" height="15" fill="url(#brickGrad)"/>
-            <rect x="215" y="273" width="11" height="9" fill="#dbeafe"/>
-            <rect x="230" y="273" width="11" height="9" fill="#dbeafe"/>
+            <rect x="215" y="273" width="11" height="9" fill="#dbeafe"/><rect x="230" y="273" width="11" height="9" fill="#dbeafe"/>
             <path d="M 193 270 L 227.5 240 L 262 270 Z" fill="url(#roofGrad)"/>
             <rect x="245" y="343" width="12" height="15" fill="#475569" opacity="0.7"/>
             <line x1="245" y1="347" x2="257" y2="347" stroke="#94a3b8" stroke-width="0.5"/>
             <line x1="245" y1="350" x2="257" y2="350" stroke="#94a3b8" stroke-width="0.5"/>
             <line x1="245" y1="353" x2="257" y2="353" stroke="#94a3b8" stroke-width="0.5"/>
             <rect x="270" y="305" width="58" height="55" fill="url(#sidingGrad)"/>
-            <rect x="275" y="313" width="10" height="13" fill="#dbeafe" opacity="0.9"/>
-            <rect x="289" y="313" width="10" height="13" fill="#dbeafe" opacity="0.9"/>
-            <rect x="303" y="313" width="10" height="13" fill="#dbeafe" opacity="0.9"/>
-            <rect x="317" y="313" width="10" height="13" fill="#dbeafe" opacity="0.9"/>
-            <rect x="275" y="343" width="10" height="16" fill="#1e3a8a" opacity="0.8"/>
-            <rect x="303" y="343" width="10" height="16" fill="#1e3a8a" opacity="0.8"/>
+            <rect x="275" y="313" width="10" height="13" fill="#dbeafe" opacity="0.9"/><rect x="289" y="313" width="10" height="13" fill="#dbeafe" opacity="0.9"/><rect x="303" y="313" width="10" height="13" fill="#dbeafe" opacity="0.9"/><rect x="317" y="313" width="10" height="13" fill="#dbeafe" opacity="0.9"/>
+            <rect x="275" y="343" width="10" height="16" fill="#1e3a8a" opacity="0.8"/><rect x="303" y="343" width="10" height="16" fill="#1e3a8a" opacity="0.8"/>
             <rect x="270" y="290" width="58" height="15" fill="url(#brickGrad)"/>
-            <rect x="275" y="293" width="10" height="10" fill="#dbeafe" opacity="0.9"/>
-            <rect x="289" y="293" width="10" height="10" fill="#dbeafe" opacity="0.9"/>
-            <rect x="303" y="293" width="10" height="10" fill="#dbeafe" opacity="0.9"/>
-            <rect x="317" y="293" width="10" height="10" fill="#dbeafe" opacity="0.9"/>
+            <rect x="275" y="293" width="10" height="10" fill="#dbeafe" opacity="0.9"/><rect x="289" y="293" width="10" height="10" fill="#dbeafe" opacity="0.9"/><rect x="303" y="293" width="10" height="10" fill="#dbeafe" opacity="0.9"/><rect x="317" y="293" width="10" height="10" fill="#dbeafe" opacity="0.9"/>
             <path d="M 267 290 L 299 265 L 331 290 Z" fill="url(#roofGrad)"/>
             <rect x="335" y="312" width="45" height="48" fill="url(#brickGrad)"/>
-            <rect x="340" y="320" width="9" height="12" fill="#dbeafe" opacity="0.9"/>
-            <rect x="352" y="320" width="9" height="12" fill="#dbeafe" opacity="0.9"/>
-            <rect x="364" y="320" width="9" height="12" fill="#dbeafe" opacity="0.9"/>
-            <rect x="340" y="345" width="9" height="14" fill="#1e3a8a" opacity="0.8"/>
-            <rect x="364" y="345" width="9" height="14" fill="#1e3a8a" opacity="0.8"/>
+            <rect x="340" y="320" width="9" height="12" fill="#dbeafe" opacity="0.9"/><rect x="352" y="320" width="9" height="12" fill="#dbeafe" opacity="0.9"/><rect x="364" y="320" width="9" height="12" fill="#dbeafe" opacity="0.9"/>
+            <rect x="340" y="345" width="9" height="14" fill="#1e3a8a" opacity="0.8"/><rect x="364" y="345" width="9" height="14" fill="#1e3a8a" opacity="0.8"/>
             <rect x="335" y="300" width="45" height="12" fill="url(#sidingGrad)"/>
-            <rect x="340" y="303" width="9" height="8" fill="#dbeafe" opacity="0.9"/>
-            <rect x="352" y="303" width="9" height="8" fill="#dbeafe" opacity="0.9"/>
-            <rect x="364" y="303" width="9" height="8" fill="#dbeafe" opacity="0.9"/>
+            <rect x="340" y="303" width="9" height="8" fill="#dbeafe" opacity="0.9"/><rect x="352" y="303" width="9" height="8" fill="#dbeafe" opacity="0.9"/><rect x="364" y="303" width="9" height="8" fill="#dbeafe" opacity="0.9"/>
             <path d="M 332 300 L 357.5 278 L 383 300 Z" fill="url(#roofGrad)"/>
             <ellipse cx="256" cy="370" rx="125" ry="15" fill="#2D5016" opacity="0.4"/>
             <ellipse cx="125" cy="365" rx="8" ry="10" fill="#2D5016" opacity="0.6"/>
@@ -595,51 +557,90 @@
         </div>
         <div class="brand-text">
           <h1>Comet Builders LLC</h1>
-          <div class="subtitle">Field Reporting Hub</div>
+          <div class="tagline">Field Reporting Hub</div>
         </div>
       </div>
+      <div class="live-clock" id="clock" aria-live="polite"></div>
     </div>
   </header>
 
-  <div class="container">
-    <section class="grid">
-      <!-- Daily Reports -->
-      <article class="card">
-        <span class="card-badge">Daily Reports</span>
+  <div class="main-wrap">
+
+    <div class="status-bar" role="status">
+      <div class="stat-chip">
+        <span class="dot green"></span>
+        <span class="label">Projects</span>
+        <span class="value">3</span>
+      </div>
+      <div class="stat-chip">
+        <span class="dot amber"></span>
+        <span class="label">Active Site</span>
+        <span class="value">Pittsboro</span>
+      </div>
+      <div class="stat-chip">
+        <span class="dot blue"></span>
+        <span class="label">Tools</span>
+        <span class="value">6</span>
+      </div>
+    </div>
+
+    <div class="quick-actions">
+      <h3>Quick Actions</h3>
+      <div class="quick-grid">
+        <a href="daily.html" class="quick-btn">📋 New Daily Report <span class="kbd">1</span></a>
+        <a href="demlr.html" class="quick-btn">🌤️ DEMLR Form <span class="kbd">2</span></a>
+        <a href="punchlist.html" class="quick-btn">✓ Punchlist <span class="kbd">3</span></a>
+        <a href="https://nc811.org/" target="_blank" rel="noopener noreferrer" class="quick-btn">🚧 NC 811 <span class="kbd">4</span></a>
+        <a href="https://www.dropbox.com/home" target="_blank" rel="noopener noreferrer" class="quick-btn">📦 Dropbox</a>
+      </div>
+    </div>
+
+    <div class="toolbar">
+      <div class="search-box">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="searchInput" placeholder="Search tools…" autocomplete="off" aria-label="Search tools">
+      </div>
+      <button class="filter-btn active" data-filter="all" aria-pressed="true">All</button>
+      <button class="filter-btn" data-filter="reporting" aria-pressed="false">Reporting</button>
+      <button class="filter-btn" data-filter="compliance" aria-pressed="false">Compliance</button>
+      <button class="filter-btn" data-filter="external" aria-pressed="false">External</button>
+    </div>
+
+    <div class="card-grid" id="cardGrid">
+
+      <article class="card reveal" data-category="reporting" data-keywords="daily report labor deliveries inspections site conditions field">
+        <div class="card-header">
+          <div class="card-icon">📋</div>
+          <span class="card-tag">Daily Reports</span>
+        </div>
         <h2>Daily Report Portal</h2>
-        <p class="card-description">Create and manage comprehensive daily field reports. Track labor, deliveries, inspections, and site conditions with auto-save functionality.</p>
-        <div class="actions">
-          <a href="daily.html" class="btn">
-            <span class="btn-icon">📋</span>
-            Open Daily Reports
-          </a>
+        <p class="card-desc">Create and manage comprehensive daily field reports. Track labor, deliveries, inspections, and site conditions with auto-save functionality.</p>
+        <div class="card-actions">
+          <a href="daily.html" class="btn btn-primary"><span class="btn-icon">📋</span> Open Daily Reports</a>
         </div>
       </article>
 
-      <!-- DEMLR -->
-      <article class="card">
-        <span class="card-badge">DEMLR Monitoring</span>
+      <article class="card reveal" data-category="compliance" data-keywords="demlr monitoring weather erosion compliance inspector pdf form">
+        <div class="card-header">
+          <div class="card-icon">🌤️</div>
+          <span class="card-tag">DEMLR Monitoring</span>
+        </div>
         <h2>DEMLR Weather Tracking</h2>
-        <p class="card-description">Complete DEMLR monitoring forms in-browser and export to PDF. Professional white layout designed for inspectors and compliance.</p>
-        <div class="actions">
-          <a href="demlr.html" class="btn">
-            <span class="btn-icon">🌤️</span>
-            Open DEMLR Form
-          </a>
-          <a href="DEMLR-Monitoring-Form-Rev-07012020.pdf" class="btn ghost" download>
-            <span class="btn-icon">📄</span>
-            Download PDF Template
-          </a>
+        <p class="card-desc">Complete DEMLR monitoring forms in-browser and export to PDF. Professional white layout designed for inspectors and compliance.</p>
+        <div class="card-actions">
+          <a href="demlr.html" class="btn btn-primary"><span class="btn-icon">🌤️</span> Open DEMLR Form</a>
+          <a href="DEMLR-Monitoring-Form-Rev-07012020.pdf" class="btn btn-ghost" download><span class="btn-icon">📄</span> Download PDF Template</a>
         </div>
       </article>
 
-      <!-- 811 -->
-      <article class="card">
-        <span class="card-badge">811 Locates</span>
+      <article class="card reveal" data-category="compliance" data-keywords="811 locates tickets excavation dig utilities underground">
+        <div class="card-header">
+          <div class="card-icon">🚧</div>
+          <span class="card-tag">811 Locates</span>
+        </div>
         <h2>Update or Check Locates</h2>
-        <p class="card-description">Access the official North Carolina 811 portal to submit new locate requests or check existing tickets before any excavation work.</p>
-        
-        <div class="info-box">
+        <p class="card-desc">Access the official North Carolina 811 portal to submit new locate requests or check existing tickets before any excavation work.</p>
+        <div class="tips-box">
           <strong>📝 Quick Tips:</strong>
           <ul>
             <li>Have your ticket number ready</li>
@@ -648,58 +649,49 @@
             <li>Call 3 business days before digging</li>
           </ul>
         </div>
-        
-        <div class="actions">
-          <a href="https://nc811.org/" target="_blank" rel="noopener noreferrer" class="btn">
-            <span class="btn-icon">🚧</span>
-            Open 811 Portal
-          </a>
-          <a href="811.html" class="btn ghost">
-            <span class="btn-icon">📋</span>
-            Track My Tickets
-          </a>
+        <div class="card-actions">
+          <a href="https://nc811.org/" target="_blank" rel="noopener noreferrer" class="btn btn-primary"><span class="btn-icon">🚧</span> Open 811 Portal</a>
+          <a href="811.html" class="btn btn-ghost"><span class="btn-icon">📋</span> Track My Tickets</a>
         </div>
       </article>
 
-      <!-- Punchlist Template -->
-      <article class="card">
-        <span class="card-badge">Punchlist</span>
+      <article class="card reveal" data-category="reporting" data-keywords="punchlist items building trade closeout export pdf assign track">
+        <div class="card-header">
+          <div class="card-icon">✓</div>
+          <span class="card-tag">Punchlist</span>
+        </div>
         <h2>Initial Punchlist Template</h2>
-        <p class="card-description">Create, assign, and track punchlist items by building and trade. Export completed lists to PDF for closeout packages and owner turnover.</p>
-        <div class="actions">
-          <a href="punchlist.html" class="btn">
-            <span class="btn-icon">✓</span>
-            Open Punchlist
-          </a>
+        <p class="card-desc">Create, assign, and track punchlist items by building and trade. Export completed lists to PDF for closeout packages and owner turnover.</p>
+        <div class="card-actions">
+          <a href="punchlist.html" class="btn btn-primary"><span class="btn-icon">✓</span> Open Punchlist</a>
         </div>
       </article>
 
-      <!-- Dropbox -->
-      <article class="card">
-        <span class="card-badge">Cloud Storage</span>
-        <h2>Project Files - Dropbox</h2>
-        <p class="card-description">Access all project documents, plans, photos, and reports stored in Dropbox. Quick access to drawings, specifications, and shared files.</p>
-        <div class="actions">
-          <a href="https://www.dropbox.com/home" target="_blank" rel="noopener noreferrer" class="btn">
-            <span class="btn-icon">📦</span>
-            Open Dropbox
-          </a>
+      <article class="card reveal" data-category="external" data-keywords="dropbox cloud files documents plans photos drawings specifications storage">
+        <div class="card-header">
+          <div class="card-icon">📦</div>
+          <span class="card-tag">Cloud Storage</span>
+        </div>
+        <h2>Project Files — Dropbox</h2>
+        <p class="card-desc">Access all project documents, plans, photos, and reports stored in Dropbox. Quick access to drawings, specifications, and shared files.</p>
+        <div class="card-actions">
+          <a href="https://www.dropbox.com/home" target="_blank" rel="noopener noreferrer" class="btn btn-primary"><span class="btn-icon">📦</span> Open Dropbox</a>
         </div>
       </article>
 
-      <!-- Final Building Walk -->
-      <article class="card">
-        <span class="card-badge">Final Walk</span>
+      <article class="card reveal" data-category="reporting" data-keywords="final walk building inspection closeout room signature acceptance notes">
+        <div class="card-header">
+          <div class="card-icon">🏗️</div>
+          <span class="card-tag">Final Walk</span>
+        </div>
         <h2>Final Building Walk</h2>
-        <p class="card-description">Comprehensive room-by-room closeout inspection form with detailed notes, responsible party tracking, and signature capture for final acceptance.</p>
-        <div class="actions">
-          <a href="building-walk.html" class="btn">
-            <span class="btn-icon">🏗️</span>
-            Open Final Walk
-          </a>
+        <p class="card-desc">Comprehensive room-by-room closeout inspection form with detailed notes, responsible party tracking, and signature capture for final acceptance.</p>
+        <div class="card-actions">
+          <a href="building-walk.html" class="btn btn-primary"><span class="btn-icon">🏗️</span> Open Final Walk</a>
         </div>
       </article>
-    </section>
+
+    </div>
 
     <footer>
       <p>© <span id="year"></span> Comet Builders LLC. All rights reserved.</p>
@@ -707,49 +699,67 @@
   </div>
 
   <script>
-    // Set current year
-    document.getElementById('year').textContent = new Date().getFullYear();
-    
-    // Offline/Online detection
-    function updateOnlineStatus(){
-      const banner = document.getElementById('offlineBanner');
-      if(banner){
-        if(navigator.onLine){
-          banner.classList.remove('active');
-        } else {
-          banner.classList.add('active');
-        }
-      }
+    function updateClock() {
+      const now = new Date();
+      const time = now.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+      const date = now.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+      const el = document.getElementById('clock');
+      if (el) el.innerHTML = `${time} <span class="date-part">· ${date}</span>`;
     }
-    
-    window.addEventListener('online', updateOnlineStatus);
-    window.addEventListener('offline', updateOnlineStatus);
-    
-    // Check initial status
-    updateOnlineStatus();
-    
-    // Prevent double-tap zoom on iOS
-    let lastTouchEnd = 0;
-    document.addEventListener('touchend', function(event) {
-      const now = Date.now();
-      if (now - lastTouchEnd <= 300) {
-        event.preventDefault();
-      }
-      lastTouchEnd = now;
-    }, false);
-    
-    // Add smooth scroll behavior for anchor links
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-      anchor.addEventListener('click', function (e) {
-        e.preventDefault();
-        const target = document.querySelector(this.getAttribute('href'));
-        if(target){
-          target.scrollIntoView({
-            behavior: 'smooth'
-          });
-        }
+    updateClock();
+    setInterval(updateClock, 30000);
+
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    const searchInput = document.getElementById('searchInput');
+    const cards = document.querySelectorAll('.card-grid .card');
+    searchInput.addEventListener('input', () => {
+      const q = searchInput.value.toLowerCase().trim();
+      cards.forEach(card => {
+        const text = (card.textContent + ' ' + (card.dataset.keywords || '')).toLowerCase();
+        card.style.display = text.includes(q) ? '' : 'none';
       });
     });
+
+    const filterBtns = document.querySelectorAll('.filter-btn');
+    filterBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        filterBtns.forEach(b => { b.classList.remove('active'); b.setAttribute('aria-pressed', 'false'); });
+        btn.classList.add('active');
+        btn.setAttribute('aria-pressed', 'true');
+        const cat = btn.dataset.filter;
+        cards.forEach(card => {
+          card.style.display = (cat === 'all' || card.dataset.category === cat) ? '' : 'none';
+        });
+        searchInput.value = '';
+      });
+    });
+
+    const shortcuts = { '1': 'daily.html', '2': 'demlr.html', '3': 'punchlist.html', '4': 'https://nc811.org/' };
+    document.addEventListener('keydown', e => {
+      if (document.activeElement.tagName === 'INPUT') return;
+      if (e.key === '/' || (e.key === 'k' && (e.metaKey || e.ctrlKey))) {
+        e.preventDefault();
+        searchInput.focus();
+        return;
+      }
+      if (shortcuts[e.key]) window.location.href = shortcuts[e.key];
+    });
+
+    function updateOnline() {
+      const b = document.getElementById('offlineBanner');
+      if (b) b.classList.toggle('active', !navigator.onLine);
+    }
+    window.addEventListener('online', updateOnline);
+    window.addEventListener('offline', updateOnline);
+    updateOnline();
+
+    let lastTouch = 0;
+    document.addEventListener('touchend', e => {
+      const now = Date.now();
+      if (now - lastTouch <= 300) e.preventDefault();
+      lastTouch = now;
+    }, false);
   </script>
 </body>
 </html>
