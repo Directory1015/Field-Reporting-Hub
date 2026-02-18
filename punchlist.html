@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Comet Builders — Initial Punchlist</title>
 <!-- Favicon for browser tab -->
 <link rel="apple-touch-icon" sizes="180x180" href="assets/comet_builders_180x180.png">
@@ -350,6 +350,15 @@
     overflow: hidden;
   }
   
+  /* Enable text wrapping in notes column */
+  tbody td:nth-child(5) .cell textarea,
+  tbody td:nth-child(5) textarea {
+    white-space: pre-wrap !important;
+    word-wrap: break-word !important;
+    overflow-wrap: break-word !important;
+    word-break: break-word !important;
+  }
+  
   .hl{
     background: var(--yellow) !important;
   }
@@ -474,6 +483,54 @@
   
   .offline-banner.active{
     display: block;
+  }
+
+  /* Header Toggle Button */
+  .toggle-header-btn{
+    position: sticky;
+    top: 10px;
+    left: 10px;
+    z-index: 101;
+    background: var(--primary);
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 0.875rem;
+    font-weight: 600;
+    box-shadow: var(--shadow-lg);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 10px;
+    transition: all 0.2s ease;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+    min-height: 44px;
+  }
+  
+  .toggle-header-btn:hover{
+    background: var(--primary-hover);
+    transform: translateY(-1px);
+  }
+  
+  .toggle-header-btn:active{
+    transform: translateY(0);
+  }
+  
+  .toggle-icon{
+    display: inline-block;
+    transition: transform 0.3s ease;
+    font-size: 1rem;
+  }
+  
+  .toggle-icon.rotated{
+    transform: rotate(180deg);
+  }
+  
+  header.header-hidden{
+    display: none !important;
   }
 
   footer{
@@ -853,6 +910,12 @@
 </style>
 </head>
 <body>
+
+<!-- Header Toggle Button -->
+<button class="toggle-header-btn no-print" id="toggleHeaderBtn" onclick="toggleHeader()">
+  <span class="toggle-icon" id="toggleIcon">▲</span>
+  <span id="toggleText">Hide Header</span>
+</button>
 
 <!-- Offline Indicator -->
 <div class="offline-banner" id="offlineBanner">
@@ -1343,6 +1406,28 @@
     };
     reader.readAsText(file);
     input.value = '';
+  }
+
+  /* ---------- HEADER TOGGLE ---------- */
+  function toggleHeader(){
+    const header = document.querySelector('header');
+    const icon = document.getElementById('toggleIcon');
+    const text = document.getElementById('toggleText');
+    const btn = document.getElementById('toggleHeaderBtn');
+    
+    header.classList.toggle('header-hidden');
+    
+    if(header.classList.contains('header-hidden')){
+      icon.textContent = '▼';
+      icon.classList.add('rotated');
+      text.textContent = 'Show Header';
+      btn.style.background = 'var(--success)';
+    } else {
+      icon.textContent = '▲';
+      icon.classList.remove('rotated');
+      text.textContent = 'Hide Header';
+      btn.style.background = 'var(--primary)';
+    }
   }
 
   // Auto-save every 3 seconds
