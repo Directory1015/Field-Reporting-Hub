@@ -228,7 +228,25 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--tx);min-he
 <div class="dw" id="dw"><div class="dwh"></div><div class="dwc" id="dwc"></div></div>
 <div class="tst" id="tst"></div>
 
+<noscript>
+  <div style="padding:40px;color:#f59e0b;font-family:sans-serif;text-align:center;">
+    <h2>JavaScript Required</h2>
+    <p>Please enable JavaScript to use the Live Schedule.</p>
+    <a href="index.html" style="color:#3b82f6;">Back to Hub</a>
+  </div>
+</noscript>
+
 <script>
+// Global error handler — shows errors visually
+window.onerror = function(msg, url, line, col, error) {
+  document.body.innerHTML = '<div style="padding:30px;color:#ef4444;font-family:monospace;background:#0f1114;min-height:100vh;">' +
+    '<h2 style="color:#f59e0b;">Schedule Error</h2>' +
+    '<p style="color:#e8eaed;">' + msg + '</p>' +
+    '<p style="color:#8b919a;">Line ' + line + ', Col ' + col + '</p>' +
+    '<p style="color:#8b919a;word-break:break-all;">' + (error && error.stack ? error.stack : '') + '</p>' +
+    '<br><a href="index.html" style="color:#3b82f6;font-size:1.1rem;">← Back to Hub</a></div>';
+  return true;
+};
 // ================================================================
 // SCHEDULE TEMPLATES
 // ================================================================
@@ -453,19 +471,26 @@ let role='super', curProj=null, curStruct=null, curFilter='all', searchQ='', dwT
 let state={}; // state[projId][structCode][taskId] = {status,notes,updatedBy,updatedAt}
 
 function initState(){
-  PROJECTS.forEach(p=>{
-    state[p.id]={};
-    p.structures.forEach(s=>{
-      state[p.id][s.code]={};
-      const tpl=TEMPLATES[s.tpl];
-      tpl.forEach(ph=>ph.tasks.forEach(t=>{
-        state[p.id][s.code][t.id]={status:'pending',notes:'',updatedBy:'',updatedAt:null};
-      }));
+  try{
+    PROJECTS.forEach(p=>{
+      state[p.id]={};
+      p.structures.forEach(s=>{
+        state[p.id][s.code]={};
+        const tpl=TEMPLATES[s.tpl];
+        if(!tpl){console.warn('No template for',s.tpl);return;}
+        tpl.forEach(ph=>ph.tasks.forEach(t=>{
+          state[p.id][s.code][t.id]={status:'pending',notes:'',updatedBy:'',updatedAt:null};
+        }));
+      });
     });
-  });
-  // Demo data for Pittsboro B01
-  const demo={4:'done',5:'done',7:'done',8:'done',9:'done',10:'done',11:'done',12:'done',13:'done',14:'done',16:'done',17:'done',18:'done',19:'done',20:'done',22:'done',23:'done',24:'done',25:'done',26:'done',27:'done',28:'done',29:'done',30:'done',31:'done',32:'done',33:'done',34:'done',35:'done',38:'done',39:'done',40:'done',41:'done',42:'done',43:'done',44:'done',45:'done',46:'done',47:'done',48:'active',49:'active'};
-  Object.entries(demo).forEach(([id,st])=>{if(state.pittsboro.B01[id])state.pittsboro.B01[id].status=st;});
+    // Demo data for Pittsboro B01
+    const demo={4:'done',5:'done',7:'done',8:'done',9:'done',10:'done',11:'done',12:'done',13:'done',14:'done',16:'done',17:'done',18:'done',19:'done',20:'done',22:'done',23:'done',24:'done',25:'done',26:'done',27:'done',28:'done',29:'done',30:'done',31:'done',32:'done',33:'done',34:'done',35:'done',38:'done',39:'done',40:'done',41:'done',42:'done',43:'done',44:'done',45:'done',46:'done',47:'done',48:'active',49:'active'};
+    Object.entries(demo).forEach(([id,st])=>{if(state.pittsboro&&state.pittsboro.B01&&state.pittsboro.B01[id])state.pittsboro.B01[id].status=st;});
+    console.log('State initialized OK. Projects:',Object.keys(state).length);
+  }catch(e){
+    console.error('initState error:',e);
+    document.body.innerHTML='<div style="padding:40px;color:#ef4444;font-family:monospace;"><h2>Schedule Init Error</h2><p>'+e.message+'</p><p>Stack: '+e.stack+'</p><a href="index.html" style="color:#f59e0b;">Back to Hub</a></div>';
+  }
 }
 initState();
 
@@ -476,11 +501,16 @@ function getState(){return curProj?state[curProj.id][curStruct]:{};}
 // ROLE SELECT
 // ================================================================
 function pickRole(r){
-  role=r;
-  const l={super:'PM',office:'Office',sub:'Sub'};
-  document.getElementById('hdrUser').textContent=l[r];
-  document.getElementById('roleModal').classList.add('hid');
-  showProjects();
+  try{
+    role=r;
+    const l={super:'PM',office:'Office',sub:'Sub'};
+    document.getElementById('hdrUser').textContent=l[r];
+    document.getElementById('roleModal').classList.add('hid');
+    showProjects();
+  }catch(e){
+    console.error('pickRole error:',e);
+    alert('Error: '+e.message);
+  }
 }
 function showRole(){
   document.getElementById('roleModal').classList.remove('hid');
