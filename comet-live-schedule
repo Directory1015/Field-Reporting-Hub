@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Comet Builders — Live Schedule</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0f1114;--bg2:#1a1d22;--bg3:#22262d;--bg4:#15181c;--brd:#2a2f38;--brd2:#353b45;--tx:#e8eaed;--tx2:#8b919a;--tx3:#555b65;--acc:#f59e0b;--grn:#22c55e;--red:#ef4444;--blu:#3b82f6;--pur:#a855f7;--org:#f97316;--r:8px;--rs:5px}
+*{margin:0;padding:0;box-sizing:border-box}
+html{font-size:15px}
+body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--tx);min-height:100vh;-webkit-tap-highlight-color:transparent;overflow-x:hidden}
+
+/* === PROJECT SELECTOR SCREEN === */
+.proj-screen{min-height:100vh;padding:24px 16px 60px}
+.proj-screen.hidden{display:none}
+.proj-brand{font-family:'DM Mono',monospace;font-size:.7rem;font-weight:500;color:var(--acc);letter-spacing:3px;text-transform:uppercase;display:flex;align-items:center;gap:8px;margin-bottom:32px}
+.proj-brand::before{content:'';display:block;width:10px;height:10px;background:var(--acc);clip-path:polygon(50% 0%,100% 100%,0% 100%)}
+.proj-welcome{font-size:1.6rem;font-weight:700;margin-bottom:4px}
+.proj-sub{color:var(--tx2);font-size:.85rem;margin-bottom:28px}
+.proj-section-label{font-family:'DM Mono',monospace;font-size:.6rem;color:var(--tx3);letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;padding-left:2px}
+.proj-card{background:var(--bg2);border:1px solid var(--brd);border-radius:var(--r);padding:16px;margin-bottom:10px;cursor:pointer;transition:all .2s;position:relative;overflow:hidden}
+.proj-card:hover{border-color:var(--acc);background:var(--bg3)}
+.proj-card:active{transform:scale(.98)}
+.proj-card-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px}
+.proj-card-name{font-weight:600;font-size:1rem}
+.proj-card-loc{font-size:.72rem;color:var(--tx2);margin-top:2px}
+.proj-card-badge{font-family:'DM Mono',monospace;font-size:.6rem;padding:3px 8px;border-radius:12px;background:rgba(245,158,11,.12);color:var(--acc);white-space:nowrap}
+.proj-card-stats{display:flex;gap:16px}
+.proj-card-stat{font-family:'DM Mono',monospace;font-size:.7rem}
+.proj-card-stat span{color:var(--tx3);font-size:.55rem;display:block;margin-top:1px;letter-spacing:.5px;text-transform:uppercase}
+.proj-prog{height:4px;background:var(--brd);border-radius:2px;margin-top:10px;overflow:hidden}
+.proj-prog-fill{height:100%;border-radius:2px;background:var(--grn);transition:width .4s}
+.proj-add{border:1px dashed var(--brd2);background:transparent;color:var(--tx3);display:flex;align-items:center;justify-content:center;gap:8px;padding:20px;border-radius:var(--r);cursor:pointer;font-family:'Outfit',sans-serif;font-size:.8rem;transition:all .2s;margin-top:6px}
+.proj-add:hover{border-color:var(--acc);color:var(--acc)}
+
+/* === MAIN APP === */
+#app{display:none}
+.hdr{position:sticky;top:0;z-index:100;background:linear-gradient(180deg,var(--bg) 0%,var(--bg) 88%,transparent);padding:12px 16px 20px}
+.hdr-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.hdr-back{background:none;border:none;color:var(--tx2);font-size:1.2rem;cursor:pointer;padding:4px 8px;margin-left:-8px;transition:color .15s;display:flex;align-items:center;gap:6px;font-family:'Outfit',sans-serif;font-size:.8rem}
+.hdr-back:hover{color:var(--tx)}
+.hdr-proj{text-align:center;flex:1}
+.hdr-proj-name{font-weight:600;font-size:.9rem}
+.hdr-proj-loc{font-family:'DM Mono',monospace;font-size:.6rem;color:var(--tx3)}
+.hdr-user{font-family:'DM Mono',monospace;font-size:.6rem;color:var(--tx2);background:var(--bg2);border:1px solid var(--brd);padding:4px 10px;border-radius:20px;cursor:pointer}
+.bld-sel{display:flex;gap:6px;overflow-x:auto;padding:2px 0;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.bld-sel::-webkit-scrollbar{display:none}
+.bb{flex-shrink:0;font-family:'DM Mono',monospace;font-size:.68rem;font-weight:500;padding:6px 12px;border-radius:20px;border:1px solid var(--brd);background:var(--bg2);color:var(--tx2);cursor:pointer;transition:all .2s;white-space:nowrap}
+.bb:hover{border-color:var(--tx2);color:var(--tx)}
+.bb.on{background:var(--acc);color:#000;border-color:var(--acc);font-weight:600}
+.bb .bp{font-size:.5rem;opacity:.7;margin-left:3px}
+
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;padding:0 16px;margin-bottom:12px}
+.st{background:var(--bg2);border:1px solid var(--brd);border-radius:var(--rs);padding:8px 10px;text-align:center}
+.sv{font-family:'DM Mono',monospace;font-size:1.2rem;font-weight:500;line-height:1}
+.sv.g{color:var(--grn)}.sv.o{color:var(--org)}.sv.r{color:var(--red)}.sv.b{color:var(--blu)}
+.sl{font-size:.55rem;color:var(--tx2);text-transform:uppercase;letter-spacing:1px;margin-top:3px}
+
+.pbar{padding:0 16px;margin-bottom:12px}
+.pt{height:5px;background:var(--bg2);border-radius:3px;overflow:hidden;display:flex}
+.pf1{background:var(--grn);transition:width .5s}.pf2{background:var(--acc);transition:width .5s}.pf3{background:var(--red);transition:width .5s}
+.pm{display:flex;justify-content:space-between;margin-top:5px}
+.pm span{font-family:'DM Mono',monospace;font-size:.58rem;color:var(--tx2)}
+
+.frow{display:flex;gap:5px;padding:0 16px;margin-bottom:10px;overflow-x:auto;scrollbar-width:none}
+.frow::-webkit-scrollbar{display:none}
+.fb{flex-shrink:0;font-family:'Outfit',sans-serif;font-size:.7rem;font-weight:500;padding:5px 11px;border-radius:var(--rs);border:1px solid var(--brd);background:transparent;color:var(--tx2);cursor:pointer;transition:all .15s}
+.fb:hover{color:var(--tx);border-color:var(--tx2)}
+.fb.on{background:var(--bg3);color:var(--tx);border-color:var(--acc)}
+.fb .fc{font-family:'DM Mono',monospace;font-size:.55rem;margin-left:3px;opacity:.6}
+
+.srch{padding:0 16px;margin-bottom:10px}
+.si{width:100%;font-family:'Outfit',sans-serif;font-size:.78rem;background:var(--bg2);border:1px solid var(--brd);border-radius:var(--r);color:var(--tx);padding:9px 14px 9px 34px;outline:none;transition:border-color .2s;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%238b919a' stroke-width='2'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.35-4.35'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:12px center}
+.si:focus{border-color:var(--acc)}
+.si::placeholder{color:var(--tx3)}
+
+.tl{padding:0 16px 100px}
+.ph{display:flex;align-items:center;justify-content:space-between;padding:12px 0 7px;cursor:pointer;user-select:none;border-bottom:1px solid var(--brd);margin-bottom:4px}
+.phl{display:flex;align-items:center;gap:9px}
+.chv{width:16px;height:16px;color:var(--tx2);transition:transform .25s;flex-shrink:0}
+.ph.col .chv{transform:rotate(-90deg)}
+.phn{font-weight:600;font-size:.82rem}
+.phr{display:flex;align-items:center;gap:7px}
+.php{font-family:'DM Mono',monospace;font-size:.72rem;font-weight:500}
+.pmb{width:44px;height:3px;background:var(--brd);border-radius:2px;overflow:hidden}
+.pmf{height:100%;border-radius:2px;transition:width .4s}
+.ptk{display:none}.ptk.vis{display:block}
+.tr{display:flex;align-items:center;padding:9px 7px;margin:2px 0;border-radius:var(--rs);cursor:pointer;transition:background .15s;gap:9px;animation:si .18s ease forwards;opacity:0}
+@keyframes si{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+.tr:hover{background:var(--bg3)}.tr:active{background:var(--brd)}
+.ts{width:26px;height:26px;border-radius:50%;border:2px solid var(--brd);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s;cursor:pointer}
+.ts:hover{border-color:var(--tx2);transform:scale(1.1)}
+.ts.done{background:var(--grn);border-color:var(--grn)}.ts.done::after{content:'✓';color:#fff;font-size:.7rem;font-weight:700}
+.ts.active{border-color:var(--acc);background:rgba(245,158,11,.08)}.ts.active::after{content:'';width:7px;height:7px;background:var(--acc);border-radius:50%}
+.ts.delayed{border-color:var(--red);background:rgba(239,68,68,.08)}.ts.delayed::after{content:'!';color:var(--red);font-size:.75rem;font-weight:700}
+.ts.blocked{border-color:var(--tx3);background:rgba(85,91,101,.06)}.ts.blocked::after{content:'—';color:var(--tx3);font-size:.65rem}
+.ti{flex:1;min-width:0}
+.tnr{display:flex;align-items:center;gap:5px}
+.tn{font-size:.78rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tr.dn .tn{color:var(--tx2);text-decoration:line-through;text-decoration-color:var(--tx3)}
+.tg{font-family:'DM Mono',monospace;font-size:.52rem;padding:2px 5px;border-radius:3px;flex-shrink:0;font-weight:500}
+.tg.inspection{background:rgba(59,130,246,.15);color:var(--blu)}
+.tg.delivery{background:rgba(168,85,247,.15);color:var(--pur)}
+.tg.pour{background:rgba(245,158,11,.15);color:var(--acc)}
+.tm{display:flex;gap:10px;margin-top:2px}
+.tm span{font-family:'DM Mono',monospace;font-size:.57rem;color:var(--tx3)}
+.td{font-family:'DM Mono',monospace;font-size:.68rem;color:var(--tx2);flex-shrink:0;text-align:right;min-width:28px}
+
+/* Drawer */
+.dov{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:200;opacity:0;pointer-events:none;transition:opacity .25s}
+.dov.op{opacity:1;pointer-events:auto}
+.dw{position:fixed;bottom:0;left:0;right:0;background:var(--bg2);border-top:1px solid var(--brd);border-radius:16px 16px 0 0;z-index:201;transform:translateY(100%);transition:transform .3s cubic-bezier(.32,.72,0,1);max-height:78vh;overflow-y:auto}
+.dw.op{transform:translateY(0)}
+.dwh{width:36px;height:4px;background:var(--brd2);border-radius:2px;margin:10px auto 14px}
+.dwc{padding:0 20px 32px}
+.dwt{font-size:1rem;font-weight:600;margin-bottom:3px}
+.dwid{font-family:'DM Mono',monospace;font-size:.62rem;color:var(--tx3);margin-bottom:14px}
+.dwg{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px}
+.dwf{background:var(--bg);border-radius:var(--rs);padding:9px 11px}
+.dwfl{font-size:.57rem;color:var(--tx3);text-transform:uppercase;letter-spacing:1px;margin-bottom:3px}
+.dwfv{font-family:'DM Mono',monospace;font-size:.78rem}
+.dwa{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-bottom:16px}
+.ab{display:flex;flex-direction:column;align-items:center;gap:5px;padding:11px 6px;border-radius:var(--r);border:1px solid var(--brd);background:transparent;color:var(--tx2);font-family:'Outfit',sans-serif;font-size:.62rem;cursor:pointer;transition:all .15s}
+.ab:hover{border-color:var(--tx2);color:var(--tx)}
+.ab.sd{border-color:var(--grn);color:var(--grn);background:rgba(34,197,94,.08)}
+.ab.sa{border-color:var(--acc);color:var(--acc);background:rgba(245,158,11,.08)}
+.ab.sr{border-color:var(--red);color:var(--red);background:rgba(239,68,68,.08)}
+.ab.sp{border-color:var(--tx3);color:var(--tx2)}
+.ad{width:16px;height:16px;border-radius:50%;border:2px solid currentColor;display:flex;align-items:center;justify-content:center;font-size:.55rem;font-weight:700}
+.prc{margin-bottom:14px}
+.prl{font-size:.57rem;color:var(--tx3);text-transform:uppercase;letter-spacing:1px;margin-bottom:5px}
+.pri{display:flex;align-items:center;gap:7px;padding:5px 0;font-size:.72rem;color:var(--tx2)}
+.prd{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.dwn{width:100%;font-family:'Outfit',sans-serif;font-size:.78rem;background:var(--bg);border:1px solid var(--brd);border-radius:var(--r);color:var(--tx);padding:9px 12px;min-height:55px;resize:vertical;outline:none}
+.dwn:focus{border-color:var(--acc)}
+.dwn::placeholder{color:var(--tx3)}
+.dws{width:100%;margin-top:10px;padding:13px;font-family:'Outfit',sans-serif;font-size:.83rem;font-weight:600;background:var(--acc);color:#000;border:none;border-radius:var(--r);cursor:pointer;transition:all .15s}
+.dws:hover{background:#e8940a}.dws:active{transform:scale(.98)}
+
+/* Toast */
+.tst{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--grn);color:#000;font-family:'DM Mono',monospace;font-size:.72rem;font-weight:500;padding:9px 18px;border-radius:20px;z-index:999;opacity:0;transition:all .3s cubic-bezier(.32,.72,0,1);pointer-events:none}
+.tst.sh{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* Role modal */
+.rmod{position:fixed;inset:0;background:var(--bg);z-index:500;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px}
+.rmod.hid{display:none}
+.rmt{font-family:'DM Mono',monospace;font-size:.7rem;color:var(--acc);letter-spacing:3px;text-transform:uppercase;margin-bottom:6px;display:flex;align-items:center;gap:8px}
+.rmt::before{content:'';display:block;width:10px;height:10px;background:var(--acc);clip-path:polygon(50% 0%,100% 100%,0% 100%)}
+.rms{font-size:1.3rem;font-weight:700;margin-bottom:5px;text-align:center}
+.rmd{font-size:.78rem;color:var(--tx2);margin-bottom:28px;text-align:center}
+.ros{display:flex;flex-direction:column;gap:9px;width:100%;max-width:340px}
+.ro{display:flex;align-items:center;gap:12px;padding:14px 16px;background:var(--bg2);border:1px solid var(--brd);border-radius:var(--r);cursor:pointer;transition:all .2s}
+.ro:hover{border-color:var(--acc);background:var(--bg3)}.ro:active{transform:scale(.98)}
+.roi{width:38px;height:38px;border-radius:50%;background:rgba(245,158,11,.08);display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0}
+.ron{font-weight:600;font-size:.85rem}
+.rod{font-size:.68rem;color:var(--tx2);margin-top:1px}
+
+.empty-msg{text-align:center;padding:40px;color:var(--tx2);font-size:.82rem}
+
+/* Hub back link */
+.hub-back{display:inline-flex;align-items:center;gap:6px;font-family:'Outfit',sans-serif;font-size:.78rem;color:var(--tx2);text-decoration:none;padding:6px 12px;border:1px solid var(--brd);border-radius:20px;transition:all .2s;margin-bottom:20px;cursor:pointer;background:none}
+.hub-back:hover{color:var(--acc);border-color:var(--acc)}
+.hub-back:active{transform:scale(.97)}
+.hub-back svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2}
+
+@media(min-width:600px){.stats,.tl,.hdr,.pbar,.frow,.srch{max-width:600px;margin-left:auto;margin-right:auto}}
+</style>
+</head>
+<body>
+
+<!-- ROLE SELECT -->
+<div class="rmod" id="roleModal">
+  <div class="rmt">Comet Builders</div>
+  <div class="rms">Live Schedule</div>
+  <div class="rmd">Select your role to get started</div>
+  <div class="ros">
+    <div class="ro" onclick="pickRole('super')"><div class="roi">🔧</div><div><div class="ron">Superintendent / PM</div><div class="rod">Full edit — any task, any building</div></div></div>
+    <div class="ro" onclick="pickRole('office')"><div class="roi">📋</div><div><div class="ron">Office / Owner</div><div class="rod">View all, comment on tasks</div></div></div>
+    <div class="ro" onclick="pickRole('sub')"><div class="roi">🏗️</div><div><div class="ron">Subcontractor</div><div class="rod">Update your trade's tasks</div></div></div>
+  </div>
+  <a class="hub-back" href="https://cometfieldportal.com" style="margin-top:24px;">
+    <svg viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+    Back to Site Reports Hub
+  </a>
+</div>
+
+<!-- PROJECT SELECT -->
+<div class="proj-screen" id="projScreen" style="display:none">
+  <a class="hub-back" href="https://cometfieldportal.com" id="hubBackLink">
+    <svg viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+    Site Reports Hub
+  </a>
+  <div class="proj-brand">Comet Builders</div>
+  <div class="proj-welcome" id="projWelcome">Good morning</div>
+  <div class="proj-sub">Select a project to manage</div>
+  <div class="proj-section-label">Active Projects</div>
+  <div id="projList"></div>
+</div>
+
+<!-- MAIN APP -->
+<div id="app">
+  <div class="hdr">
+    <div style="display:flex;gap:8px;margin-bottom:8px;">
+      <a class="hub-back" href="https://cometfieldportal.com" style="margin-bottom:0;font-size:.68rem;padding:4px 10px;">
+        <svg viewBox="0 0 24 24" style="width:12px;height:12px"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        Hub
+      </a>
+      <button class="hub-back" onclick="goBack()" style="margin-bottom:0;font-size:.68rem;padding:4px 10px;">
+        <svg viewBox="0 0 24 24" style="width:12px;height:12px"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        Projects
+      </button>
+    </div>
+    <div class="hdr-top">
+      <div class="hdr-proj" style="text-align:left;"><div class="hdr-proj-name" id="hdrProjName"></div><div class="hdr-proj-loc" id="hdrProjLoc"></div></div>
+      <div class="hdr-user" id="hdrUser" onclick="showRole()">PM</div>
+    </div>
+    <div class="bld-sel" id="bldSel"></div>
+  </div>
+  <div class="stats" id="statsBar"><div class="st"><div class="sv g" id="sD">0</div><div class="sl">Done</div></div><div class="st"><div class="sv o" id="sA">0</div><div class="sl">Active</div></div><div class="st"><div class="sv r" id="sDl">0</div><div class="sl">Delayed</div></div><div class="st"><div class="sv b" id="sP">0</div><div class="sl">Pending</div></div></div>
+  <div class="pbar"><div class="pt"><div class="pf1" id="pf1"></div><div class="pf2" id="pf2"></div><div class="pf3" id="pf3"></div></div><div class="pm"><span id="ppct">0%</span><span id="peta"></span></div></div>
+  <div class="frow" id="frow"></div>
+  <div class="srch"><input type="text" class="si" id="searchIn" placeholder="Search tasks..."></div>
+  <div class="tl" id="taskList"></div>
+</div>
+
+<div class="dov" id="dov" onclick="closeDw()"></div>
+<div class="dw" id="dw"><div class="dwh"></div><div class="dwc" id="dwc"></div></div>
+<div class="tst" id="tst"></div>
+
+<script>
+// ================================================================
+// SCHEDULE TEMPLATES
+// ================================================================
+function T(id,name,dur,tags,pred){return{id,name,dur,tags:tags||[],pred:pred||null}}
+
+const TPL_4STORY = [
+  {id:'foundation',name:'Foundation',tasks:[
+    T(4,'Install foundation survey pins','1d'),T(5,'Pin hoistway & jack bore','1d'),T(7,'Elevator bore & jack casing','1d'),T(8,'Excavate hoistway pit','1d',[],7),T(9,'Inspect hoistway pit floor','1d',['inspection'],8),T(10,'Cast hoistway pit floor','1d',['pour'],9),T(11,'Form hoistway pit walls','1d',[],10),T(12,'Inspect hoistway pit CIP walls','1d',['inspection'],11),T(13,'Cast hoistway pit CIP walls','1d',['pour'],12),T(14,'Wreck forms + backfill pit','1d',[],13),
+    T(16,'Install plumbing underground','3d'),T(17,'Tie-in sewer','1d',[],16),T(18,'Tie-in water','1d',[],16),T(19,'Plumbing underground inspection','1d',['inspection'],18),T(20,'Backfill plumbing','1d',[],19),
+    T(22,'Deliver rebar & concrete acc','1d',['delivery']),T(23,'Dig footings','1d'),T(24,'Prep slab','1d',[],23),T(25,'Bearing capacity test','1d',['inspection'],24),T(26,'Termite pretreatment','1d',[],24),T(27,'Tie and place rebar','1d',[],24),T(28,'Rebar special inspections','1d',['inspection'],27),T(29,'Cover slab','1d',[],28),T(30,'Municipal inspection','1d',['inspection'],29),T(31,'Pour building slab & footing','1d',['pour'],30),T(32,'Wreck forms','1d',[],31),T(33,'Prep breezeway slab','1d',[],31),T(34,'Municipal inspection (BW)','1d',['inspection'],33),T(35,'Pour breezeway slab','1d',['pour'],34)]},
+  {id:'framing',name:'Framing & Envelope',tasks:[
+    T(38,'Layout','1d'),T(39,'Deliver framing lumber','1d',['delivery']),T(40,'Deliver framing makeup','1d',['delivery']),T(41,'Deliver hardware package','1d',['delivery']),T(42,'Deliver gypsum package','1d',['delivery']),T(43,'Deliver floor truss','1d',['delivery']),
+    T(44,'Frame 1st floor','3d',[],38),T(45,'Set 2nd floor truss','2d',[],44),T(46,'Lay 2nd floor subfloor','1d',[],45),T(47,'Frame 2nd floor','3d',[],46),T(48,'Set 3rd floor truss','2d',[],47),T(49,'Lay 3rd floor subfloor','1d',[],48),T(50,'Frame 3rd floor','3d'),T(51,'Set 4th floor truss','2d',[],50),T(52,'Lay 4th floor subfloor','1d',[],51),T(53,'Deliver roof truss','1d',['delivery'],51),T(54,'Frame 4th floor','3d',[],52),T(55,'Set roof truss','2d'),T(56,'Deliver weather barrier','1d',['delivery'],54),T(57,'Sheath roof','3d',[],55),T(58,'Deliver doors & windows','1d',['delivery'],57),
+    T(59,'Ext sheathing inspection','1d',['inspection'],57),T(60,'Hoistway framing inspection','1d',['inspection'],57),T(61,'Sheath hoistway','2d',[],60),T(62,'Install weather barrier','2d',[],59),T(63,'Install doors & windows','3d',[],62),T(64,'Punchout framing','3d',[],63),T(66,'Deliver roofing materials','1d',['delivery']),T(67,'Install roofing','4d')]},
+  {id:'roughins',name:'Trade Rough-Ins',tasks:[
+    T(70,'Inspect framing at prehang','1d',['inspection']),T(71,'Insulate prehang locations','1d',[],70),T(73,'Inspect insulation prehang','1d',['inspection'],71),T(74,'Hang drywall prehang','1d',[],73),
+    T(76,'Rough PVC 1-2-3-4','4d'),T(77,'Clean out for HVAC','1d',[],76),T(78,'Rough Pex 1-2-3-4','4d',[],77),T(79,'Set tubs','3d',[],78),T(80,'Air test','1d',['inspection'],79),T(81,'Water test tubs','1d',['inspection'],80),T(83,'Punchout plumbing','1d',[],81),T(84,'Plumbing rough inspection','1d',['inspection'],83),
+    T(87,'HVAC rough 1st/2nd','4d',[],77),T(89,'HVAC rough 3rd/4th','4d',[],87),T(91,'HVAC rough inspection','1d',['inspection'],89),
+    T(93,'Sprinkler rough 1st/2nd','4d',[],77),T(95,'Sprinkler rough 3rd/4th','4d',[],93),T(97,'Sprinkler rough inspection','1d',['inspection'],95),
+    T(100,'Pull Romex 1st/2nd','4d'),T(102,'Pull Romex 3rd/4th','4d',[],100),T(104,'Electrical rough inspection','1d',['inspection'],102),
+    T(106,'Fire alarm 1st/2nd','3d'),T(108,'Fire alarm 3rd/4th','3d',[],106),T(110,'Fire alarm inspection','1d',['inspection'],108),
+    T(112,'Telecom rough 1st/2nd','2d'),T(114,'Telecom rough 3rd/4th','2d',[],112),T(116,'Telecom rough inspection','1d',['inspection'],114),
+    T(118,'Framing rough inspect','1d',['inspection']),T(119,'Framing rough repair','1d',[],118),T(120,'Framing reinspect','1d',['inspection'],119)]},
+  {id:'insuldry',name:'Insulation & Drywall',tasks:[
+    T(123,'Insulate 3rd/4th','2d'),T(124,'Insulation inspection 3rd/4th','1d',['inspection'],123),T(125,'Insulate 1st/2nd','2d',[],123),T(126,'Insulation inspection 1st/2nd','1d',['inspection'],125),
+    T(128,'Deliver drywall 3rd/4th','2d',['delivery']),T(129,'Hang RC channel 3rd/4th','1d',[],128),T(130,'RC inspection 3rd/4th','1d',['inspection'],129),T(131,'Hang/finish drywall 3rd/4th','5d',[],130),
+    T(134,'Hang RC channel 1st/2nd','1d',[],129),T(135,'RC inspection 1st/2nd','1d',['inspection'],134),T(136,'Hang/finish drywall 1st/2nd','5d',[],131),
+    T(139,'Place Levelrock gypcrete','2d',['pour']),T(140,'Floor stain','3d'),T(142,'Prep BW subfloor','2d'),T(143,'Pump/cast LW concrete','1d',['pour'],142),T(144,'Cure time','2d',[],143)]},
+  {id:'exterior',name:'Exterior Cladding & Paint',tasks:[
+    T(147,'Deliver brick veneer','1d',['delivery']),T(148,'Brick — front','2d'),T(149,'Brick — sides','1d',[],148),T(150,'Brick — rear','2d',[],149),
+    T(152,'Deliver siding','1d',['delivery']),T(153,'Siding — front','3d'),T(154,'Siding — sides','2d',[],153),T(155,'Siding — rear','3d',[],154),T(156,'Siding — porches','3d',[],155),T(157,'Siding — breezeways','3d',[],156),
+    T(159,'Ext paint — building','2d'),T(160,'Ext paint — porches','2d',[],159),T(161,'Ext paint — breezeways','2d',[],160)]},
+  {id:'intfinish',name:'Interior Finishes',tasks:[
+    T(164,'Deliver doors & trim','1d',['delivery']),T(166,'Install doors/trim 3rd/4th','2d',[],164),T(167,'Install doors/trim 1st/2nd','2d',[],166),T(168,'Blow attic insulation','1d',[],166),
+    T(170,'Prime 3rd/4th','2d',[],166),T(172,'Paint 3rd/4th','2d',[],170),T(173,'Prime 1st/2nd','2d',[],167),T(175,'Paint 1st/2nd','2d',[],173),
+    T(177,'Deliver cabinets','1d',['delivery']),T(178,'Cabinets 4th','1d',[],177),T(179,'Cabinets 3rd','1d',[],178),T(180,'Cabinets 2nd','1d',[],179),T(181,'Cabinets 1st','1d',[],180),
+    T(185,'Granite countertops','4d'),T(189,'Backsplash','4d'),T(191,'Wet area LVP 3rd/4th','1d'),T(192,'Wet area LVP 1st/2nd','1d',[],191),T(194,'2nd trim baseboard','2d'),T(196,'Clean sweep for trimouts','2d')]},
+  {id:'trimouts',name:'Trade Trimouts',tasks:[
+    T(218,'Plumbing trimout','4d'),T(226,'Plumbing final inspection','1d',['inspection'],218),T(228,'HVAC trim','4d'),T(230,'HVAC final inspection','1d',['inspection'],228),
+    T(232,'Sprinkler trim heads','2d'),T(236,'Electrical trimout','8d'),T(245,'Electrical final inspection','2d',['inspection'],236),T(246,'Meter set','3d',[],245),T(247,'Hot punch','2d',[],246),
+    T(249,'Fire alarm devices/FACP','1d'),T(252,'Pull fiber/demarcs','3d'),T(253,'Telecom final inspection','1d',['inspection'],252),T(255,'Cleanout building','2d')]},
+  {id:'elevator',name:'Elevator',tasks:[T(257,'Elevator installation','7d'),T(258,'Post install punch','2d',[],257),T(259,'State labor board inspection','1d',['inspection'],258)]},
+  {id:'finalfinish',name:'Final Finishes',tasks:[
+    T(262,'Shelving','2d'),T(263,'Door & bath hardware','3d'),T(264,'Shower doors','3d'),T(267,'Final painting','3d'),T(269,'Miniblinds','2d'),T(272,'Phase 1 cleaning','2d'),
+    T(274,'LVP install','3d'),T(275,'Carpet install','2d',[],274),T(278,'Phase 2 cleaning','3d'),T(280,'Fridges & ranges','4d',['delivery'])]},
+  {id:'punchout',name:'Final Inspections & Punch',tasks:[
+    T(282,'Fire prevention final','1d',['inspection']),T(283,'Zoning final','1d',['inspection']),T(284,'Building final inspections','1d',['inspection'],282),
+    T(286,'Contractor punch','3d'),T(287,'Management punch','3d',[],286),T(288,'Phase 3 cleaning','1d',[],287),T(289,'Move In Ready','1d',[],288)]}
+];
+
+const TPL_CLUBHOUSE = [
+  {id:'foundation',name:'Foundation',tasks:[
+    T(4,'Pin foundation','1d'),T(5,'Stringlines','1d'),T(7,'Install PVC — plumbing','2d'),T(8,'Install PVC — pool','2d',[],7),T(9,'Plumbing underground inspection','1d',['inspection']),T(10,'Backfill','1d'),
+    T(12,'Dig footings','1d',[],10),T(13,'Prep slab','1d',[],12),T(14,'Electrical underground','1d',[],13),T(15,'Bearing capacity test','1d',['inspection'],13),T(16,'Elec underground inspection','1d',['inspection'],14),T(17,'Termite pretreatment','1d',[],15),T(18,'Cover slab','1d',[],17),T(19,'Tie and place rebar','1d',[],17),T(20,'Rebar inspection','1d',['inspection'],19),T(21,'Municipal inspection','1d',['inspection'],19),T(23,'Pump','1d',[],21),T(24,'Pour slab & footing','1d',['pour'],21),T(25,'Wreck forms','1d',[],24)]},
+  {id:'framing',name:'Framing & Roofing',tasks:[
+    T(28,'Pop out','1d'),T(29,'Deliver makeup','1d',['delivery']),T(30,'Deliver clubhouse steel','1d',['delivery']),T(31,'Deliver framing accessories','1d',['delivery']),T(32,'Deliver weather barrier','1d',['delivery']),T(33,'Deliver framing materials','1d',['delivery']),
+    T(34,'Framing','5d'),T(35,'Deliver roof truss','1d',['delivery'],34),T(36,'Crane mobilization','1d',[],35),T(37,'Set roof truss','1d',[],34),T(38,'Sheath roof','2d',[],37),T(39,'Tyvek','1d',[],38),T(40,'Deliver windows & doors','1d',['delivery'],39),T(41,'Set windows & doors','1d',[],40),T(42,'Punchout','1d',[],39),
+    T(44,'Deliver shingle roofing','1d',['delivery']),T(45,'Install shingle roofing','2d')]},
+  {id:'roughins',name:'Trade Rough-Ins',tasks:[
+    T(47,'Plumbing rough','3d'),T(48,'Plumbing rough inspection','1d',['inspection'],47),T(49,'HVAC rough','3d',[],47),T(50,'HVAC rough inspection','1d',['inspection'],47),
+    T(51,'Electrical rough','3d',[],49),T(52,'Data/cable rough','2d',[],49),T(53,'AV rough','2d',[],49),T(54,'Access control rough','2d',[],49),T(55,'Electrical rough inspection','1d',['inspection'],51)]},
+  {id:'inspinsul',name:'Inspections & Insulation',tasks:[
+    T(70,'Framing rough inspection','2d',['inspection']),T(71,'Insulation','1d',[],70),T(72,'Insulation inspection','1d',['inspection'],71)]},
+  {id:'drywall',name:'Drywall',tasks:[
+    T(74,'Deliver drywall','1d',['delivery']),T(75,'Hang drywall','2d',[],74),T(76,'Finish','2d',[],75),T(77,'Skim','1d',[],76),T(78,'Sand / sweepout','1d',[],77)]},
+  {id:'floorstain',name:'Floor Stain',tasks:[T(80,'Polish & clear coat concrete','2d')]},
+  {id:'intfinish',name:'Interior Finishes',tasks:[
+    T(83,'Deliver int doors & trim','1d',['delivery']),T(84,'Install doors & trim','3d',[],83),T(85,'Feature wall shelving','1d',[],84),
+    T(88,'Prime','1d'),T(89,'Point-up','1d',[],88),T(90,'Paint','2d',[],89),
+    T(92,'Deliver cabinets','1d',['delivery']),T(93,'Install cabinets','1d'),T(97,'Template countertops','1d'),T(99,'Install countertops','1d'),
+    T(101,'Deliver tile','1d',['delivery']),T(102,'Install bathroom & decorative tile','3d')]},
+  {id:'tradecomplete',name:'Trade Completions',tasks:[
+    T(105,'Deliver plumbing fixtures','1d',['delivery']),T(112,'Set fixtures','2d',[],105),T(114,'Plumbing final inspection','1d',['inspection'],112),
+    T(116,'Set air handlers','2d'),T(117,'Set outdoor units','1d',[],116),T(119,'HVAC final inspection','1d',['inspection'],117),
+    T(121,'Deliver elec fixtures','1d',['delivery']),T(122,'Install service entrance','2d',[],121),T(123,'Install devices','2d',[],121),T(125,'Electrical final inspection','1d',['inspection'],123),T(126,'Meter set','3d',[],125),T(127,'Hot punch','1d',[],126),
+    T(129,'Terminate CAT6','1d'),T(131,'HVAC startup','1d'),T(132,'Test & balance','1d')]},
+  {id:'hardware',name:'Hardware & Final Finishes',tasks:[
+    T(134,'Parcel locker system','2d'),T(135,'Mailboxes','2d'),T(136,'Fire extinguishers','2d'),T(137,'Door & bath hardware','2d'),T(138,'Bath partitions','2d'),
+    T(140,'Point-up','2d'),T(141,'Final painting','1d',[],140),T(142,'Phase 1 cleaning','1d',[],141),T(143,'Install blinds','1d',[],142)]},
+  {id:'finalext',name:'Final Exterior',tasks:[
+    T(145,'Sidewalks','3d'),T(146,'Landscaping & irrigation','4d',[],145),T(147,'Topcoat parking lot','1d',[],146),T(148,'Stripe parking lot','1d',[],147),T(149,'Parking lot signage','1d',[],147)]},
+  {id:'flooring',name:'Finish Flooring',tasks:[
+    T(151,'Rubber gym floor','2d'),T(152,'Long plank laminate','1d',[],151),T(153,'Final coat polished concrete','2d',[],152)]},
+  {id:'punchout',name:'Punchout & Turnover',tasks:[
+    T(155,'Deliver refrigerator','1d',['delivery']),T(157,'Phase 2 final cleaning','1d'),
+    T(159,'Comet walkthrough','1d'),T(160,'Execute punch','2d',[],159),T(162,'Management walkthrough','1d',[],160),T(163,'Execute mgmt punch','2d',[],162),
+    T(165,'Final building inspections','2d',['inspection']),T(166,'Final zoning inspections','2d',['inspection'],165),T(168,'Phase 3 cleaning','2d'),
+    T(170,'Deliver & install furniture','2d',['delivery']),T(171,'Install TVs','1d',[],170),T(173,'Exercise equipment','2d',[],171),T(175,'DraftServ install','2d')]},
+];
+
+const TPL_GARAGE = [
+  {id:'foundation',name:'Foundation',tasks:[
+    T(1,'Survey & layout','1d'),T(2,'Dig footings','1d',[],1),T(3,'Prep slab','1d',[],2),T(4,'Bearing capacity test','1d',['inspection'],3),T(5,'Termite pretreatment','1d',[],3),T(6,'Rebar placement','1d',[],4),T(7,'Rebar inspection','1d',['inspection'],6),T(8,'Municipal inspection','1d',['inspection'],7),T(9,'Pour slab & footings','1d',['pour'],8),T(10,'Wreck forms','1d',[],9)]},
+  {id:'framing',name:'Framing',tasks:[
+    T(11,'Deliver lumber','1d',['delivery']),T(12,'Frame walls','3d',[],11),T(13,'Set roof truss','1d',[],12),T(14,'Sheath roof','2d',[],13),T(15,'Install weather barrier','1d',[],14),T(16,'Framing inspection','1d',['inspection'],15)]},
+  {id:'roofext',name:'Roofing & Exterior',tasks:[
+    T(17,'Deliver roofing','1d',['delivery']),T(18,'Install roofing','2d',[],17),T(19,'Install siding','3d',[],16),T(20,'Exterior paint','2d',[],19),T(21,'Install garage doors','2d',[],20)]},
+  {id:'elec',name:'Electrical',tasks:[
+    T(22,'Electrical rough','2d'),T(23,'Electrical inspection','1d',['inspection'],22),T(24,'Electrical trim','2d',[],23),T(25,'Electrical final inspection','1d',['inspection'],24),T(26,'Meter set','2d',[],25)]},
+  {id:'sitework',name:'Sitework & Punch',tasks:[
+    T(27,'Fine grade','1d'),T(28,'Pour apron/sidewalk','1d',['pour'],27),T(29,'Landscape','1d',[],28),T(30,'Final inspection','1d',['inspection'],29),T(31,'Punch & turnover','2d',[],30)]}
+];
+
+const TPL_POOL = [
+  {id:'excavation',name:'Excavation & Shell',tasks:[
+    T(1,'Layout & stake pool','1d'),T(2,'Excavation','3d',[],1),T(3,'Steel/rebar installation','3d',[],2),T(4,'Rebar inspection','1d',['inspection'],3),T(5,'Plumbing rough-in','2d',[],4),T(6,'Plumbing inspection','1d',['inspection'],5),T(7,'Electrical bonding','1d',[],6),T(8,'Gunite/shotcrete shell','2d',['pour'],7)]},
+  {id:'mechanical',name:'Mechanical & Equipment',tasks:[
+    T(9,'Equipment pad pour','1d',['pour']),T(10,'Set pump & filter','1d',[],9),T(11,'Set heater','1d',[],10),T(12,'Plumb equipment','2d',[],11),T(13,'Electrical hookup','2d',[],12),T(14,'Gas line to heater','1d',[],12)]},
+  {id:'finish',name:'Interior Finish & Deck',tasks:[
+    T(15,'Waterline tile','3d'),T(16,'Coping installation','2d',[],15),T(17,'Pool deck pour','3d',['pour'],16),T(18,'Plaster/pebble finish','2d',[],17)]},
+  {id:'startup',name:'Startup & Inspections',tasks:[
+    T(19,'Fill pool','1d',[],18),T(20,'Equipment startup','1d',[],19),T(21,'Chemical balance','1d',[],20),T(22,'Final plumbing inspection','1d',['inspection'],21),T(23,'Final electrical inspection','1d',['inspection'],22),T(24,'Health dept inspection','1d',['inspection'],23),T(25,'Punch & turnover','2d',[],24)]},
+  {id:'amenities',name:'Pool Amenities',tasks:[
+    T(26,'Install pool furniture','1d'),T(27,'Install fencing & gates','2d'),T(28,'Install access control','1d',[],27),T(29,'Landscaping around pool','2d',[],28),T(30,'Final cleaning','1d',[],29)]}
+];
+
+const TEMPLATES = {
+  '4story': TPL_4STORY,
+  'clubhouse': TPL_CLUBHOUSE,
+  'garage': TPL_GARAGE,
+  'pool': TPL_POOL
+};
+
+// ================================================================
+// PROJECTS CONFIG
+// ================================================================
+const PROJECTS = [
+  { id:'pittsboro', name:'Comet Pittsboro', loc:'31 Terrapin Dr, Pittsboro NC', pm:'David Gonzalez',
+    structures:[
+      {code:'B01',label:'B01',tpl:'4story'},{code:'B02',label:'B02',tpl:'4story'},{code:'B03',label:'B03',tpl:'4story'},{code:'B04',label:'B04',tpl:'4story'},{code:'B05',label:'B05',tpl:'4story'},{code:'B06',label:'B06',tpl:'4story'},{code:'B07',label:'B07',tpl:'4story'},
+      {code:'C01',label:'C01 Club',tpl:'clubhouse'},
+      {code:'G01',label:'G01',tpl:'garage'},{code:'G02',label:'G02',tpl:'garage'},{code:'G03',label:'G03',tpl:'garage'},{code:'G04',label:'G04',tpl:'garage'},{code:'G05',label:'G05',tpl:'garage'},{code:'G06',label:'G06',tpl:'garage'},{code:'G07',label:'G07',tpl:'garage'},{code:'G08',label:'G08',tpl:'garage'},{code:'G09',label:'G09',tpl:'garage'},{code:'G10',label:'G10',tpl:'garage'},{code:'G11',label:'G11',tpl:'garage'},
+      {code:'POOL',label:'Pool',tpl:'pool'}
+    ]},
+  { id:'sneadsferry', name:'Comet Sneads Ferry', loc:'Sneads Ferry, NC', pm:'TBD',
+    structures:[
+      {code:'B01',label:'B01',tpl:'4story'},{code:'B02',label:'B02',tpl:'4story'},{code:'B03',label:'B03',tpl:'4story'},
+      {code:'C01',label:'C01 Club',tpl:'clubhouse'},{code:'POOL',label:'Pool',tpl:'pool'},
+      {code:'G01',label:'G01',tpl:'garage'},{code:'G02',label:'G02',tpl:'garage'}
+    ]},
+  { id:'richland', name:'Comet Richland', loc:'Richland, NC', pm:'TBD',
+    structures:[
+      {code:'B01',label:'B01',tpl:'4story'},{code:'B02',label:'B02',tpl:'4story'},{code:'B03',label:'B03',tpl:'4story'},{code:'B04',label:'B04',tpl:'4story'},
+      {code:'C01',label:'C01 Club',tpl:'clubhouse'},{code:'POOL',label:'Pool',tpl:'pool'},
+      {code:'G01',label:'G01',tpl:'garage'},{code:'G02',label:'G02',tpl:'garage'},{code:'G03',label:'G03',tpl:'garage'}
+    ]},
+  { id:'northraleigh', name:'Comet North Raleigh', loc:'North Raleigh, NC', pm:'TBD',
+    structures:[
+      {code:'B01',label:'B01',tpl:'4story'},{code:'B02',label:'B02',tpl:'4story'},
+      {code:'C01',label:'C01 Club',tpl:'clubhouse'},{code:'POOL',label:'Pool',tpl:'pool'},
+      {code:'G01',label:'G01',tpl:'garage'}
+    ]}
+];
+
+// ================================================================
+// STATE
+// ================================================================
+let role='super', curProj=null, curStruct=null, curFilter='all', searchQ='', dwTask=null;
+let state={}; // state[projId][structCode][taskId] = {status,notes,updatedBy,updatedAt}
+
+function initState(){
+  PROJECTS.forEach(p=>{
+    state[p.id]={};
+    p.structures.forEach(s=>{
+      state[p.id][s.code]={};
+      const tpl=TEMPLATES[s.tpl];
+      tpl.forEach(ph=>ph.tasks.forEach(t=>{
+        state[p.id][s.code][t.id]={status:'pending',notes:'',updatedBy:'',updatedAt:null};
+      }));
+    });
+  });
+  // Demo data for Pittsboro B01
+  const demo={4:'done',5:'done',7:'done',8:'done',9:'done',10:'done',11:'done',12:'done',13:'done',14:'done',16:'done',17:'done',18:'done',19:'done',20:'done',22:'done',23:'done',24:'done',25:'done',26:'done',27:'done',28:'done',29:'done',30:'done',31:'done',32:'done',33:'done',34:'done',35:'done',38:'done',39:'done',40:'done',41:'done',42:'done',43:'done',44:'done',45:'done',46:'done',47:'done',48:'active',49:'active'};
+  Object.entries(demo).forEach(([id,st])=>{if(state.pittsboro.B01[id])state.pittsboro.B01[id].status=st;});
+}
+initState();
+
+function getPhases(){return curProj&&curStruct?TEMPLATES[curProj.structures.find(s=>s.code===curStruct).tpl]:[];}
+function getState(){return curProj?state[curProj.id][curStruct]:{};}
+
+// ================================================================
+// ROLE SELECT
+// ================================================================
+function pickRole(r){
+  role=r;
+  const l={super:'PM',office:'Office',sub:'Sub'};
+  document.getElementById('hdrUser').textContent=l[r];
+  document.getElementById('roleModal').classList.add('hid');
+  showProjects();
+}
+function showRole(){
+  document.getElementById('roleModal').classList.remove('hid');
+  document.getElementById('projScreen').style.display='none';
+  document.getElementById('app').style.display='none';
+}
+
+// ================================================================
+// PROJECT SELECT
+// ================================================================
+function showProjects(){
+  document.getElementById('app').style.display='none';
+  document.getElementById('projScreen').style.display='';
+  const h=new Date().getHours();
+  document.getElementById('projWelcome').textContent=h<12?'Good morning':h<17?'Good afternoon':'Good evening';
+  
+  let html='';
+  PROJECTS.forEach(p=>{
+    let total=0,done=0;
+    p.structures.forEach(s=>{
+      const st=state[p.id][s.code];
+      const ids=Object.keys(st);
+      total+=ids.length;
+      done+=ids.filter(id=>st[id].status==='done').length;
+    });
+    const pct=total?Math.round(done/total*100):0;
+    const structCount=p.structures.length;
+    const bldgCount=p.structures.filter(s=>s.tpl==='4story').length;
+    html+=`<div class="proj-card" onclick="openProject('${p.id}')">
+      <div class="proj-card-top">
+        <div><div class="proj-card-name">${p.name}</div><div class="proj-card-loc">${p.loc}</div></div>
+        <div class="proj-card-badge">${structCount} structures</div>
+      </div>
+      <div class="proj-card-stats">
+        <div class="proj-card-stat">${bldgCount}<span>Buildings</span></div>
+        <div class="proj-card-stat">${p.structures.filter(s=>s.tpl==='garage').length}<span>Garages</span></div>
+        <div class="proj-card-stat" style="color:${pct>0?'var(--grn)':'var(--tx2)'};">${pct}%<span>Complete</span></div>
+        <div class="proj-card-stat">${p.pm}<span>PM</span></div>
+      </div>
+      <div class="proj-prog"><div class="proj-prog-fill" style="width:${pct}%"></div></div>
+    </div>`;
+  });
+  document.getElementById('projList').innerHTML=html;
+}
+
+function openProject(projId){
+  curProj=PROJECTS.find(p=>p.id===projId);
+  curStruct=curProj.structures[0].code;
+  curFilter='all';searchQ='';
+  document.getElementById('projScreen').style.display='none';
+  document.getElementById('app').style.display='';
+  document.getElementById('hdrProjName').textContent=curProj.name;
+  document.getElementById('hdrProjLoc').textContent=curProj.loc;
+  document.getElementById('searchIn').value='';
+  renderAll();
+}
+function goBack(){showProjects();}
+
+// ================================================================
+// RENDER
+// ================================================================
+function renderBldg(){
+  const el=document.getElementById('bldSel');
+  el.innerHTML=curProj.structures.map(s=>{
+    const st=state[curProj.id][s.code];
+    const ids=Object.keys(st);
+    const dn=ids.filter(id=>st[id].status==='done').length;
+    const pct=ids.length?Math.round(dn/ids.length*100):0;
+    return `<button class="bb${s.code===curStruct?' on':''}" onclick="switchStruct('${s.code}')">${s.label}<span class="bp">${pct}%</span></button>`;
+  }).join('');
+}
+function switchStruct(code){curStruct=code;curFilter='all';searchQ='';document.getElementById('searchIn').value='';renderAll();}
+
+function renderStats(){
+  const st=getState();const ids=Object.keys(st);
+  const d=ids.filter(i=>st[i].status==='done').length,a=ids.filter(i=>st[i].status==='active').length,dl=ids.filter(i=>st[i].status==='delayed').length,p=ids.filter(i=>st[i].status==='pending').length,tot=ids.length;
+  document.getElementById('sD').textContent=d;document.getElementById('sA').textContent=a;document.getElementById('sDl').textContent=dl;document.getElementById('sP').textContent=p;
+  const dp=tot?(d/tot*100).toFixed(1):0,ap=tot?(a/tot*100).toFixed(1):0,dlp=tot?(dl/tot*100).toFixed(1):0;
+  document.getElementById('pf1').style.width=dp+'%';document.getElementById('pf2').style.width=ap+'%';document.getElementById('pf3').style.width=dlp+'%';
+  document.getElementById('ppct').textContent=Math.round(dp)+'% complete';document.getElementById('peta').textContent=(tot-d)+' tasks left';
+}
+
+function renderFilters(){
+  const phases=getPhases();const st=getState();const allT=[];phases.forEach(p=>p.tasks.forEach(t=>allT.push(t)));
+  const ids=Object.keys(st);
+  const counts={all:ids.length,active:ids.filter(i=>st[i].status==='active').length,delayed:ids.filter(i=>st[i].status==='delayed').length,done:ids.filter(i=>st[i].status==='done').length,pending:ids.filter(i=>st[i].status==='pending').length,inspections:allT.filter(t=>t.tags.includes('inspection')).length,deliveries:allT.filter(t=>t.tags.includes('delivery')).length,pours:allT.filter(t=>t.tags.includes('pour')).length};
+  const filters=[['all','All'],['active','Active'],['delayed','Delayed'],['done','Done'],['pending','Pending'],['inspections','Inspections'],['deliveries','Deliveries'],['pours','Pours']];
+  document.getElementById('frow').innerHTML=filters.map(([k,l])=>`<button class="fb${k===curFilter?' on':''}" data-f="${k}" onclick="setFilter('${k}')">${l}<span class="fc">${counts[k]||0}</span></button>`).join('');
+}
+function setFilter(f){curFilter=f;renderFilters();renderTasks();}
+
+function renderTasks(){
+  const el=document.getElementById('taskList');const phases=getPhases();const st=getState();
+  let html='',ad=0;
+  phases.forEach(phase=>{
+    const pt=phase.tasks.filter(t=>matchF(t,st)&&matchS(t));
+    if(!pt.length&&curFilter!=='all')return;
+    const pd=phase.tasks.filter(t=>st[t.id]?.status==='done').length;
+    const pp=phase.tasks.length?Math.round(pd/phase.tasks.length*100):0;
+    const pc=pp===100?'var(--grn)':pp>0?'var(--acc)':'var(--tx2)';
+    html+=`<div class="ph" onclick="togPh(this)" data-ph="${phase.id}"><div class="phl"><svg class="chv" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg><div class="phn">${phase.name}</div></div><div class="phr"><span class="php" style="color:${pc}">${pp}%</span><div class="pmb"><div class="pmf" style="width:${pp}%;background:${pc}"></div></div></div></div>`;
+    html+=`<div class="ptk vis" data-pt="${phase.id}">`;
+    const vis=curFilter==='all'?phase.tasks.filter(t=>matchS(t)):pt;
+    vis.forEach(t=>{
+      const s=st[t.id]?.status||'pending';
+      const dn=s==='done';
+      const tg=t.tags.map(g=>`<span class="tg ${g}">${g}</span>`).join('');
+      html+=`<div class="tr${dn?' dn':''}" onclick="openDw(${t.id})" style="animation-delay:${ad}ms"><div class="ts ${s}" onclick="event.stopPropagation();qTog(${t.id})"></div><div class="ti"><div class="tnr"><span class="tn">${t.name}</span>${tg}</div><div class="tm"><span>${t.dur}</span>${t.pred?'<span>Pred: #'+t.pred+'</span>':''}</div></div><div class="td">${t.dur}</div></div>`;
+      ad+=12;
+    });
+    html+='</div>';
+  });
+  if(!html)html='<div class="empty-msg">No tasks match this filter</div>';
+  el.innerHTML=html;
+}
+function matchF(t,st){const s=st[t.id]?.status||'pending';if(curFilter==='all')return true;if(curFilter==='inspections')return t.tags.includes('inspection');if(curFilter==='deliveries')return t.tags.includes('delivery');if(curFilter==='pours')return t.tags.includes('pour');return s===curFilter;}
+function matchS(t){return!searchQ||t.name.toLowerCase().includes(searchQ.toLowerCase());}
+function togPh(h){const id=h.dataset.ph;const tk=document.querySelector(`[data-pt="${id}"]`);h.classList.toggle('col');tk.classList.toggle('vis');}
+function qTog(tid){const st=getState();const c=['pending','active','done','delayed'];const i=c.indexOf(st[tid].status);st[tid].status=c[(i+1)%c.length];st[tid].updatedAt=new Date().toISOString();st[tid].updatedBy=role;toast(`#${tid} → ${st[tid].status.toUpperCase()}`);renderAll();}
+
+// ================================================================
+// DRAWER
+// ================================================================
+function openDw(tid){
+  dwTask=tid;const st=getState();const s=st[tid];let task=null;getPhases().forEach(p=>p.tasks.forEach(t=>{if(t.id===tid)task=t;}));if(!task)return;
+  const status=s.status;
+  const predH=(task.pred?[task.pred]:[]).map(pid=>{let pt=null;getPhases().forEach(p=>p.tasks.forEach(t=>{if(t.id===pid)pt=t;}));const ps=st[pid]?.status||'pending';const dc=ps==='done'?'var(--grn)':ps==='active'?'var(--acc)':ps==='delayed'?'var(--red)':'var(--tx3)';return `<div class="pri"><div class="prd" style="background:${dc}"></div>#${pid}: ${pt?.name||'?'} — ${ps}</div>`;}).join('');
+  const sc=s=>s===status;
+  document.getElementById('dwc').innerHTML=`
+    <div class="dwt">${task.name}</div>
+    <div class="dwid">${curProj.name} · ${curStruct} · Task #${tid} · ${task.dur}</div>
+    <div class="dwg"><div class="dwf"><div class="dwfl">Status</div><div class="dwfv" style="color:${status==='done'?'var(--grn)':status==='active'?'var(--acc)':status==='delayed'?'var(--red)':'var(--tx2)'}">${status.toUpperCase()}</div></div><div class="dwf"><div class="dwfl">Duration</div><div class="dwfv">${task.dur}</div></div><div class="dwf"><div class="dwfl">Updated By</div><div class="dwfv">${s.updatedBy||'—'}</div></div><div class="dwf"><div class="dwfl">Last Update</div><div class="dwfv">${s.updatedAt?new Date(s.updatedAt).toLocaleDateString():'—'}</div></div></div>
+    ${task.pred?`<div class="prc"><div class="prl">Predecessors</div>${predH}</div>`:''}
+    <div class="prl" style="margin-bottom:7px">Update Status</div>
+    <div class="dwa">
+      <button class="ab${sc('pending')?' sp':''}" onclick="setDwSt('pending')"><div class="ad">—</div>Pending</button>
+      <button class="ab${sc('active')?' sa':''}" onclick="setDwSt('active')"><div class="ad">●</div>Active</button>
+      <button class="ab${sc('done')?' sd':''}" onclick="setDwSt('done')"><div class="ad">✓</div>Done</button>
+      <button class="ab${sc('delayed')?' sr':''}" onclick="setDwSt('delayed')"><div class="ad">!</div>Delayed</button>
+    </div>
+    <div class="prl" style="margin-bottom:7px">Notes</div>
+    <textarea class="dwn" id="dwNotes" placeholder="Field notes, delays, issues...">${s.notes||''}</textarea>
+    <button class="dws" onclick="saveDw()">Save & Close</button>`;
+  document.getElementById('dw').classList.add('op');document.getElementById('dov').classList.add('op');
+}
+function setDwSt(s){if(!dwTask)return;const st=getState();st[dwTask].status=s;st[dwTask].updatedAt=new Date().toISOString();st[dwTask].updatedBy=role;openDw(dwTask);}
+function saveDw(){if(dwTask){getState()[dwTask].notes=document.getElementById('dwNotes')?.value||'';toast('Task updated ✓');}closeDw();renderAll();}
+function closeDw(){document.getElementById('dw').classList.remove('op');document.getElementById('dov').classList.remove('op');dwTask=null;}
+function toast(m){const t=document.getElementById('tst');t.textContent=m;t.classList.add('sh');setTimeout(()=>t.classList.remove('sh'),2000);}
+
+function renderAll(){renderBldg();renderStats();renderFilters();renderTasks();}
+
+document.getElementById('searchIn').addEventListener('input',e=>{searchQ=e.target.value;renderTasks();});
+</script>
+</body>
+</html> 
