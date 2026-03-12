@@ -179,7 +179,7 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--tx);min-he
     <div class="ro" onclick="pickRole('office')"><div class="roi">📋</div><div><div class="ron">Office / Owner</div><div class="rod">View all, comment on tasks</div></div></div>
     <div class="ro" onclick="pickRole('sub')"><div class="roi">🏗️</div><div><div class="ron">Subcontractor</div><div class="rod">Update your trade's tasks</div></div></div>
   </div>
-  <a class="hub-back" href="https://cometfieldportal.com" style="margin-top:24px;">
+  <a class="hub-back" href="index.html" style="margin-top:24px;">
     <svg viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
     Back to Site Reports Hub
   </a>
@@ -187,7 +187,7 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--tx);min-he
 
 <!-- PROJECT SELECT -->
 <div class="proj-screen" id="projScreen" style="display:none">
-  <a class="hub-back" href="https://cometfieldportal.com" id="hubBackLink">
+  <a class="hub-back" href="index.html" id="hubBackLink">
     <svg viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
     Site Reports Hub
   </a>
@@ -202,7 +202,7 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--tx);min-he
 <div id="app">
   <div class="hdr">
     <div style="display:flex;gap:8px;margin-bottom:8px;">
-      <a class="hub-back" href="https://cometfieldportal.com" style="margin-bottom:0;font-size:.68rem;padding:4px 10px;">
+      <a class="hub-back" href="index.html" style="margin-bottom:0;font-size:.68rem;padding:4px 10px;">
         <svg viewBox="0 0 24 24" style="width:12px;height:12px"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
         Hub
       </a>
@@ -333,16 +333,79 @@ const TPL_GARAGE = [
 ];
 
 const TPL_POOL = [
-  {id:'excavation',name:'Excavation & Shell',tasks:[
-    T(1,'Layout & stake pool','1d'),T(2,'Excavation','3d',[],1),T(3,'Steel/rebar installation','3d',[],2),T(4,'Rebar inspection','1d',['inspection'],3),T(5,'Plumbing rough-in','2d',[],4),T(6,'Plumbing inspection','1d',['inspection'],5),T(7,'Electrical bonding','1d',[],6),T(8,'Gunite/shotcrete shell','2d',['pour'],7)]},
-  {id:'mechanical',name:'Mechanical & Equipment',tasks:[
-    T(9,'Equipment pad pour','1d',['pour']),T(10,'Set pump & filter','1d',[],9),T(11,'Set heater','1d',[],10),T(12,'Plumb equipment','2d',[],11),T(13,'Electrical hookup','2d',[],12),T(14,'Gas line to heater','1d',[],12)]},
-  {id:'finish',name:'Interior Finish & Deck',tasks:[
-    T(15,'Waterline tile','3d'),T(16,'Coping installation','2d',[],15),T(17,'Pool deck pour','3d',['pour'],16),T(18,'Plaster/pebble finish','2d',[],17)]},
-  {id:'startup',name:'Startup & Inspections',tasks:[
-    T(19,'Fill pool','1d',[],18),T(20,'Equipment startup','1d',[],19),T(21,'Chemical balance','1d',[],20),T(22,'Final plumbing inspection','1d',['inspection'],21),T(23,'Final electrical inspection','1d',['inspection'],22),T(24,'Health dept inspection','1d',['inspection'],23),T(25,'Punch & turnover','2d',[],24)]},
-  {id:'amenities',name:'Pool Amenities',tasks:[
-    T(26,'Install pool furniture','1d'),T(27,'Install fencing & gates','2d'),T(28,'Install access control','1d',[],27),T(29,'Landscaping around pool','2d',[],28),T(30,'Final cleaning','1d',[],29)]}
+  // PRE-CONSTRUCTION — Work by Others (before pool contractor)
+  {id:'precon',name:'Pre-Construction (By Others)',tasks:[
+    T(1,'Pool plans & submittals / plan review','5d'),
+    T(2,'Permit fees & approval','5d',['inspection'],1),
+    T(3,'Layout by surveyor','1d',[],2),
+    T(4,'Subgrade to -8/10 of top of coping elev (±2/10)','2d',[],3),
+    T(5,'Geotech certification of pool subgrade','1d',['inspection'],4),
+    T(6,'Waste of soils excavated by pool contractor','1d',[],4)]},
+  // PLUMBING — Work by Others
+  {id:'plumbbyothers',name:'Plumbing (By Others)',tasks:[
+    T(7,'Fresh water line w/ double check valve/backflow','2d'),
+    T(8,'Waste line from sump pit — 6" w/ 2 flapper check valves','2d',[],7),
+    T(9,'Sump pit in equipment room (2x2x2 ft)','1d',[],7),
+    T(10,'Floor drain in equipment room','1d',[],9),
+    T(11,'Floor drains in bathrooms','1d'),
+    T(12,'Hose bibbs on pool deck per plans','1d'),
+    T(13,'Rinse showers on pool deck per plans','1d'),
+    T(14,'Drinking water fountain per plans','1d')]},
+  // ELECTRICAL — Work by Others
+  {id:'elecbyothers',name:'Electrical (By Others)',tasks:[
+    T(15,'Ground light niche — provide junction boxes','1d'),
+    T(16,'Hard wire pool pumps + ground','1d'),
+    T(17,'Filtration shutoff switch in equip room near pumps','1d',[],16),
+    T(18,'Grounding of pool & deck (under electrician permit)','2d',[],16)]},
+  // MECHANICAL — Work by Others
+  {id:'mechbyothers',name:'Mechanical (By Others)',tasks:[
+    T(19,'Forced ventilation — equipment room','1d'),
+    T(20,'Forced ventilation — chemical storage room','1d'),
+    T(21,'Forced ventilation — bath facilities','1d')]},
+  // OTHER — Work by Others
+  {id:'otherbyothers',name:'Other Scope (By Others)',tasks:[
+    T(22,'Backwash pit and drain','2d'),
+    T(23,'Pool deck pour & deck drain','3d',['pour']),
+    T(24,'Emergency phone + signage','1d'),
+    T(25,'Pool fence and gates','2d')]},
+  // POOL CONTRACTOR — Excavation & Shell
+  {id:'excavation',name:'Pool — Excavation & Shell',tasks:[
+    T(30,'Layout & stake pool','1d',[],5),
+    T(31,'Excavation','3d',[],30),
+    T(32,'Steel/rebar installation','3d',[],31),
+    T(33,'Rebar inspection','1d',['inspection'],32),
+    T(34,'Pool plumbing rough-in','2d',[],33),
+    T(35,'Pool plumbing inspection','1d',['inspection'],34),
+    T(36,'Electrical bonding by electrician','1d',[],35),
+    T(37,'Gunite/shotcrete shell','2d',['pour'],36)]},
+  // POOL CONTRACTOR — Mechanical & Equipment
+  {id:'mechanical',name:'Pool — Mechanical & Equipment',tasks:[
+    T(38,'Equipment pad pour','1d',['pour'],37),
+    T(39,'Set pump & filter','1d',[],38),
+    T(40,'Set heater','1d',[],39),
+    T(41,'Plumb equipment','2d',[],40),
+    T(42,'Electrical hookup (by electrician)','2d',[],41),
+    T(43,'Gas line to heater','1d',[],41)]},
+  // POOL CONTRACTOR — Interior Finish
+  {id:'finish',name:'Pool — Interior Finish',tasks:[
+    T(44,'Waterline tile','3d',[],37),
+    T(45,'Coping installation','2d',[],44),
+    T(46,'Plaster/pebble finish','2d',[],45)]},
+  // STARTUP & INSPECTIONS
+  {id:'startup',name:'Pool — Startup & Inspections',tasks:[
+    T(47,'Fill pool','1d',[],46),
+    T(48,'Equipment startup','1d',[],47),
+    T(49,'Chemical balance','1d',[],48),
+    T(50,'Final plumbing inspection','1d',['inspection'],49),
+    T(51,'Final electrical inspection','1d',['inspection'],50),
+    T(52,'Health dept inspection','1d',['inspection'],51),
+    T(53,'Punch & turnover','2d',[],52)]},
+  // POOL AMENITIES
+  {id:'amenities',name:'Pool — Amenities & Closeout',tasks:[
+    T(54,'Install pool furniture','1d'),
+    T(55,'Install access control','1d'),
+    T(56,'Landscaping around pool','2d'),
+    T(57,'Final cleaning','1d',[],56)]}
 ];
 
 const TEMPLATES = {
@@ -573,4 +636,4 @@ function renderAll(){renderBldg();renderStats();renderFilters();renderTasks();}
 document.getElementById('searchIn').addEventListener('input',e=>{searchQ=e.target.value;renderTasks();});
 </script>
 </body>
-</html> 
+</html>
